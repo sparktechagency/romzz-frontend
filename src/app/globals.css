@@ -15,6 +15,12 @@
     box-shadow: none !important;
 }
 
+#banner .ant-select-selector{
+    border:none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
 .ant-select-selector:hover {
     border-color:#E0E0E0 !important;
 }
