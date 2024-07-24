@@ -37,3 +37,18 @@
 .otp .ant-input-outlined{
     border-color: #818181 !important;
 }
+
+.ant-pagination-item{
+    border-radius: 100% !important;
+}
+.ant-pagination .ant-pagination-item-active {
+    font-weight: 600;
+    background-color: #FF9773 !important;
+    border: none !important;
+    border-color: none !important;
+    border-radius: 100%;
+}
+  
+.ant-pagination .ant-pagination-item-active a {
+    color: #ffffff !important;
+}
