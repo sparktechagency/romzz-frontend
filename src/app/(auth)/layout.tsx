@@ -14,7 +14,7 @@ const AuthLayout  = ({children}: {children : React.ReactNode}) => {
                 backgroundSize: "container",
             }}
         >
-            <div>
+            <div className='bg-[#FEFEFE] bg-opacity-[90%] rounded-[16px] p-[50px] w-[600px]'>
                 {children}
             </div>
         </div>
