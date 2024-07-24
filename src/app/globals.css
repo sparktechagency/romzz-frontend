@@ -7,3 +7,27 @@
 *{
     font-family: "DM Sans", sans-serif;
 }
+
+.ant-select-selector{
+    border-color:#E0E0E0 !important;
+    border-radius: 24px !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.ant-select-selector:hover {
+    border-color:#E0E0E0 !important;
+}
+
+.ant-select .ant-select-arrow{
+    inset-inline-end: 6px !important;
+}
+
+.ant-otp-input{
+    height: 50px !important;
+    width: 50px !important;
+}
+
+.otp .ant-input-outlined{
+    border-color: #818181 !important;
+}
