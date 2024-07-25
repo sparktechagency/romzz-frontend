@@ -40,7 +40,15 @@ const Footer = () => {
     ]
     return (
         <div 
-            className='bg-[#F9F9F9] mt-6 md:mt-16'
+            className=''
+            style={{
+                width: "100%",
+                height: "100%",
+                backgroundImage: `url('/footer.png')`,
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+            }}
             
         >
             <div className='container grid grid-cols-12 py-[30px] gap-8 md:gap-0'>
@@ -48,7 +56,7 @@ const Footer = () => {
                     <Image alt='Logo' src={Logo} width={188} height={150} />
                 </Link>
                 <div className='col-span-12 sm:col-span-6  md:col-span-4 lg:col-span-4 mx-auto sm:mx-0'>
-                    <p className='text-base'>
+                    <p className='text-[#F3F3F3]'>
                         Fusce quis tellus nulla. Donec sodales mauris eget pellentesque hendrerit. Donec molestie 
                         non urna sit amet aliquet. Curabitur sit amet est nec nulla varius fermentum. explore us
                     </p>
@@ -63,7 +71,7 @@ const Footer = () => {
                                     className={`
                                         h-[21px]
                                         font-normal text-[16px] leading-6 
-                                        text-[#555656] 
+                                        text-[#F3F3F3]
                                         border-[#D9D9D9]
                                     `} 
                                     href={`${menu.path}`}
@@ -84,7 +92,7 @@ const Footer = () => {
                                     className={`
                                         h-[21px]
                                         font-normal text-[16px] leading-6 
-                                        text-[#555656] 
+                                        text-[#F3F3F3]
                                         border-[#D9D9D9]
                                     `} 
                                     href={`${menu.path}`}
@@ -97,7 +105,7 @@ const Footer = () => {
                 </div>
 
                 <div className='col-span-12 sm:col-span-6  md:col-span-4 lg:col-span-4'>
-                    <Heading name='Get in touch !' style='font-semibold text-[16px] leading-[20px] text-[#575757] mb-2' />
+                    <Heading name='Get in touch !' style='font-semibold text-[16px] leading-[20px] text-[#F3F3F3] mb-2' />
                     <div className='w-full flex md:items-center flex-col md:flex-row gap-4'>
                         <Input
                             placeholder='Enter Your Email'

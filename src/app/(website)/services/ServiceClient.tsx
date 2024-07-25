@@ -48,7 +48,7 @@ const ServiceClient = () => {
                 }}
                 className='flex flex-col items-center justify-center'
             >
-                <div className='w-[874px] bg-white h-[78px] py-2 rounded-[59px] flex items-center justify-between  pr-3'>
+                <div data-aos="fade-up" className='w-[874px] bg-white h-[78px] py-2 rounded-[59px] flex items-center justify-between  pr-3'>
 
                     <div className='w-[350px]'>
                         <Input

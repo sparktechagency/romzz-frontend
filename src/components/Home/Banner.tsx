@@ -19,7 +19,7 @@ const Banner = () => {
             }}
             className='flex items-center justify-center'
         >
-            <div className='w-[874px] bg-white h-[78px] py-2 rounded-[59px] flex items-center justify-between  pr-3'>
+            <div data-aos="fade-down" className=' w-[874px] bg-white h-[78px] py-2 rounded-[59px] flex items-center justify-between  pr-3'>
 
                 <div className='w-[350px]'>
                     <Input
