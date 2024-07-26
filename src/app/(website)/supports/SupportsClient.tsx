@@ -18,16 +18,16 @@ const SupportsClient = () => {
             {/* contact option */}
             <div className='container  grid grid-cols-3 gap-6 pb-20'>
 
-                <div className='relative bg-white w-[319px] h-[220px] rounded-2xl mx-auto flex items-center justify-center'>
+                <div className='relative bg-white group w-[319px] h-[220px] rounded-2xl mx-auto flex items-center justify-center'>
 
                     {/* float icon */}
-                    <div className='bg-[#E6F2F5] p-3 absolute -left-16 top-8 rounded-full'>
+                    <div className='bg-[#E6F2F5]  p-3 absolute -left-16 top-8 rounded-full'>
                         <div className='w-fit h-fit rounded-full bg-white p-2'>
                             <div className='w-20 h-20 flex items-center justify-center rounded-full bg-primary p-2'>
                                 <FaMapLocationDot 
                                     size={45} 
                                     color='white'
-                                    className=''
+                                    className='group-hover:scale-110 transition-all duration-200'
                                 />
                             </div>
                         </div>
@@ -40,7 +40,7 @@ const SupportsClient = () => {
                     </div>
                 </div>
 
-                <div className='relative bg-white w-[319px] h-[220px] rounded-2xl mx-auto flex items-center justify-center'>
+                <div className='relative bg-white w-[319px] group h-[220px] rounded-2xl mx-auto flex items-center justify-center'>
                     {/* float icon */}
                     <div className='bg-[#E6F2F5] p-3 absolute -left-16 top-8 rounded-full'>
                         <div className='w-fit h-fit rounded-full bg-white p-2'>
@@ -48,7 +48,7 @@ const SupportsClient = () => {
                                 <Mailbox 
                                     size={45} 
                                     color='white'
-                                    className=''
+                                    className='group-hover:scale-110 transition-all duration-200'
                                 />
                             </div>
                         </div>
@@ -61,15 +61,15 @@ const SupportsClient = () => {
                     </div>
                 </div>
 
-                <div className='relative bg-white w-[319px] h-[220px] rounded-2xl mx-auto flex items-center justify-center'>
+                <div className='relative group bg-white w-[319px] h-[220px] rounded-2xl mx-auto flex items-center justify-center'>
                     {/* float icon */}
                     <div className='bg-[#E6F2F5] p-3 absolute -left-16 top-8 rounded-full'>
                         <div className='w-fit h-fit rounded-full bg-white p-2'>
-                            <div className='w-20 h-20 flex items-center justify-center rounded-full bg-[#00B047] p-2'>
+                            <div className='w-20  h-20 flex items-center justify-center rounded-full bg-[#00B047] p-2'>
                                 <LuPhoneCall 
                                     size={45} 
                                     color='white'
-                                    className=''
+                                    className='group-hover:scale-110 transition-all duration-200'
                                 />
                             </div>
                         </div>

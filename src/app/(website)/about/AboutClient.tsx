@@ -34,7 +34,7 @@ const AboutClient = () => {
                                 fill
                                 style={{ objectFit: 'cover' }}
                             />
-                        </div>
+                    </div>
                 </div>
             </div>
 

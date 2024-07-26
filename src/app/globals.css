@@ -101,3 +101,17 @@
     border-radius: 50%;
     display: block;
 }
+
+/* calender font color  */
+
+.ant-picker-calendar .ant-picker-cell-disabled::before{
+    background: transparent !important;
+}
+
+.ant-picker-cell-disabled .ant-picker-cell-inner {
+    color: red;
+}
+
+.ant-picker-calendar .ant-picker-date-panel .ant-picker-content th{
+    font-weight: 700 !important;
+}

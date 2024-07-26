@@ -6,9 +6,10 @@ interface IModalProps{
     open: boolean;
     setOpen:( open: boolean )=> void;
     body: React.ReactElement;
+    width?: number;
 }
 
-const Modal:React.FC<IModalProps> = ({title, open, setOpen}) => {
+const Modal:React.FC<IModalProps> = ({title, open, setOpen, width, body}) => {
     const handleClose=()=>{
         setOpen(false)
     }
@@ -18,8 +19,9 @@ const Modal:React.FC<IModalProps> = ({title, open, setOpen}) => {
             footer={false}
             open={open}
             onCancel={handleClose}
+            width={width || 400}
         >
-
+            {body}
         </AntModal>
     )
 }
