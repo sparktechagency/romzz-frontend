@@ -1,6 +1,6 @@
 "use client"
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Logo from "@/assets/Logo.png"
 import Link from 'next/link';
 import { AiOutlineUser } from 'react-icons/ai';
@@ -10,6 +10,24 @@ import { Bell, Heart } from 'lucide-react';
 const Navbar = () => {
     const [open, setOpen] = useState(false);
     const [openDrawer, setOpenDrawer] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+        const offset = window.scrollY;
+        if (offset > 5) {
+            setIsScrolled(true);
+        } else {
+            setIsScrolled(false);
+        }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
 
 
     const item = [
@@ -36,7 +54,12 @@ const Navbar = () => {
     ]
 
     return (
-        <div className='fixed z-10 top-0 w-full left-0 bg-[#F3F3F3] bg-opacity-[80%]'>
+        <div 
+            className={`
+                fixed z-10 top-0 w-full left-0 transition-all duration-200
+                ${isScrolled ? "bg-white bg-opacity-100" : "bg-[#F3F3F3] bg-opacity-[80%]"}
+            `}
+        >
 
             <div className='container relative  flex items-center justify-between h-[96px]'>
 

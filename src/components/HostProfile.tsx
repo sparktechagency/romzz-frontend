@@ -25,7 +25,6 @@ const HostProfile:React.FC<IHostProfileProps> = ({id, open, setOpen}) => {
                     src={hostbanner}
                     alt='host-profile'
                     fill
-                    // style={{objectFit: "contain"}}
                 />
                 <div className='absolute left-4 -bottom-12 border-2 p-1 rounded-full border-primary'>
                     <Image
