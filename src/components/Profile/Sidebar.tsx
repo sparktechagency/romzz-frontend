@@ -8,8 +8,6 @@ const Sidebar = () => {
     const path = usePathname();
     const pathName = path?.split("/")[2];
 
-    console.log(path)
-
     const item = [
         {
             label: "Profile",
