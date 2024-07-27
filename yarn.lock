@@ -2692,6 +2692,15 @@ rc-cascader@~3.27.0:
     rc-tree "~5.8.1"
     rc-util "^5.37.0"
 
+rc-checkbox@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/rc-checkbox/-/rc-checkbox-3.3.0.tgz#0ffcb65ab78c7d2fcd1a0d6554af36786516bd02"
+  integrity sha512-Ih3ZaAcoAiFKJjifzwsGiT/f/quIkxJoklW4yKGho14Olulwn8gN7hOBve0/WGDg5o/l/5mL0w7ff7/YGvefVw==
+  dependencies:
+    "@babel/runtime" "^7.10.1"
+    classnames "^2.3.2"
+    rc-util "^5.25.2"
+
 rc-checkbox@~3.3.0:
   version "3.3.0"
   resolved "https://registry.npmjs.org/rc-checkbox/-/rc-checkbox-3.3.0.tgz"

@@ -54,7 +54,7 @@ const layout = ({children}: {children : React.ReactNode}) => {
                 </div>
 
                 {/* main content */}
-                <div className='col-span-9 bg-white p-6'>
+                <div className='col-span-9 bg-[#F7F7F7] p-6'>
                     {children}
                 </div>
             </div>

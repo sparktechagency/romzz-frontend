@@ -16,6 +16,7 @@
     "lucide-react": "^0.414.0",
     "mapbox-gl": "^3.5.2",
     "next": "14.2.4",
+    "rc-checkbox": "^3.3.0",
     "react": "^18",
     "react-countup": "^6.5.3",
     "react-dom": "^18",

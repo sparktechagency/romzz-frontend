@@ -1,8 +1,11 @@
 import React from 'react'
+import BookingHistoryClient from './BookingHistoryClient'
 
 const page = () => {
     return (
-        <div>page</div>
+        <React.Fragment>
+            <BookingHistoryClient/>
+        </React.Fragment>
     )
 }
 

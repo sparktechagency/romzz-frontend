@@ -35,7 +35,9 @@ const ChangePassword = () => {
                         outline: "none",
                         border: "1px solid #E0E0E0",
                         borderRadius: 24,
+                        padding: "4px 4px 4px 11px",
                     }}
+                    className='custom-input-password placeholder:text-[#818181] placeholder:text-[14px] placeholder:font-bold placeholder:leading-6'
                     iconRender={(visible) => (
                         <div
                             style={{
@@ -57,8 +59,6 @@ const ChangePassword = () => {
                             }
                         </div>
                     )}
-
-                    className=' placeholder:text-[#818181] placeholder:text-[14px] placeholder:font-normal placeholder:leading-6'
                 />
             </Form.Item>
             
@@ -82,6 +82,7 @@ const ChangePassword = () => {
                         outline: "none",
                         border: "1px solid #E0E0E0",
                         borderRadius: 24,
+                        padding: "4px 4px 4px 11px"
                     }}
                     iconRender={(visible) => (
                         <div
@@ -129,6 +130,7 @@ const ChangePassword = () => {
                         outline: "none",
                         border: "1px solid #E0E0E0",
                         borderRadius: 24,
+                        padding: "4px 4px 4px 11px"
                     }}
                     iconRender={(visible) => (
                         <div
