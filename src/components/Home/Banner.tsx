@@ -5,6 +5,7 @@ import React from 'react';
 import { TiArrowSortedDown } from "react-icons/ti";
 import { IoLocationOutline } from "react-icons/io5";
 import { FaMapLocationDot } from "react-icons/fa6";
+import Link from 'next/link';
 
 const Banner = () => {
     return (
@@ -24,9 +25,11 @@ const Banner = () => {
                 <div className='w-[350px]'>
                     <Input
                         suffix={
-                            <div className='w-10 cursor-pointer h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center'>
-                                <FaMapLocationDot size={24} color='#00809E' />
-                            </div>
+                            <Link href={"/search-filter"}>
+                                <div className='w-10 cursor-pointer h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center'>
+                                    <FaMapLocationDot size={24} color='#00809E' />
+                                </div>
+                            </Link>
                         }
                         prefix={<IoLocationOutline size={24} color='#5C5C5C' />}
                         style={{
@@ -41,7 +44,7 @@ const Banner = () => {
                     />
                 </div>
 
-                <div  id='banner'>
+                <div id='banner'>
                     <Select
                         placeholder={<p className='text-base text-[16px] leading-6 font-normal'>Property Area</p>}
                         style={{

@@ -24,52 +24,18 @@ const Location = () => {
     });
 
     const handleGetLocation=()=>{
-        // Check if geolocation is available
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    // Update the user's location
-                    const { latitude, longitude } = position.coords;
-                    setUserLocation({ latitude, longitude });
-                    setViewport(prevViewport => ({
-                        ...prevViewport,
-                        latitude,
-                        longitude
-                    }));
-                },
-                (error) => {
-                    console.error('Error getting location', error);
-                    // Handle error (e.g., fallback to default location)
-                }
-            );
-        } else {
-            console.error('Geolocation is not supported by this browser.');
-        }
+        navigator.geolocation.getCurrentPosition((position) => {
+            setUserLocation({
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+            });
+            setViewport((prev) => ({
+                ...prev,
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+            }));
+        });
     }
-
-    /* useEffect(() => {
-        // Check if geolocation is available
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    // Update the user's location
-                    const { latitude, longitude } = position.coords;
-                    setUserLocation({ latitude, longitude });
-                    setViewport(prevViewport => ({
-                        ...prevViewport,
-                        latitude,
-                        longitude
-                    }));
-                },
-                (error) => {
-                    console.error('Error getting location', error);
-                    // Handle error (e.g., fallback to default location)
-                }
-            );
-        } else {
-            console.error('Geolocation is not supported by this browser.');
-        }
-    }, []); */
     
     return (
         <div className='container grid grid-cols-12 pb-20'>
@@ -110,7 +76,7 @@ const Location = () => {
                             height={30}
                         />
                   </Marker>   
-              </ReactMapGL>
+                </ReactMapGL>
             </div>
         </div>
     )

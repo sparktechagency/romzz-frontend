@@ -25,6 +25,17 @@
     border-color:#E0E0E0 !important;
 }
 
+#search-filter .ant-select .ant-select-arrow{
+    inset-inline-end: 4px !important;
+    padding: 0 !important;
+    background-color: transparent !important;
+}
+
+#search-filter .ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector {
+    border: none;
+    background: transparent;
+}
+
 .customSelect .ant-select .ant-select-arrow{
     inset-inline-end: 6px !important;
 }
