@@ -1,10 +1,8 @@
 "use client";
-import React from 'react'
-import { useRouter } from 'next/router';
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Select } from 'antd';
-import { ChevronDown } from 'lucide-react';
 import { TiArrowSortedDown } from "react-icons/ti";
 
 const Sidebar = () => {
