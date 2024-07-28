@@ -57,9 +57,11 @@ const ServiceClient = () => {
           <div className="lg:w-[350px] w-full">
             <Input
               suffix={
+                <Link href={"/search-filter"}>
                 <div className="w-10 cursor-pointer h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center">
                   <FaMapLocationDot size={24} color="#00809E" />
                 </div>
+                </Link>
               }
               prefix={<IoLocationOutline size={24} color="#5C5C5C" />}
               style={{
@@ -108,9 +110,11 @@ const ServiceClient = () => {
                 Filter
               </p>
             </div>
-            <div className="lg:w-[62px] w-[40px] cursor-pointer lg:h-[62px] h-[40px] rounded-full bg-primary flex items-center justify-center">
-              <Search size={24} color="#F3F3F3" />
-            </div>
+            <Link href={"/filter?search="}>
+              <div className="lg:w-[62px] w-[40px] cursor-pointer lg:h-[62px] h-[40px] rounded-full bg-primary flex items-center justify-center">
+                <Search size={24} color="#F3F3F3" />
+              </div>
+            </Link>
           </div>
         </div>
 

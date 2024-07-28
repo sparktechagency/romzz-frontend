@@ -1,13 +1,15 @@
 "use client";
 import { Input, Select } from 'antd';
 import { ChevronDown, Search, SlidersHorizontal } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
 import { TiArrowSortedDown } from "react-icons/ti";
 import { IoLocationOutline } from "react-icons/io5";
 import { FaMapLocationDot } from "react-icons/fa6";
 import Link from 'next/link';
+import Filter from '../Filter';
 
 const Banner = () => {
+    const [open, setOpen] = useState(false)
     return (
         <div
             style={{
@@ -69,15 +71,25 @@ const Banner = () => {
                 </div>
 
                 <div className='flex items-center justify-between gap-6'>
-                    <div className='flex items-center gap-3 cursor-pointer'>
+
+                    <div onClick={()=>setOpen(true)} className='flex items-center gap-3 cursor-pointer'>
                         <SlidersHorizontal size={18} color='#5C5C5C' />
                         <p className='text-base text-[16px] font-normal leading-6'>Filter</p>
                     </div>
-                    <div className='w-[62px] cursor-pointer h-[62px] rounded-full bg-primary flex items-center justify-center'>
-                        <Search size={24} color='#F3F3F3' />
-                    </div>
+
+                    <Link href={"/filter?search="}>
+                        <div className='w-[62px] cursor-pointer h-[62px] rounded-full bg-primary flex items-center justify-center'>
+                            <Search size={24} color='#F3F3F3' />
+                        </div>
+                    </Link>
+
                 </div>
             </div>
+
+            <Filter
+                open={open}
+                setOpen={setOpen}
+            />
         </div>
     )
 }
