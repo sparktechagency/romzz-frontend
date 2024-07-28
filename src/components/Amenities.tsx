@@ -5,7 +5,7 @@ import { Mailbox, ShieldCheck } from "lucide-react";
 
 const Amenities = () => {
   return (
-    <div className="bg-[#F3F3F3] py-16 mt-16">
+    <div className="bg-[#F3F3F3] py-16 lg:mt-16 mt-0">
       <Heading style="font-normal text-[32px] leading-[48px] text-[#3E3E3E] text-center">
         Why use <span className="text-primary">Romzz</span>
       </Heading>
