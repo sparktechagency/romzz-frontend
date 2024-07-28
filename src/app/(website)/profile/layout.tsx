@@ -5,7 +5,6 @@ import person from "@/assets/person2.png";
 import Image from 'next/image';
 import Heading from '@/components/shared/Heading';
 import { Rate } from 'antd';
-import Link from 'next/link';
 import Sidebar from '@/components/Profile/Sidebar';
 
 
@@ -49,12 +48,12 @@ const layout = ({children}: {children : React.ReactNode}) => {
             <div className='grid grid-cols-12 bg-primary border'>
                 
                 {/* sidebar */}
-                <div className='col-span-3 bg-[#3399B1] h-fit pt-6'>
+                <div className='col-span-2 bg-[#3399B1] h-fit pt-6'>
                     <Sidebar/>
                 </div>
 
                 {/* main content */}
-                <div className='col-span-9 bg-[#F7F7F7] p-6'>
+                <div className='col-span-10 bg-[#F7F7F7] p-6'>
                     {children}
                 </div>
             </div>

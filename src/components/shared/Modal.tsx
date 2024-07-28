@@ -10,12 +10,14 @@ interface IModalProps{
 }
 
 const Modal:React.FC<IModalProps> = ({title, open, setOpen, width, body}) => {
+
     const handleClose=()=>{
         setOpen(false)
     }
+    
     return (
         <AntModal
-            title={title}
+            title={<p className='text-[24px] text-[#333333]'>{title}</p>}
             footer={false}
             open={open}
             onCancel={handleClose}

@@ -9,9 +9,11 @@ import { TfiLocationPin } from 'react-icons/tfi';
 interface IHostRentCardProps{
     open: boolean;
     setOpen: (open:boolean)=> void;
+    openRentModal: boolean;
+    setOpenRentModal: (openRentModal:boolean)=> void;
 }
 
-const HostRentCard:React.FC<IHostRentCardProps> = ({setOpen}) => {
+const HostRentCard:React.FC<IHostRentCardProps> = ({setOpen, setOpenRentModal}) => {
     return (
         <div className='flex gap-6'>
 
@@ -26,7 +28,7 @@ const HostRentCard:React.FC<IHostRentCardProps> = ({setOpen}) => {
             <div className='w-full'>
                 <div className='flex items-center justify-between'>
                     <h1 className='text-primary font-semibold text-[24px] leading-5 mb-2'>$100<sub className='font-normal'>/pw</sub></h1>
-                    <button className='w-[40px] h-6 bg-[#FAFAFA] text-[#767676] rounded-3xl font-bold text-[12px] leading-4'>Edit</button>
+                    <button onClick={()=>setOpenRentModal(true)} className='w-[40px] h-6 bg-[#FAFAFA] text-[#767676] rounded-3xl font-bold text-[12px] leading-4'>Edit</button>
                 </div>
                 <p className='text-secondary text-sm my-2 leading-[18px] font-medium'>Whole-unit</p>
                 <div className='flex items-center gap-4'>
