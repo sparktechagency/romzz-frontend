@@ -164,3 +164,9 @@
     font-weight: 400;
     padding: 0 !important;
 }
+
+
+.priceSlider .ant-form-item .ant-form-item-label >label{
+    display: block !important;
+    height: 28px !important;
+}

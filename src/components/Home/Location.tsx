@@ -41,8 +41,8 @@ const Location = () => {
     <div className="container grid grid-cols-12 pb-20">
       <div className="col-span-12 lg:col-span-6 order-2 lg:order-1 flex items-center justify-center">
         <div className="mt-5 lg:mt-0">
-          <Heading style="font-normal lg:text-[44px] text-[28px] lg:leading-[50px] leading-[30px] text-[#151515]">
-            Map with your <br />
+          <Heading style="font-normal lg:text-[44px] text-[28px] lg:leading-[50px] leading-[30px] text-[#151515] flex lg:flex-col flex-row gap-2">
+            <span>Map with your</span>
             <span className="text-primary">Location</span>
           </Heading>
           <p className="text-[20px] mt-[18px] leading-[30px] font-semibold text-[#5C5C5C]">
