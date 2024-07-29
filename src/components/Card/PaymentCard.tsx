@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from '../shared/Modal';
 import { Button, Form, Input, Select } from 'antd';
 import { MdOutlinePayment } from "react-icons/md";
@@ -12,6 +12,24 @@ interface IPaymentProps{
 }
 
 const PaymentCard: React.FC<IPaymentProps> = ({setOpen, open}) => {
+    const [name, setName] = useState("");
+    const [keyword, setKeyword] = useState("");
+
+
+    useEffect(()=>{
+        if(keyword){
+            fetch(`https://restcountries.com/v3.1/name/${keyword}?fullText=true`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                const countryName = data[0]?.name?.common;
+                setName(countryName);
+            })
+        }
+    }, [keyword])
+
+
+
     const body=(
         <div>
             <Form layout='vertical' className='grid grid-cols-12 gap-4'>
@@ -119,7 +137,7 @@ const PaymentCard: React.FC<IPaymentProps> = ({setOpen, open}) => {
                             background: "transparent"
                         }}
                         dropdownRender={menu => (
-                            <div>
+                            <div className='border border-red-400'>
                                 <Input
                                     prefix={<AiOutlineHome size={22} color='#d9d9d9' />}
                                     style={{
@@ -131,13 +149,17 @@ const PaymentCard: React.FC<IPaymentProps> = ({setOpen, open}) => {
                                         marginBottom: 4,
                                         background: "transparent"
                                     }}
-                                    placeholder='Search...'
+                                    onChange={(e)=>setKeyword(e.target.value)}
+                                    placeholder='Search Country by Correct Name...'
                                 />
+                                <div>
+
+                                </div>
                                 {menu}
                             </div>
                         )}
                     >
-                        <Select.Option value="Bangladesh">Bangladesh</Select.Option>
+                        <Select.Option value={name} >{name}</Select.Option>
                     </Select>
                 </Form.Item>
 
