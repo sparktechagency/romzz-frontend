@@ -68,7 +68,7 @@ const Accommodation = () => {
       {
         breakpoint: 480,
         settings: {
-          slidesToShow: 2,
+          slidesToShow: 1,
           slidesToScroll: 1,
         },
       },
@@ -96,7 +96,7 @@ const Accommodation = () => {
             return (
               <Link key={index} href={`/details/${index + 1}`}>
                 <div
-                  className=" max-w-[360px] group p-2 rounded-lg"
+                  className=" max-w-[360px] group p-2 rounded-lg border border-opacity-5"
                   style={{
                     boxShadow:
                       "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",

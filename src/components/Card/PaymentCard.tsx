@@ -137,7 +137,7 @@ const PaymentCard: React.FC<IPaymentProps> = ({setOpen, open}) => {
                             background: "transparent"
                         }}
                         dropdownRender={menu => (
-                            <div className='border border-red-400'>
+                            <div>
                                 <Input
                                     prefix={<AiOutlineHome size={22} color='#d9d9d9' />}
                                     style={{
@@ -159,7 +159,11 @@ const PaymentCard: React.FC<IPaymentProps> = ({setOpen, open}) => {
                             </div>
                         )}
                     >
-                        <Select.Option value={name} >{name}</Select.Option>
+                        {
+                            name
+                            &&
+                            <Select.Option value={name} >{name}</Select.Option>
+                        }
                     </Select>
                 </Form.Item>
 
