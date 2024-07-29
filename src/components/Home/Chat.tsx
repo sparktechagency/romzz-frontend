@@ -32,14 +32,14 @@ const Chat = () => {
     }
 
     return (
-        <div 
-            className={`
-                 ${open ? "z-50 transition-all duration-200 " : "z-0 transition-all duration-200"}
-                fixed flex items-end justify-center bottom-52 right-10 h-[451px] w-[433px]
-            `}
-        >
+        <div>
 
-            <div className='flex-1 overflow-hidden -z-10'>
+            <div 
+                className={`
+                    w-[349px] overflow-hidden h-[451px] fixed right-[100px] bottom-[120px]
+                    ${open ? "z-20 transition-all duration-200 " : "-z-50 transition-all duration-200"}
+                `}
+            >
                 <div
                     className={`
                         bg-white border-2 border-primary rounded-[13px]
@@ -162,8 +162,7 @@ const Chat = () => {
                 </div>
             </div>
 
-            <div className=' flex items-center'>
-                
+            <div className='z-20 fixed right-6 bottom-[120px] flex items-center'>
                 <div className='w-6 h-6 flex items-center justify-center overflow-hidden'>
                     <BiSolidLeftArrow 
                         size={16} 
@@ -171,10 +170,9 @@ const Chat = () => {
                         className={` ${open ? "translate-x-0 transition-all duration-200" : "translate-x-5 transition-all duration-200"}  `}
                     />
                 </div>
-
                 <div 
                     onClick={()=>setOpen(!open)} 
-                    className='w-[50px] cursor-pointer flex items-center justify-center h-[50px] rounded-full border-2 p-2 border-primary'
+                    className=' w-[50px] cursor-pointer flex items-center justify-center h-[50px] rounded-full border-2 p-2 border-primary'
                 >
                     <Image
                         alt='call-center'
@@ -187,6 +185,8 @@ const Chat = () => {
             </div>
 
         </div>
+        
+       
     )
 }
 

@@ -167,11 +167,11 @@ const SubscriptionClient = () => {
     <div>
       <div className="flex items-center justify-between">
         <Heading
-          name="Booking History"
+          name="Subscriptions"
           style="font-normal lg:text-[24px] text:[22px] leading-[36px] text-[#151515]"
         />
         <button
-          onClick={() => setOpen(true)}
+          onClick={()=> setOpen(true)}
           className="bg-primary rounded-3xl  lg:w-[144px] w-1/3  lg:h-10 h-9  lg:text-[14px] text-[12px] leading-6 font-bold text-[#FAFAFA]"
         >
           Buy Subscription

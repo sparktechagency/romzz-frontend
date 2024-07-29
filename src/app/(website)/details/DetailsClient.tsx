@@ -16,6 +16,7 @@ import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import "slick-carousel/slick/slick.css";
 import Calender from "@/components/Calender";
 import HostProfile from "@/components/HostProfile";
+import PaymentCard from "@/components/Card/PaymentCard";
 
 const DetailsClient = ({ id }: { id: string }) => {
   const [sliderIndex, setSliderIndex] = useState<number>();
@@ -58,6 +59,8 @@ const DetailsClient = ({ id }: { id: string }) => {
     nextArrow: <ArrowRight />,
     autoplaySpeed: 2000,
   };
+
+  const [openPayment, setOpenPayment] = useState(false);
 
   return (
     <div className="container pt-6 mb-8">
@@ -182,7 +185,7 @@ const DetailsClient = ({ id }: { id: string }) => {
             </p>
           </div>
 
-          <button className="w-full h-[56px] text-center text-white bg-primary rounded-3xl px-5 mb-2">
+          <button onClick={()=>setOpenPayment(true)} className="w-full h-[56px] text-center text-white bg-primary rounded-3xl px-5 mb-2">
             Book Now
           </button>
         </div>
@@ -308,6 +311,10 @@ const DetailsClient = ({ id }: { id: string }) => {
       </div>
 
       <HostProfile open={open} setOpen={setOpen} id="asdasd" />
+      <PaymentCard
+        setOpen={setOpenPayment}
+        open={openPayment}
+      />
     </div>
   );
 };
