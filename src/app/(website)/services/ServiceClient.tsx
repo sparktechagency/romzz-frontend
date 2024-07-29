@@ -11,11 +11,12 @@ import { TfiLocationPin } from "react-icons/tfi";
 import { TiArrowSortedDown } from "react-icons/ti";
 import Property from "@/assets/property.png";
 import Person from "@/assets/person.png";
+import Filter from "@/components/Filter";
 
 const ServiceClient = () => {
   const [tab, setTab] = useState("All");
   const [page, setPage] = useState<number>(1);
-
+  const [open, setOpen] = useState(false)
   useEffect(() => {
     const initialTab =
       new URLSearchParams(window.location.search).get("tab") || "All";
@@ -104,7 +105,7 @@ const ServiceClient = () => {
           </div>
 
           <div className="flex items-center justify-between gap-6 w-full lg:w-[200px] lg:px-0 px-3  ">
-            <div className="flex items-center gap-3 cursor-pointer">
+            <div onClick={()=>setOpen(true)} className="flex items-center gap-3 cursor-pointer">
               <SlidersHorizontal size={18} color="#5C5C5C" />
               <p className="text-base text-[16px] font-normal leading-6">
                 Filter
@@ -211,6 +212,10 @@ const ServiceClient = () => {
           total={50}
         />
       </div>
+      <Filter
+                open={open}
+                setOpen={setOpen}
+            />
     </div>
   );
 };

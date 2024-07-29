@@ -12,8 +12,10 @@ import { TiArrowSortedDown } from 'react-icons/ti';
 import Person from "@/assets/person.png";
 import { TfiLocationPin } from 'react-icons/tfi';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import Filter from '@/components/Filter';
 
 const SearchFilter = () => {
+    const [open, setOpen] = useState(false)
     const [viewport, setViewport] = useState({
         latitude: 0,
         longitude: 0,
@@ -146,7 +148,7 @@ const SearchFilter = () => {
                                 <Select.Option value="Perth">Perth</Select.Option>
                             </Select>
 
-                            <div className='flex items-center gap-3 cursor-pointer'>
+                            <div onClick={()=>setOpen(true)} className='flex items-center gap-3 cursor-pointer'>
                                 <SlidersHorizontal size={14} color='#5C5C5C' />
                                 <p className='text-base text-[16px] font-normal leading-6'>Filter</p>
                             </div>
@@ -218,6 +220,11 @@ const SearchFilter = () => {
                 </div>
 
             </div>
+
+            <Filter
+                open={open}
+                setOpen={setOpen}
+            />
 
         </div>
     )

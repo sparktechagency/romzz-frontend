@@ -11,8 +11,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Heading from '@/components/shared/Heading';
 import { TfiLocationPin } from 'react-icons/tfi';
+import Filter from '@/components/Filter';
 
 const FilterClient = () => {
+    const [open, setOpen] = useState(false)
     const [page, setPage] = useState<number>(1);
 
     useEffect(() => {
@@ -85,7 +87,7 @@ const FilterClient = () => {
                     </div>
 
                     <div className="flex items-center justify-between gap-6 w-full lg:w-[200px] lg:px-0 px-3  ">
-                        <div className="flex items-center gap-3 cursor-pointer">
+                        <div onClick={()=>setOpen(true)} className="flex items-center gap-3 cursor-pointer">
                             <SlidersHorizontal size={18} color="#5C5C5C" />
                             <p className="text-base text-[16px] font-normal leading-6">
                                 Filter
@@ -172,6 +174,11 @@ const FilterClient = () => {
                 </div>
 
             </div>
+
+            <Filter
+                open={open}
+                setOpen={setOpen}
+            />
         </div>
     )
 }
