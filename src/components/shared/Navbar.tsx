@@ -110,6 +110,13 @@ const Navbar = () => {
                     >
                         <AiOutlineUser size={20} color='#F3F3F3'/> Sign In
                     </Link>
+
+                    <Link 
+                        href={"/profile"} 
+                        className='font-normal w-12 h-12 rounded-[24px] bg-primary text-[#F3F3F3] flex items-center justify-center text-[16px] leading-6'
+                    >
+                        <AiOutlineUser size={20} color='#F3F3F3'/>
+                    </Link>
                 </div>
 
                 <div className='block lg:hidden'>

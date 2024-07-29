@@ -5,6 +5,10 @@ import React, { useState } from 'react';
 import Logo from "@/assets/Logo.png";
 import Heading from './Heading';
 import { Button, Input } from 'antd';
+import facebook  from "@/assets/facebok.png";
+import instagram  from "@/assets/instagram.png";
+import linkedin  from "@/assets/linkedin.png";
+import twitter  from "@/assets/twitter.png";
 
 const Footer = () => {
     const [keyword, setKeyword] = useState("");
@@ -136,6 +140,43 @@ const Footer = () => {
                             Subscribe
                         </Button>
 
+                    </div>
+                    <div className='flex items-center gap-6 mt-6'>
+                        <a href="https://www.facebook.com/" target='_blank'>
+                            <Image
+                                alt='social-link'
+                                src={facebook}
+                                width={32}
+                                height={32}
+                            />
+                        </a>
+
+                        <a href='https://www.instagram.com/' target='_blank'>
+                            <Image
+                                alt='social-link'
+                                src={instagram}
+                                width={32}
+                                height={32}
+                            />
+                        </a>
+
+                        <a href='https://www.linkedin.com/' target='_blank'>
+                            <Image
+                                alt='social-link'
+                                src={linkedin}
+                                width={32}
+                                height={32}
+                                />
+                            </a>
+
+                        <a href='https://www.twitter.com/' target='_blank'>
+                            <Image
+                                alt='social-link'
+                                src={twitter}
+                                width={32}
+                                height={32}
+                            />
+                        </a>
                     </div>
                 </div>
             </div>
