@@ -28,7 +28,7 @@ const SummeryCount = () => {
               )}
             </CountUp>
             <p className="text-[18px] leading-[23px] font-normal text-[#F7F7F7]">
-              Users
+              ROMZZERS
             </p>
           </div>
         </div>

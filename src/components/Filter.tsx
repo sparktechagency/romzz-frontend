@@ -40,7 +40,7 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
             <div className="mt-2 border-b-[1px] border-[#C0C0C0] pb-4">
                 <ul className="flex flex-wrap items-center gap-6">
                     {
-                        ["Room mate", "Flat mate", "Whole Unit", "House"].map((item, index) => {
+                        ["Room mate", "Flat mate", "Whole Unit"].map((item, index) => {
                             return (
                                 <li
                                     key={index}
