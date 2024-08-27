@@ -10,7 +10,7 @@ const layout = ({children}: {children: React.ReactNode}) => {
         <div className='relative'>
             <Navbar/>
             <Chat/>
-            <div className='mt-[96px]'>
+            <div>
                 {children}
             </div>
             <Footer/>

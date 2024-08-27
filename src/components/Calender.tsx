@@ -6,9 +6,14 @@ import { Calendar } from 'antd';
 
 const Calender = () => {
     const datesToDisable = [
-        dayjs('2024-07-07').startOf('day').toDate(),
-        dayjs('2024-07-20').startOf('day').toDate(),
-        dayjs('2024-07-23').startOf('day').toDate() 
+        dayjs('2024-08-28').startOf('day').toDate(),
+        dayjs('2024-08-29').startOf('day').toDate(),
+        dayjs('2024-08-30').startOf('day').toDate(),
+        dayjs('2024-08-31').startOf('day').toDate(),
+        dayjs('2024-09-01').startOf('day').toDate(),
+        dayjs('2024-09-02').startOf('day').toDate(),
+        dayjs('2024-09-03').startOf('day').toDate(),
+        dayjs('2024-09-04').startOf('day').toDate(),
     ];
 
     const disabledDate: (date: Dayjs) => boolean = (date) => {

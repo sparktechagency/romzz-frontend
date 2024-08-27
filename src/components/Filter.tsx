@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import Modal from './shared/Modal';
-import { Button, Checkbox, Form, Input, Select } from 'antd';
+import { Button, Checkbox, ConfigProvider, Form, Input, Select } from 'antd';
 import { FaMapLocationDot } from 'react-icons/fa6';
 import { IoLocationOutline } from 'react-icons/io5';
 import { TiArrowSortedDown } from 'react-icons/ti';
@@ -18,12 +18,29 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
     const [tab, setTab] = useState("Room mate");
     const [form] = Form.useForm();
     form.getFieldsValue();
+    const [price, setPrice] = useState([0, 5000]);
 
     const facilitiesOptions = [
-        { label: "Relation with owner", value: "relation_with_owner" },
         { label: "Wi-Fi", value: "wifi" },
-        { label: "Location", value: "location" },
-        { label: "Comfortable", value: "comfortable" },
+        { label: "Baño privado", value: "baño_privado" },
+        { label: "Linnen ( pillow, bed sheets, towel)", value: "linnen" },
+        { label: "AC", value: "ac" },
+        { label: "Parking", value: "parking" },
+        { label: "Pet allowed", value: "pet-allowed" },
+        { label: "Heater", value: "Heater" },
+    ];
+
+    const ratingOptions = [
+        { label: "Amazing 😊", value: "5" },
+        { label: "Very Good 😊", value: "4" },
+        { label: "Good 😊", value: "3" },
+        { label: "OK 😊", value: "1" }
+    ];
+
+    const distanceOptions = [
+        { label: "Less than 1km", value: "1" },
+        { label: "Less than 3km", value: "3" },
+        { label: "Less than 5km", value: "5" },
     ];
 
     const handleSubmit=(values:any)=>{
@@ -40,7 +57,7 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
             <div className="mt-2 border-b-[1px] border-[#C0C0C0] pb-4">
                 <ul className="flex flex-wrap items-center gap-6">
                     {
-                        ["Room mate", "Flat mate", "Whole Unit"].map((item, index) => {
+                        ["Room mate", "Flat mate"].map((item, index) => {
                             return (
                                 <li
                                     key={index}
@@ -131,63 +148,96 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
                         </Select>
                     </Form.Item>
 
-                    <div className='col-span-12 priceSlider'>
+                    <div className='col-span-12 priceSlider px-2'>
                         <Form.Item
                             name={"price"}
-                            id='price'
+                            id="price"
                             label={
-                                <div className='flex items-center justify-between'>
-                                    <p className="font-medium  text-[16px] leading-6 text-[#636363]">Price</p>
-                                    <p className='text-primary'> $0 - $1000 </p> 
+                                <div className="flex items-center justify-between">
+                                    <p className="font-medium text-[16px] leading-6 text-[#636363]">Price</p>
+                                    <p className="text-primary flex items-center gap-2">
+                                        <ConfigProvider
+                                            theme={{
+                                                token: {
+                                                colorPrimary: "#838383",
+                                                colorTextPlaceholder: "#838383",
+                                                colorText: "#00809e",
+                                                },
+                                                components: {
+                                                Input: {
+                                                    hoverBorderColor: "#d9d9d9",
+                                                    activeShadow: "none",
+                                                    activeBorderColor: "#00809e",
+                                                },
+                                                },
+                                            }}
+                                        >
+                                            <Input
+                                                prefix={<p className="text-primary font-semibold">$</p>}
+                                                value={price[0]}
+                                                style={{ width: 120 }}
+                                                onChange={(e) => {
+                                                    const newValue = parseInt(e.target.value) || 0;
+                                                    const newPrice = [Math.min(newValue, price[1]), price[1]];
+                                                    setPrice(newPrice);
+                                                }}
+                                                className="font-semibold"
+                                            />
+                                        </ConfigProvider>
+                                            <span className="text-primary font-semibold">-</span>
+                                        <ConfigProvider
+                                            theme={{
+                                                token: {
+                                                colorPrimary: "#838383",
+                                                colorTextPlaceholder: "#838383",
+                                                colorText: "#00809e",
+                                                },
+                                                components: {
+                                                Input: {
+                                                    hoverBorderColor: "#d9d9d9",
+                                                    activeShadow: "none",
+                                                    activeBorderColor: "#00809e",
+                                                },
+                                                },
+                                            }}
+                                        >
+                                            <Input
+                                                prefix={<p className="text-primary font-semibold">$</p>}
+                                                value={price[1]}
+                                                style={{ width: 120 }}
+                                                onChange={(e) => {
+                                                    const newValue = parseInt(e.target.value) || 0;
+                                                    const newPrice = [price[0], Math.max(newValue, price[0])]; // Ensure it doesn't go below the lower value
+                                                    setPrice(newPrice);
+                                                }}
+                                                className="font-semibold"
+                                            />
+                                        </ConfigProvider>
+                                    </p>
                                 </div>
                             }
-                            
-                            style={{marginBottom: 0}}
+                            style={{ marginBottom: 0 }}
                         >
-                            <Slider 
+                            <Slider
                                 range
-                                defaultValue={[20, 50]}
+                                min={0}
+                                max={5000}
+                                value={price}
                                 className="custom-slider"
-                                trackStyle={{ backgroundColor: '#00809E', height: 10 }}
+                                trackStyle={{ backgroundColor: "#00809E", height: 10 }}
                                 handleStyle={{
-                                    borderColor: '#00809E',
-                                    height: 20,
-                                    width: 20,
-                                    opacity: 1,
-                                    backgroundColor: '#00809E',
+                                borderColor: "#00809E",
+                                height: 20,
+                                width: 20,
+                                opacity: 1,
+                                backgroundColor: "#00809E",
                                 }}
-                                railStyle={{ backgroundColor: '#FF9773', height: 10 }}
+                                onChange={(value:any) => setPrice(value)}
+                                railStyle={{ backgroundColor: "#FF9773", height: 10 }}
                             />
                         </Form.Item>
                     </div>
 
-                    <Form.Item
-                        name={"importance"}
-                        label={<p className="font-medium text-[16px] leading-6 text-[#636363]">Importance</p>}
-                        className='col-span-6'
-                        style={{marginBottom: 0}}
-                    >
-                        <Select
-                            placeholder={<p className='text-base text-[16px] leading-6 font-normal'>Choose Property Necessity</p>}
-                            style={{
-                                width: "100%",
-                                height: 48,
-                                borderRadius: 24,
-                                insetInlineEnd: 4,
-                                padding: "0px 6px 0px 0px"
-                            }}
-                            
-                            suffixIcon={
-                                <div className='w-10 h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center'>
-                                    <TiArrowSortedDown size={24} color='#00809E' />
-                                </div>
-                            }
-                        >
-                            <Select.Option value="Melbourne">Emergency</Select.Option>
-                            <Select.Option value="Sydney">Regular</Select.Option>
-                        </Select>
-                    </Form.Item>
-                    
                     <Form.Item
                         name={"bed-type"}
                         label={<p className="font-medium text-[16px] leading-6 text-[#636363]">Bed Type</p>}
@@ -210,10 +260,45 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
                                 </div>
                             }
                         >
+                            <Select.Option value="Sydney">Sofa</Select.Option>
+                            <Select.Option value="Sydney">Sofa Bed</Select.Option>
                             <Select.Option value="Sydney">Single Bed</Select.Option>
                             <Select.Option value="Melbourne">Double Bed</Select.Option>
                         </Select>
                     </Form.Item>
+
+
+                    <Form.Item
+                        name={"importance"}
+                        label={<p className="font-medium text-[16px] leading-6 text-[#636363]">Sort By</p>}
+                        className='col-span-6'
+                        style={{marginBottom: 0}}
+                    >
+                        <Select
+                            placeholder={<p className='text-base text-[16px] leading-6 font-normal'>Filter</p>}
+                            style={{
+                                width: "100%",
+                                height: 48,
+                                borderRadius: 24,
+                                insetInlineEnd: 4,
+                                padding: "0px 6px 0px 0px"
+                            }}
+                            
+                            suffixIcon={
+                                <div className='w-10 h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center'>
+                                    <TiArrowSortedDown size={24} color='#00809E' />
+                                </div>
+                            }
+                        >
+                            <Select.Option value="Melbourne">Rent (Low to high)</Select.Option>
+                            <Select.Option value="Melbourne">Rent ( High to low)</Select.Option>
+                            <Select.Option value="Melbourne">Featured First</Select.Option>
+                            <Select.Option value="Melbourne">Newest Listings</Select.Option>
+                            <Select.Option value="Melbourne">Earliest Available</Select.Option>
+                        </Select>
+                    </Form.Item>
+                    
+                    
 
                     <Form.Item
                         name={"decorated"}
@@ -295,6 +380,7 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
                                 </div>
                             }
                         >
+                            <Select.Option value="Sydney">Daily</Select.Option>
                             <Select.Option value="Sydney">Weekly</Select.Option>
                             <Select.Option value="Melbourne">Monthly</Select.Option>
                         </Select>
@@ -324,13 +410,14 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
                         >
                             <Select.Option value="Sydney">Male</Select.Option>
                             <Select.Option value="Melbourne">Female</Select.Option>
+                            <Select.Option value="Melbourne">Others</Select.Option>
                         </Select>
                     </Form.Item>
 
                     <Form.Item
                         name={"occupation"}
                         label={<p className="font-medium text-[16px] leading-6 text-[#636363]">Occupation</p>}
-                        className='col-span-6'
+                        className='col-span-12'
                         style={{marginBottom: 0}}
                     >
                         <Select
@@ -355,37 +442,11 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
                         </Select>
                     </Form.Item>
 
-                    <Form.Item
-                        name={"guest_type"}
-                        label={<p className="font-medium text-[16px] leading-6 text-[#636363]">Guest Type</p>}
-                        className='col-span-6'
-                        style={{marginBottom: 0}}
-                    >
-                        <Select
-                            placeholder={<p className='text-base text-[16px] leading-6 font-normal'>Select Guest Type</p>}
-                            style={{
-                                width: "100%",
-                                height: 48,
-                                borderRadius: 24,
-                                insetInlineEnd: 4,
-                                padding: "0px 6px 0px 0px"
-                            }}
-                            
-                            suffixIcon={
-                                <div className='w-10 h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center'>
-                                    <TiArrowSortedDown size={24} color='#00809E' />
-                                </div>
-                            }
-                        >
-                            <Select.Option value="Sydney">Male</Select.Option>
-                            <Select.Option value="Melbourne">Female</Select.Option>
-                            <Select.Option value="Melbourne">Others</Select.Option>
-                        </Select>
-                    </Form.Item>
+                   
                     {/* facilities */}
                     <Form.Item
                         name={"sortBy"}
-                        label={<p className="font-medium text-[16px] leading-6 text-[#636363]">Sort By</p>}
+                        label={<p className="font-medium text-[16px] leading-6 text-[#636363]">Facilities</p>}
                         className='col-span-12'
                         style={{marginBottom: 0}}
                     >
@@ -416,39 +477,87 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
                             }
                         </Checkbox.Group>
                     </Form.Item>
-                </div>
-
-                <div className='flex items-center justify-end pt-4 border-t-[1px] border-[#C0C0C0]'>
-                    
-                    <Button 
-                        htmlType='button'
-                        onClick={handleReload}
-                        style={{
-                            width: 102,
-                            height: 40,
-                            background: "#FAFAFA",
-                            color: "#767676",
-                            border: "none",
-                            borderRadius: 24,
-                            outline: "none",
-                            boxShadow: "none",
-                            fontWeight: 700,
-                        }}
-                    >
-                        Reload
-                    </Button>
 
                     <Form.Item
+                        name={"rating"}
+                        label={<p className="font-medium text-[16px] leading-6 text-[#636363]">Rating</p>}
+                        className='col-span-12'
                         style={{marginBottom: 0}}
-                        className=''
                     >
+                        <div className='col-span-12 flex items-center gap-4'>
+                            {
+                                ratingOptions?.map((option) => (
+                                    <Checkbox
+                                        key={option.value}
+                                        value={option.value}
+                                        style={{
+                                            background: "#F3F3F3",
+                                            height: 40,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            marginBottom: 8,
+                                            padding: "0 12px",
+                                            borderRadius: "8px",
+                                            color: "red",
+                                        }}
+                                        className="flex text-primary items-center justify-center rounded-xl"
+                                    >
+                                        <p className="text-[#333333] font-medium text-[14px] leading-6">
+                                            {option.label}
+                                        </p>
+                                    </Checkbox>
+                                ))
+                            }
+                        </div>
+                    </Form.Item>
+
+                    <Form.Item
+                        name={"distance"}
+                        label={<p className="font-medium text-[16px] leading-6 text-[#636363]">DISTANCE CBD (city centre)</p>}
+                        className='col-span-12'
+                        style={{marginBottom: 0}}
+                    >
+                        <div className='col-span-12 flex items-center gap-4'>
+                            {
+                                distanceOptions?.map((option) => (
+                                    <Checkbox
+                                        key={option.value}
+                                        value={option.value}
+                                        style={{
+                                            background: "#F3F3F3",
+                                            height: 40,
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            marginBottom: 8,
+                                            padding: "0 12px",
+                                            borderRadius: "8px",
+                                            color: "red",
+                                        }}
+                                        className="flex text-primary items-center justify-center rounded-xl"
+                                    >
+                                        <p className="text-[#333333] font-medium text-[14px] leading-6">
+                                            {option.label}
+                                        </p>
+                                    </Checkbox>
+                                ))
+                            }
+                        </div>
+                    </Form.Item>
+                </div>
+
+                <div className='flex items-center justify-between pt-4 border-t-[1px] border-[#C0C0C0]'>
+                    <Checkbox>Do You Remember this Filter?</Checkbox>
+                    <div className='flex items-center gap-2'>
                         <Button 
-                            htmlType='submit'
+                            htmlType='button'
+                            onClick={handleReload}
                             style={{
                                 width: 102,
                                 height: 40,
-                                background: "#00809E",
-                                color: "#ffffff",
+                                background: "#FAFAFA",
+                                color: "#767676",
                                 border: "none",
                                 borderRadius: 24,
                                 outline: "none",
@@ -456,9 +565,33 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
                                 fontWeight: 700,
                             }}
                         >
-                            Apply
+                            Reload
                         </Button>
-                    </Form.Item>
+
+                        <Form.Item
+                            style={{marginBottom: 0}}
+                            className=''
+                        >
+                            <Button 
+                                htmlType='submit'
+                                style={{
+                                    width: 102,
+                                    height: 40,
+                                    background: "#00809E",
+                                    color: "#ffffff",
+                                    border: "none",
+                                    borderRadius: 24,
+                                    outline: "none",
+                                    boxShadow: "none",
+                                    fontWeight: 700,
+                                }}
+                            >
+                                Apply
+                            </Button>
+                        </Form.Item>
+                    </div>
+
+                    
                 </div>
             </Form>
 

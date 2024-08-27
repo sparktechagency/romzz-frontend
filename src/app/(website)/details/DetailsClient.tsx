@@ -17,6 +17,7 @@ import "slick-carousel/slick/slick.css";
 import Calender from "@/components/Calender";
 import HostProfile from "@/components/HostProfile";
 import PaymentCard from "@/components/Card/PaymentCard";
+import { ConfigProvider, DatePicker } from "antd";
 
 const DetailsClient = ({ id }: { id: string }) => {
   const [sliderIndex, setSliderIndex] = useState<number>();
@@ -120,7 +121,7 @@ const DetailsClient = ({ id }: { id: string }) => {
         <div className="col-span-12 lg:col-span-5 relative order-1 lg:order-2 bg-[#F3F3F3] p-2 rounded-lg">
           {/* host info */}
 
-          <div className="flex items-center justify-between border border-[#E0E0E0] bg-white rounded-3xl p-2 mb-2">
+          <div className="flex items-center justify-between border border-[#E0E0E0] bg-white rounded-3xl h-[50px] px-2 mb-2">
             <div className="flex items-center gap-2 ">
               <Image
                 alt="property"
@@ -165,7 +166,7 @@ const DetailsClient = ({ id }: { id: string }) => {
             </div>
           </div>
 
-          <div className="w-full h-[56px]  flex items-center justify-between border border-[#E0E0E0] bg-white rounded-3xl px-5 mb-2">
+          <div className="w-full h-[50px]  flex items-center justify-between border border-[#E0E0E0] bg-white rounded-3xl px-5 mb-2">
             <p className="text-base text-[16px] leading-5 font-medium">
               Category:
             </p>
@@ -174,7 +175,7 @@ const DetailsClient = ({ id }: { id: string }) => {
             </p>
           </div>
 
-          <div className="w-full h-[56px] flex items-center justify-between border border-[#E0E0E0] bg-white rounded-3xl px-5 mb-2">
+          <div className="w-full h-[50px] flex items-center justify-between border border-[#E0E0E0] bg-white rounded-3xl px-5 mb-2">
             <p className="text-base text-[16px] leading-5 font-medium">
               Price :
             </p>
@@ -184,8 +185,29 @@ const DetailsClient = ({ id }: { id: string }) => {
               </h1>
             </p>
           </div>
-
-          <button onClick={()=>setOpenPayment(true)} className="w-full h-[56px] text-center text-white bg-primary rounded-3xl px-5 mb-2">
+          
+          {/* select date */}
+          <div>
+            <ConfigProvider
+                                theme={{
+                                    token: {
+                                      colorPrimary: "#00809E",
+                                      colorTextPlaceholder: "#838383",
+                                    }
+                                }}
+                            > 
+              <DatePicker.RangePicker 
+                size={"large"}
+                style={{
+                  width: "100%",
+                  borderRadius: 24,
+                  height: 50,
+                  border: "1px solid #d9d9d9d9"
+                }}
+              />
+            </ConfigProvider>
+          </div>
+          <button onClick={()=>setOpenPayment(true)} className="w-full mt-3 h-[56px] text-center text-white bg-primary rounded-3xl px-5 mb-2">
             Book Now
           </button>
         </div>

@@ -7,6 +7,7 @@ import { AiOutlineUser } from 'react-icons/ai';
 import { Badge, Drawer } from 'antd';
 import { Bell, Heart, Menu, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import Languages from '../Languages';
 
 const Navbar = () => {
     const [open, setOpen] = useState(false);
@@ -58,7 +59,7 @@ const Navbar = () => {
     return (
         <div 
             className={`
-                fixed z-10 top-0 w-full left-0 transition-all duration-200
+                sticky z-10 top-0 w-full left-0 transition-all duration-200
                 ${isScrolled ? "bg-white bg-opacity-100" : "bg-[#F3F3F3] bg-opacity-[80%]"}
             `}
         >
@@ -91,6 +92,9 @@ const Navbar = () => {
                 </div>
 
                 <div className='hidden  lg:flex items-center gap-6'>
+                    <div>
+                        <Languages/>
+                    </div>
                     <Link href={"/wishlist"}>
                         <Badge count={5} color='#FF9773' >
                             <Heart color='#767676' size={24} />

@@ -22,6 +22,7 @@ const Modal:React.FC<IModalProps> = ({title, open, setOpen, width, body}) => {
             open={open}
             onCancel={handleClose}
             width={width || 400}
+            centered
         >
             {body}
         </AntModal>
