@@ -7,7 +7,6 @@ import English from "@/assets/english.jpg";
 import French from "@/assets/french.png";
 import Chinese from "@/assets/chinese.png";
 import Spanish from "@/assets/spanish.png";
-import { FaChevronDown } from 'react-icons/fa6';
 import { IoIosArrowDown } from 'react-icons/io';
 
 interface ILanguageProps{
