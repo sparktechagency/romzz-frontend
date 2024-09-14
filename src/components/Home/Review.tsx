@@ -89,7 +89,7 @@ const Review = () => {
                   {"Adaline"}
                 </p>
                 <div className="flex items-center justify-center">
-                  <Rate allowHalf defaultValue={2.5} />
+                  <Rate allowHalf value={2.5} />
                 </div>
                 <p className="text-[#767676] font-normal text-[16px] leading-5">
                   {

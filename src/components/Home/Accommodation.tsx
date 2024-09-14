@@ -9,8 +9,12 @@ import Person from "@/assets/person.png";
 import Image from "next/image";
 import { Heart } from "lucide-react";
 import { TfiLocationPin } from "react-icons/tfi";
+import { useGetApprovePropertiesQuery } from "@/redux/features/web/propertyApi";
+import { TProperty } from "@/types";
 
 const Accommodation = () => {
+  const { data } = useGetApprovePropertiesQuery({});
+  console.log(data);
   const ArrowLeft = ({
     currentSlide,
     slideCount,
@@ -92,9 +96,13 @@ const Accommodation = () => {
       {/* slider accommodation */}
       <div className="h-fit">
         <Slider {...settings}>
-          {[...Array(8)].map((item, index) => {
+          {data?.slice(0, 10)?.map((property: TProperty, index) => {
             return (
-              <Link key={index} className="pb-2" href={`/details/${index + 1}`}>
+              <Link
+                key={index}
+                className="pb-2"
+                href={`/details/${property._id}`}
+              >
                 <div
                   className=" max-w-[360px] group p-2 rounded-lg"
                   style={{
@@ -102,40 +110,47 @@ const Accommodation = () => {
                       "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
                   }}
                 >
-                  <div className="mb-4 overflow-hidden">
+                  <div className="mb-4 h-[208px] overflow-hidden">
                     <Image
                       alt="Logo"
-                      src={Property}
-                      style={{ objectFit: "contain" }}
-                      className="group-hover:scale-105 transition-all duration-300"
+                      height={200}
+                      width={300}
+                      src={property.propertyImages[0]}
+                      style={{ objectFit: "cover" }}
+                      className="group-hover:scale-105 w-full transition-all duration-300"
                     />
                   </div>
                   <div className="flex items-center justify-between">
                     <h1 className="text-primary font-semibold text-[24px] leading-5">
-                      $100<sub className="font-normal">/pw</sub>
+                      ${property.price}
+                      <sub className="font-normal">/{property.priceType}</sub>
                     </h1>
                     <Heart size={24} color="red" fill="transparent" />
                   </div>
-                  <p className="text-secondary text-sm my-2 leading-[18px] font-medium">
-                    Whole-unit
+                  <p className="text-secondary capitalize text-sm my-2 leading-[18px] font-medium">
+                    {property.category?.replace(/-/g, " ") || "General"}
                   </p>
+
                   <div className="flex items-center gap-4">
                     <Image
                       alt="Logo"
-                      src={Person}
+                      src={property.createdBy.avatar}
                       width={30}
                       height={30}
                       style={{ borderRadius: "100%", objectFit: "contain" }}
                     />
                     <Heading
-                      name="Villa in Tetouan"
+                      name={`Villa in ${property.location.address
+                        .split(" ")
+                        .slice(1, 2)
+                        .join(" ")}`}
                       style="font-bold text-[18px] leading-[27px] text-base"
                     />
                   </div>
                   <div className="flex items-center gap-2 mt-3">
                     <TfiLocationPin size={22} color="#5C5C5C" />
                     <p className="text-base text-sm  leading-[21px] font-normal">
-                      55/A , b park road , Abcd area, city
+                      {property.location.address}
                     </p>
                   </div>
                 </div>

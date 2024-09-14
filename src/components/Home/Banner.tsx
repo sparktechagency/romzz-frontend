@@ -12,8 +12,10 @@ import Image from "next/image";
 import Person from "@/assets/person.png";
 import Heading from "../shared/Heading";
 import { TfiLocationPin } from "react-icons/tfi";
+import { useGetHighlightsPropertiesQuery } from "@/redux/features/web/propertyApi";
 
 const Banner = () => {
+  const { data } = useGetHighlightsPropertiesQuery({});
   const [open, setOpen] = useState(false);
   return (
     <div
@@ -100,59 +102,72 @@ const Banner = () => {
           </Link>
         </div>
       </div>
-      
+
       <div className="absolute left-0 bottom-0 w-full">
         <div className="container  flex items-center justify-center gap-4 mt-20">
-        {[...Array(4)].map((item, index) => {
-              return (
-                <Link key={index} className="pb-2" href={`/details/${index + 1}`}>
-                  <div
-                    className="bg-white max-w-[240px] group p-2 rounded-lg"
-                    style={{
-                      boxShadow:
-                        "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
-                    }}
-                  >
-                    <div className="mb-4 overflow-hidden">
-                      <Image
-                        alt="Logo"
-                        src={Property}
-                        style={{ objectFit: "contain" }}
-                        className="group-hover:scale-105 transition-all duration-300"
-                      />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <h1 className="text-primary font-semibold text-[24px] leading-5">
-                        $100<sub className="font-normal">/pw</sub>
-                      </h1>
-                      <Heart size={24} color="red" fill="transparent" />
-                    </div>
-                    <p className="text-secondary text-sm my-2 leading-[18px] font-medium">
-                      Whole-unit
-                    </p>
-                    <div className="flex items-center gap-4">
-                      <Image
-                        alt="Logo"
-                        src={Person}
-                        width={30}
-                        height={30}
-                        style={{ borderRadius: "100%", objectFit: "contain" }}
-                      />
-                      <Heading
-                        name="Villa in Tetouan"
-                        style="font-bold text-[18px] leading-[27px] text-base"
-                      />
-                    </div>
-                    <div className="flex items-center gap-2 mt-3">
-                      <TfiLocationPin size={22} color="#5C5C5C" />
-                      <p className="text-base text-sm  leading-[21px] font-normal">
-                        55/A , b park road
-                      </p>
-                    </div>
+          {data?.data?.slice(0, 4)?.map((property, index) => {
+            return (
+              <Link
+                key={index}
+                className="pb-2 h-full"
+                href={`/details/${property._id}`}
+              >
+                <div
+                  className="bg-white max-w-[240px] min-h-[320px] group p-2 rounded-lg flex flex-col"
+                  style={{
+                    boxShadow:
+                      "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
+                  }}
+                >
+                  <div className="mb-4 h-[150px] overflow-hidden flex-grow">
+                    <Image
+                      alt="Property Image"
+                      src={
+                        property.propertyImages.length > 0
+                          ? property.propertyImages[0]
+                          : Property
+                      }
+                      width={225}
+                      height={150}
+                      className="group-hover:scale-105 object-cover transition-all duration-300"
+                    />
                   </div>
-                </Link>
-              );
-            })}
+                  <div className="flex items-center justify-between">
+                    <h1 className="text-primary font-semibold text-[24px] leading-5">
+                      ${property.price}
+                      <sub className="font-normal">/{property.priceType}</sub>
+                    </h1>
+                    <Heart size={24} color="red" fill="transparent" />
+                  </div>
+                  <p className="text-secondary capitalize text-sm my-2 leading-[18px] font-medium">
+                    {property.category?.replace(/-/g, " ") || "General"}
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <Image
+                      alt="Logo"
+                      src={property.createdBy.avatar}
+                      width={30}
+                      height={30}
+                      style={{ borderRadius: "100%", objectFit: "contain" }}
+                    />
+                    <Heading
+                      name={`Villa in ${property.location.address
+                        .split(" ")
+                        .slice(1, 2)
+                        .join(" ")}`}
+                      style="font-bold text-[18px] leading-[27px] text-base"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2 mt-3 h-full">
+                    <TfiLocationPin size={22} color="#5C5C5C" />
+                    <p className="text-base text-sm leading-[21px] font-normal">
+                      {property.location.address}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
 
