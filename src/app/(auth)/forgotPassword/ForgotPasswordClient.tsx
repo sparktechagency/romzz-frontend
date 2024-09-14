@@ -4,14 +4,48 @@ import { Button, Form, Input } from 'antd';
 import React from 'react';
 import { useRouter } from "next/navigation";
 import toast from 'react-hot-toast';
+import { useForgetPassMutation } from '@/redux/apiSlices/AuthSlices';
+import { setToLocalStorage } from '@/util/localStorage';
+import Swal from 'sweetalert2';
 
-const ForgotPasswordClient = () => {
-    const [form] = Form.useForm();
+const ForgotPasswordClient = () => { 
+    const [forgetPass] = useForgetPassMutation()
+    const [form] = Form.useForm(); 
     form.setFieldsValue(undefined)
     const router = useRouter();
 
-    const handleSubmit=async(values:any)=>{
-        router.push("/otp-verify")
+    const handleSubmit=async(values:any)=>{   
+      
+        const userData = {
+            email:values?.email ,
+            verificationType:"passwordReset"
+        }   
+
+        const data = {email:values?.email} 
+        // console.log(data); 
+
+        await forgetPass(data).then((res)=>{ 
+            console.log(res); 
+            if(res?.data?.success){
+                Swal.fire({
+                    text: res?.data?.message,
+                    icon: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                  }).then(() => {  
+                      router.push("/otp-verify");    
+                      setToLocalStorage("userData" , JSON.stringify(userData))
+                    form.resetFields()
+                  });
+            }else{
+                Swal.fire({
+                
+                //@ts-ignore
+                    text: res?.error?.data?.message,  
+                    icon: "error",
+                  });
+            }
+        })
     }
     
     

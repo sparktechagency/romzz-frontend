@@ -5,16 +5,42 @@ import Link from 'next/link';
 import React from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { useLoginMutation } from '@/redux/apiSlices/AuthSlices';
+import Swal from 'sweetalert2';
+import { setToLocalStorage } from '@/util/localStorage';
 
 const LoginClient = () => {
-    const [form] = Form.useForm();
+    const [form] = Form.useForm(); 
+    const [login] = useLoginMutation()
     const router = useRouter();
     form.setFieldsValue(undefined);
 
 
-    const handleSubmit = async (values: any) => {
-        router.push('/');
-        toast.success("Logged In Successfully")
+    const handleSubmit = async(values: any) => { 
+        console.log(values); 
+        await login(values).then((res)=>{
+            if(res?.data?.success){
+                Swal.fire({
+                    text: res?.data?.message,
+                    icon: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                  }).then(() => {   
+                    setToLocalStorage("romzzToken" , res?.data?.data?.accessToken)
+                    router.push("/"); 
+                    form.resetFields()
+                  });
+            }else{
+                Swal.fire({
+                    title: "Failed to Login", 
+                //@ts-ignore
+                    text: res?.error?.data?.message,  
+                    icon: "error",
+                  });
+            } 
+        })
+        // router.push('/');
+        // toast.success("Logged In Successfully")
     };
 
 
@@ -77,11 +103,11 @@ const LoginClient = () => {
                 </Form.Item>
 
                 <div className="flex justify-between items-center text-[#6A6D7C] mb-[22px]">
-                    <Form.Item name="remember" valuePropName="checked" noStyle>
+                    <Form.Item name="rememberMe" valuePropName="checked" noStyle>
                         <Checkbox className="text-[#818181] text-[16px] leading-[24px] font-normal">Remember me</Checkbox>
                     </Form.Item>
 
-                    <Link href={"forgotPassword"}>
+                    <Link href={"/forgotPassword"}>
                         <p className="text-[#FF9773] cursor-pointer text-[15px] leading-[27px] font-normal">
                             Forgot password
                         </p>

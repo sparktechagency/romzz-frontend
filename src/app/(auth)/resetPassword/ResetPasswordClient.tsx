@@ -1,19 +1,55 @@
 "use client"
 import Heading from '@/components/shared/Heading';
+import { useResetPassMutation } from '@/redux/apiSlices/AuthSlices';
+import { getFromLocalStorage, setToLocalStorage } from '@/util/localStorage';
 import { Button, Form, Input } from 'antd';
 import { useRouter } from 'next/navigation';
 import React from 'react'
 import toast from 'react-hot-toast';
+import Swal from 'sweetalert2';
 
 const ResetPasswordClient = () => {
     const [form] = Form.useForm();
     const router = useRouter();
-    form.setFieldsValue(undefined);
+    form.setFieldsValue(undefined);   
+    const [resetPass]=useResetPassMutation()
+    const userData = getFromLocalStorage("userData") 
+    const userInfo = userData ? JSON.parse(userData) : null;
+    const email = userInfo?.email 
+    console.log(email);
 
 
-    const handleSubmit=async(values:any)=>{
-        router.push("/login");
-        toast.success("Password Reset Successfully")
+    const handleSubmit=async(values:any)=>{ 
+       
+        const data ={
+            email:email ,
+            newPassword:values?.newPassword
+        } 
+        console.log(data);    
+        await resetPass(data).then(res =>{ 
+            console.log(res);
+            if(res?.data?.success){
+                Swal.fire({
+                    text: res?.data?.message,
+                    icon: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                  }).then(() => {  
+                      router.push("/");      
+                    form.resetFields()
+                  });
+            }else{
+                Swal.fire({
+                
+                //@ts-ignore
+                    text: res?.error?.data?.message,  
+                    icon: "error",
+                  });
+            }
+        })
+
+        // router.push("/login");
+        // toast.success("Password Reset Successfully")
     }
 
 
@@ -27,7 +63,7 @@ const ResetPasswordClient = () => {
             <Form onFinish={handleSubmit} form={form} layout='vertical'>
                 
                 <Form.Item
-                    name="password"
+                    name="newPassword"
                     label={<p className='font-medium text-[16px] leading-6 text-[#636363]'>Password</p>}
                     rules={[
                         {
@@ -52,14 +88,26 @@ const ResetPasswordClient = () => {
                 </Form.Item>
 
                 <Form.Item
-                    name="confirm_password"
-                    label={<p className='font-medium text-[16px] leading-6 text-[#636363]'>Confirm Password</p>}
-                    rules={[
+                    name="confirm_password" 
+                    label={<p className='font-medium text-[16px] leading-6 text-[#636363]'>Confirm Password</p>} 
+                    dependencies={["newPassword"]}
+                    hasFeedback
+                    rules={[ 
                         {
-                            required: true,
-                            message: "Please Enter Confirm Password"
-                        }
-                    ]}
+                          required: true,
+                          message: "Please confirm your password!",
+                        },
+                        ({ getFieldValue }) => ({
+                          validator(_, value) {
+                            if (!value || getFieldValue("newPassword") === value) {
+                              return Promise.resolve();
+                            }
+                            return Promise.reject(
+                              new Error("The new password that you entered do not match!")
+                            );
+                          },
+                        }),
+                      ]}
                 >
                     <Input.Password
                         placeholder='Enter Confirm Password'

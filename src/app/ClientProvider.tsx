@@ -3,6 +3,8 @@ import React, { ReactNode, useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import 'aos/dist/aos.css';
 import AOS from "aos";
+import { Provider } from 'react-redux';
+import { store } from '@/redux/store';
 
 const ClientProvider = ({ children }: {children: ReactNode}) => {
     
@@ -15,9 +17,12 @@ const ClientProvider = ({ children }: {children: ReactNode}) => {
     }, []);
 
     return (
-        <React.Fragment>
+        <React.Fragment> 
+            <Provider store={store} > 
             {children}
             <Toaster />
+            </Provider>
+           
         </React.Fragment>
     );
 };

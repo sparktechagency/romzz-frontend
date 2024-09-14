@@ -3,18 +3,52 @@ import Heading from '@/components/shared/Heading';
 import { Button, Form, Input, Select } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React from 'react';
-import toast from 'react-hot-toast';
+import React, { useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { useSignUpMutation } from '@/redux/apiSlices/AuthSlices';
+import Swal from 'sweetalert2';
+import { setToLocalStorage } from '@/util/localStorage';
 
-const RegisterClient = () => {
-    const [form] = Form.useForm();
-    form.setFieldsValue(undefined);
-    const router = useRouter();
+const RegisterClient = () => { 
+    const [signUp , {isSuccess ,isError ,data ,error}] = useSignUpMutation() 
+    console.log(data);
+    const router = useRouter(); 
+    const [form] = Form.useForm()
 
-
-    const handleSubmit = async (values: any) => {
-        router.push('/');
+    const handleSubmit = async (values: any) => { 
+        const nidNo = parseInt(values?.nidNumber) 
+        const {confirm_password , nidNumber , ...otherValues} = values   
+        const data = {
+            nidNumber:nidNo ,
+            ...otherValues
+        }
+        console.log(data); 
+        const userData = {
+            email:values?.email ,
+            verificationType:"emailVerification"
+        }
+        // router.push('/');   
+        await signUp(data).then((res)=>{ 
+            console.log(res);
+            if(res?.data?.success){
+                Swal.fire({
+                    title: "Register Successful",
+                    icon: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                  }).then(() => {  
+                      router.push("/otp-verify");    
+                      setToLocalStorage("userData" , JSON.stringify(userData))
+                    form.resetFields()
+                  });
+            }else{
+                Swal.fire({
+                //@ts-ignore
+                    text: res?.error?.data?.message,  
+                    icon: "error",
+                  });
+            }
+        }) 
     };
     
     return (
@@ -24,11 +58,12 @@ const RegisterClient = () => {
 
             <Form 
                 onFinish={handleSubmit} 
-                form={form} layout='vertical'
-                className='grid grid-cols-12 gap-6'
+               layout='vertical'
+                className='grid grid-cols-12 gap-6' 
+                form={form}
             >
                 <Form.Item
-                    name="name"
+                    name="fullName"
                     label={<p className='font-medium text-[16px] leading-6 text-[#636363]'>User Name</p>}
                     rules={[
                         {
@@ -82,7 +117,7 @@ const RegisterClient = () => {
                 </Form.Item>
 
                 <Form.Item
-                    name="contact"
+                    name="phoneNumber"
                     label={<p className='font-medium text-[16px] leading-6 text-[#636363]'>Contact No</p>}
                     rules={[
                         {
@@ -109,7 +144,7 @@ const RegisterClient = () => {
                 </Form.Item>
 
                 <Form.Item
-                    name="location"
+                    name="permanentAddress"
                     label={<p className='font-medium text-[16px] leading-6 text-[#636363]'>Permanent Address</p>}
                     rules={[
                         {
@@ -136,7 +171,7 @@ const RegisterClient = () => {
                 </Form.Item>
 
                 <Form.Item
-                    name="nid"
+                    name="nidNumber"
                     label={<p className='font-medium text-[16px] leading-6 text-[#636363]'>NID No</p>}
                     rules={[
                         {
@@ -147,7 +182,8 @@ const RegisterClient = () => {
                     style={{marginBottom: 0}}
                     className='col-span-6'
                 >
-                    <Input
+                    <Input  
+                    type='number'
                         placeholder='Enter Your NID Number'
                         style={{
                             width: "100%",
@@ -220,14 +256,22 @@ const RegisterClient = () => {
                 </Form.Item>
 
                 <Form.Item
-                    name="password"
+                    name="confirm_password"
                     label={<p className='font-medium text-[16px] leading-6 text-[#636363]'>Confirm Password</p>}
                     rules={[
                         {
-                            required: true,
-                            message: "Please Enter Confirm Password"
-                        }
-                    ]}
+                          required: true,
+                          message: 'Please confirm your password!',
+                        },
+                        ({ getFieldValue }) => ({
+                          validator(_, value) {
+                            if (!value || getFieldValue('password') === value) {
+                              return Promise.resolve();
+                            }
+                            return Promise.reject(new Error('The new password that you entered do not match!'));
+                          },
+                        }),
+                      ]}
                     style={{marginBottom: 0}}
                     className='col-span-6'
                 >
