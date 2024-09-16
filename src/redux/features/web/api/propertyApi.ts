@@ -1,17 +1,28 @@
 import { romzzApi } from "@/redux/api/api";
 import { TPropertyResponse, TSinglePropertyResponse } from "@/types";
+import { TQueryParam } from "@/types/common";
 
 export const propertyApi = romzzApi.injectEndpoints({
   endpoints: (build) => ({
     getApproveProperties: build.query({
-      query: () => ({
-        url: "/properties/approved-properties",
-        method: "GET",
-      }),
-      transformResponse: (response: TPropertyResponse) => {
-        return response.data.data;
+      query: (args) => {
+        const params = new URLSearchParams();
+
+        if (args) {
+          args.forEach((item: TQueryParam) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: "/properties/approved-properties",
+          method: "GET",
+          params,
+        };
       },
-      providesTags: ["property"],
+      transformResponse: (response: TPropertyResponse) => {
+        return { data: response.data.data, meta: response.data.meta };
+      },
+      providesTags: ["Property"],
     }),
     getHighlightsProperties: build.query({
       query: () => ({
@@ -21,7 +32,7 @@ export const propertyApi = romzzApi.injectEndpoints({
       transformResponse: (response: TPropertyResponse) => {
         return response.data;
       },
-      providesTags: ["property"],
+      providesTags: ["Property"],
     }),
     getSingleProperty: build.query({
       query: (id) => ({

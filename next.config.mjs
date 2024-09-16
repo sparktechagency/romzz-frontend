@@ -6,11 +6,10 @@ const nextConfig = {
       {
         protocol: "http",
         hostname: "**",
-      }, 
+      },
       {
-        protocol: 'https',
-        hostname: '**',
-    
+        protocol: "https",
+        hostname: "**",
       },
     ],
   },

@@ -1,16 +1,23 @@
 "use client";
 import Image from "next/image";
 import React from "react";
-import Details from "@/assets/newsDetails.png";
+// import Details from "@/assets/newsDetails.png";
 import Heading from "@/components/shared/Heading";
+import { useGetSingleBlogQuery } from "@/redux/features/web/api/blogApi";
+import { imageUrl } from "@/redux/api/api";
 
 const NewsDetailsClient = ({ id }: { id: string }) => {
+  const { data, isLoading } = useGetSingleBlogQuery(id);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
   return (
     <div className="container my-10">
       <div className="w-full h-[456px] relative">
         <Image
           alt="new details"
-          src={Details}
+          src={`${imageUrl}${data?.image}`}
           fill
           // style={{objectFit: "contain"}}
         />
@@ -23,44 +30,14 @@ const NewsDetailsClient = ({ id }: { id: string }) => {
           }}
         >
           <Heading
-            name="House-sharing Concierge "
-            style="font-normal lg:text-[32px] text-[24px]    text-center leading-[48px] text-[#3E3E3E]"
-          />
-          <Heading
-            name="- Your House-share Advisor "
+            name={data?.title}
             style="font-normal lg:text-[32px] text-[24px] text-center   leading-[48px] text-[#3E3E3E]"
           />
         </div>
       </div>
 
       <p className="text-[#767676] text-[16px] leading-[21px] font-normal mt-10">
-        Quis urna. tempor consectetur risus quis dui. Ut leo. malesuada gravida
-        eget ex. viverra Nunc Nunc dignissim, convallis. odio non sapien sed
-        Praesent at sit luctus elit. leo. amet, urna viverra ac turpis Nunc
-        elit. massa ipsum elit sed id ipsum elit. enim. laoreet efficitur. eget
-        maximus vitae nisi nisl. placerat ex ex. ex ac faucibus faucibus elit
-        sit ex. nibh hendrerit Ut Nunc Ut non, Ut nec tincidunt tincidunt turpis
-        Quisque enim. tincidunt ultrices In nibh vitae quis
-      </p>
-      <br />
-      <p className="text-[#767676] text-[16px] leading-[21px] font-normal">
-        Quis urna. tempor consectetur risus quis dui. Ut leo. malesuada gravida
-        eget ex. viverra Nunc Nunc dignissim, convallis. odio non sapien sed
-        Praesent at sit luctus elit. leo. amet, urna viverra ac turpis Nunc
-        elit. massa ipsum elit sed id ipsum elit. enim. laoreet efficitur. eget
-        maximus vitae nisi nisl. placerat ex ex. ex ac faucibus faucibus elit
-        sit ex. nibh hendrerit Ut Nunc Ut non, Ut nec tincidunt tincidunt turpis
-        Quisque enim. tincidunt ultrices In nibh vitae quis
-      </p>
-      <br />
-      <p className="text-[#767676] text-[16px] leading-[21px] font-normal">
-        Quis urna. tempor consectetur risus quis dui. Ut leo. malesuada gravida
-        eget ex. viverra Nunc Nunc dignissim, convallis. odio non sapien sed
-        Praesent at sit luctus elit. leo. amet, urna viverra ac turpis Nunc
-        elit. massa ipsum elit sed id ipsum elit. enim. laoreet efficitur. eget
-        maximus vitae nisi nisl. placerat ex ex. ex ac faucibus faucibus elit
-        sit ex. nibh hendrerit Ut Nunc Ut non, Ut nec tincidunt tincidunt turpis
-        Quisque enim. tincidunt ultrices In nibh vitae quis
+        {data?.description}
       </p>
     </div>
   );

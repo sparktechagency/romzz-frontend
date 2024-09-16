@@ -9,7 +9,7 @@ export const romzzApi = createApi({
     //
   }),
   endpoints: () => ({}),
-  tagTypes: ["property", "Contact"],
+  tagTypes: ["Property", "Contact"],
 });
 
 export const imageUrl = "http://192.168.10.18:5000/";
