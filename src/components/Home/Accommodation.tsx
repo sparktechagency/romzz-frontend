@@ -4,18 +4,12 @@ import Heading from "../shared/Heading";
 import Link from "next/link";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import Slider, { CustomArrowProps, Settings } from "react-slick";
-import Property from "@/assets/property.png";
-import Person from "@/assets/person.png";
-import Image from "next/image";
-import { Heart } from "lucide-react";
-import { TfiLocationPin } from "react-icons/tfi";
 import { useGetApprovePropertiesQuery } from "@/redux/features/web/api/propertyApi";
 import { TProperty } from "@/types/propertyTypes";
 import PropertyCard from "../Card/PropertyCard";
 
 const Accommodation = () => {
-  const { data } = useGetApprovePropertiesQuery({});
-  // console.log(data);
+  const { data } = useGetApprovePropertiesQuery([]);
   const ArrowLeft = ({
     currentSlide,
     slideCount,
