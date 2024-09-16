@@ -9,7 +9,7 @@ import facebook from "@/assets/facebok.png";
 import instagram from "@/assets/instagram.png";
 import linkedin from "@/assets/linkedin.png";
 import twitter from "@/assets/twitter.png";
-import { useSendGetInTouchEmailMutation } from "@/redux/features/web/getInTouchApi";
+import { useSendGetInTouchEmailMutation } from "@/redux/features/web/api/getInTouchApi";
 
 const Footer = () => {
   const [sendGetInTouchEmail, { isLoading }] = useSendGetInTouchEmailMutation();
@@ -61,7 +61,6 @@ const Footer = () => {
           duration: 2,
         });
       }
-      console.log(res);
     } catch (error) {
       console.error("Failed to send email", error);
     }

@@ -7,6 +7,8 @@ import { Rate } from "antd";
 import Heading from "./shared/Heading";
 import { Eye } from "lucide-react";
 import ClientProfile from "./ClientProfile";
+import { useGetPropertyHostDetailsQuery } from "@/redux/features/web/api/propertyApi";
+import { useGetFeedBackByIdQuery } from "@/redux/features/web/api/feedbackApi";
 
 interface IHostProfileProps {
   id: string;
@@ -14,6 +16,9 @@ interface IHostProfileProps {
   setOpen: (open: boolean) => void;
 }
 const HostProfile: React.FC<IHostProfileProps> = ({ id, open, setOpen }) => {
+  const { data: hostProfile } = useGetPropertyHostDetailsQuery(id);
+  const { data: feedbacks } = useGetFeedBackByIdQuery(hostProfile?._id);
+
   const [openModal, setOpenModal] = useState(false);
 
   const body = (
@@ -22,7 +27,13 @@ const HostProfile: React.FC<IHostProfileProps> = ({ id, open, setOpen }) => {
       <div className="relative h-[200px]">
         <Image src={hostbanner} alt="host-profile" fill />
         <div className="absolute left-4 -bottom-12 border-2 p-1 rounded-full border-primary">
-          <Image src={person} alt="host-profile" width={120} height={120} />
+          <Image
+            src={hostProfile?.avatar}
+            alt="host-profile"
+            className="w-full h-full object-cover rounded-full"
+            width={120}
+            height={120}
+          />
         </div>
       </div>
 
@@ -37,7 +48,7 @@ const HostProfile: React.FC<IHostProfileProps> = ({ id, open, setOpen }) => {
               :
             </span>
             <span className="font-medium text-[16px] leading-6 text-[#818181] w-full">
-              Salman Sha
+              {hostProfile?.fullName}
             </span>
           </div>
 
@@ -49,7 +60,7 @@ const HostProfile: React.FC<IHostProfileProps> = ({ id, open, setOpen }) => {
               :
             </span>
             <span className="font-medium text-[16px] leading-6 text-[#818181] w-full">
-              R no 1 , Block B, CITY X, USA
+              {hostProfile?.permanentAddress}
             </span>
           </div>
 
@@ -61,7 +72,7 @@ const HostProfile: React.FC<IHostProfileProps> = ({ id, open, setOpen }) => {
               :
             </span>
             <span className="font-medium text-[16px] leading-6 text-[#818181] w-full">
-              <Rate defaultValue={3.5} allowHalf />{" "}
+              <Rate disabled value={hostProfile?.rating} allowHalf />
             </span>
           </div>
 
@@ -74,6 +85,7 @@ const HostProfile: React.FC<IHostProfileProps> = ({ id, open, setOpen }) => {
             </span>
             <span className="font-medium text-[16px] leading-6 text-[#818181] w-full">
               Good
+              {/* need to make dynamic */}
             </span>
           </div>
 
@@ -84,7 +96,9 @@ const HostProfile: React.FC<IHostProfileProps> = ({ id, open, setOpen }) => {
             <span className="font-medium text-[16px] leading-6 text-[#636363] w-[10%]">
               :
             </span>
+
             <span className="font-medium text-[16px] leading-6 text-[#818181] w-full">
+              {/* need to make dynamic */}
               14
             </span>
           </div>
@@ -92,7 +106,7 @@ const HostProfile: React.FC<IHostProfileProps> = ({ id, open, setOpen }) => {
 
         <div className="bg-[#EBEBEB] lg:p-6 p-3 rounded-3xl col-span-6">
           <div className="grid grid-cols-1 gap-4">
-            {[...Array(3)].map((item, index) => (
+            {[1, 2].map((item, index) => (
               <div
                 key={index}
                 className="grid lg:grid-cols-4 grid-cols-1 gap-3 bg-[#F7F7F7] lg:rounded-3xl rounded-xl lg:p-3 p-1 "
