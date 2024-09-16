@@ -10,10 +10,10 @@ import { RiRefund2Line } from "react-icons/ri";
 import Amenities from "@/components/Amenities";
 import { useGetOurStoryQuery } from "@/redux/features/web/api/ourStoryApi";
 import { imageUrl } from "@/redux/api/api";
+import NoContent from "@/components/shared/NoContent";
 
 const AboutClient = () => {
   const { data } = useGetOurStoryQuery({});
-  console.log(`${imageUrl}${data?.image ? data.image : banner}`);
   return (
     <div className=" pt-10">
       <div className="container">
@@ -22,29 +22,36 @@ const AboutClient = () => {
           Our <span className="text-primary">Story</span>
         </Heading>
 
-        <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
-          <div className=" ">
-            <p className="text-[#5C5C5C] font-normal text-[14px] leading-5">
-              {data?.title}
-            </p>
-            <br />
-            <p className="text-[#5C5C5C] font-normal text-[14px] leading-5">
-              {data?.storyDetails}
-            </p>
-          </div>
+        {data ? (
+          <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
+            <div className=" ">
+              <p className="text-[#5C5C5C] font-normal text-[14px] leading-5">
+                {data?.title}
+              </p>
+              <br />
+              <p className="text-[#5C5C5C] font-normal text-[14px] leading-5">
+                {data?.storyDetails}
+              </p>
+            </div>
 
-          <div className=" h-[455px] w-[607px] ">
-            <Image
-              alt="Catering"
-              width={500}
-              height={500}
-              src={`${imageUrl}${data?.image ? data.image : banner}`}
-              className="h-full w-full"
-              //   fill
-              style={{ objectFit: "cover" }}
-            />
+            <div className=" h-[455px] w-[607px] ">
+              <Image
+                alt="Catering"
+                width={500}
+                height={500}
+                src={`${imageUrl}${data?.image ? data.image : banner}`}
+                className="h-full w-full"
+                //   fill
+                style={{ objectFit: "cover" }}
+              />
+            </div>
           </div>
-        </div>
+        ) : (
+          <NoContent
+            title="No Story Found"
+            desc="Please add description from admin dashboard"
+          />
+        )}
       </div>
 
       {/* contact option */}

@@ -4,6 +4,7 @@ import { MdKeyboardArrowRight } from "react-icons/md";
 import Heading from "./shared/Heading";
 import { useGetFaqsQuery } from "@/redux/features/web/api/faqApi";
 import { TFaq } from "@/types/common";
+import NoContent from "./shared/NoContent";
 
 type ContentRef = HTMLDivElement | null;
 
@@ -62,8 +63,8 @@ const Faq = () => {
             </span>
           </p>
           <>
-            {faqs?.map((faq: TFaq, index) => {
-              return (
+            {faqs && faqs.length > 0 ? (
+              faqs.map((faq: TFaq, index) => (
                 <div
                   key={index}
                   className="overflow-hidden transition-max-height duration-300 ease-in-out rounded-lg bg-white cursor-pointer relative lg:h-[56px] h-[65px]"
@@ -93,7 +94,7 @@ const Faq = () => {
                         color="white"
                         className={`bg-primary border rounded-full lg:text-2xl text-xl transition-all ${
                           openIndex === index ? "rotate-90" : ""
-                        } `}
+                        }`}
                       />
                     </div>
                     <div className="text-[16px] leading-6 font-normal text-primary my-5 pb-3">
@@ -101,8 +102,13 @@ const Faq = () => {
                     </div>
                   </div>
                 </div>
-              );
-            })}
+              ))
+            ) : (
+              <NoContent
+                title="No FAQs found"
+                desc="Please add faq from admin dashboard"
+              />
+            )}
           </>
         </div>
       </div>

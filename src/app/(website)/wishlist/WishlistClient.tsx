@@ -1,15 +1,16 @@
+"use client";
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable react/no-unescaped-entities */
-"use client";
 import Heading from "@/components/shared/Heading";
-import React, { useEffect, useState } from "react";
 
 import PropertyCard from "@/components/Card/PropertyCard";
 import { useAppSelector } from "@/redux/hooks";
-import Link from "next/link";
+
+import NoContent from "@/components/shared/NoContent";
 
 const WishlistClient = () => {
   const wishLists = useAppSelector((state) => state.wishlist.properties);
+  console.log(wishLists);
   return (
     <div className="container pt-6">
       {/* heading */}
@@ -26,23 +27,12 @@ const WishlistClient = () => {
         </div>
       ) : (
         // Display this section when there are no properties in the wishlist
-        <div className="text-center my-12 min-h-[60vh] flex justify-center items-center">
-          <div>
-            <h2 className="text-2xl font-semibold text-gray-700 mb-4">
-              No Wishlist Found
-            </h2>
-            <p className="text-gray-500 mb-6">
-              Looks like you haven't added any properties to your wishlist yet.
-              Start exploring and save your favorite properties!
-            </p>
 
-            <Link href="/">
-              <button className="mt-6 px-6 py-2 bg-primary text-white rounded-md">
-                Explore Properties
-              </button>
-            </Link>
-          </div>
-        </div>
+        <NoContent
+          title=" No Wishlist Found"
+          desc="Looks like you haven't added any properties to your wishlist yet.
+           Start exploring and save your favorite properties!"
+        />
       )}
     </div>
   );
