@@ -1,3 +1,4 @@
+"use client";
 import Heading from "@/components/shared/Heading";
 import Image from "next/image";
 import React from "react";
@@ -7,8 +8,12 @@ import { Mailbox, ShieldCheck } from "lucide-react";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { RiRefund2Line } from "react-icons/ri";
 import Amenities from "@/components/Amenities";
+import { useGetOurStoryQuery } from "@/redux/features/web/api/ourStoryApi";
+import { imageUrl } from "@/redux/api/api";
+import NoContent from "@/components/shared/NoContent";
 
 const AboutClient = () => {
+  const { data } = useGetOurStoryQuery({});
   return (
     <div className=" pt-10">
       <div className="container">
@@ -17,50 +22,36 @@ const AboutClient = () => {
           Our <span className="text-primary">Story</span>
         </Heading>
 
-        <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
-          <div className=" ">
-            <p className="text-[#5C5C5C] font-normal text-[14px] leading-5">
-              scelerisque convallis. Sed faucibus dui. sit tincidunt eu
-              placerat. eget Ut nisi cursus venenatis tortor. leo. faucibus dui
-              diam est. Ut at sed tincidunt eget consectetur non, tincidunt In
-              efficitur. laoreet non felis, faucibus Praesent id id diam
-              elementum Donec ex venenatis id porta ex tincidunt dui. sodales.
-              Sed tempor eget Vestibulum Quisque luctus dui lacus sed gravida
-              facilisis adipiscing id sed Ut vitae odio gravida In venenatis
-              felis, tempor faucibus amet, Nunc sapien vitae ex convallis.
-              tortor. dolor nisi massa amet, urna tincidunt ac eget sed nulla,
-              eu nec malesuada venenatis convallis. quam nisl. Donec In sed quis
-              urna. ullamcorper elementum gravida enim. sit nisl. sollicitudin.
-              hendrerit fringilla lacus dui. consectetur venenatis placerat.
-              placerat lacus, at viverra{" "}
-            </p>
-            <br />
-            <p className="text-[#5C5C5C] font-normal text-[14px] leading-5">
-              scelerisque convallis. Sed faucibus dui. sit tincidunt eu
-              placerat. eget Ut nisi cursus venenatis tortor. leo. faucibus dui
-              diam est. Ut at sed tincidunt eget consectetur non, tincidunt In
-              efficitur. laoreet non felis, faucibus Praesent id id diam
-              elementum Donec ex venenatis id porta ex tincidunt dui. sodales.
-              Sed tempor eget Vestibulum Quisque luctus dui lacus sed gravida
-              facilisis adipiscing id sed Ut vitae odio gravida In venenatis
-              felis, tempor faucibus amet, Nunc sapien vitae ex convallis.
-              tortor. dolor nisi massa amet, urna tincidunt ac eget sed nulla,
-              eu nec malesuada venenatis convallis. quam nisl. Donec In sed quis
-              urna. ullamcorper elementum gravida enim. sit nisl. sollicitudin.
-              hendrerit fringilla lacus dui. consectetur venenatis placerat.
-              placerat lacus, at viverra{" "}
-            </p>
-          </div>
+        {data ? (
+          <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
+            <div className=" ">
+              <p className="text-[#5C5C5C] font-normal text-[14px] leading-5">
+                {data?.title}
+              </p>
+              <br />
+              <p className="text-[#5C5C5C] font-normal text-[14px] leading-5">
+                {data?.storyDetails}
+              </p>
+            </div>
 
-          <div className="  ">
-            <Image
-              alt="Catering"
-              src={banner}
-              //   fill
-              style={{ objectFit: "cover" }}
-            />
+            <div className=" h-[455px] w-[607px] ">
+              <Image
+                alt="Catering"
+                width={500}
+                height={500}
+                src={`${imageUrl}${data?.image ? data.image : banner}`}
+                className="h-full w-full"
+                //   fill
+                style={{ objectFit: "cover" }}
+              />
+            </div>
           </div>
-        </div>
+        ) : (
+          <NoContent
+            title="No Story Found"
+            desc="Please add description from admin dashboard"
+          />
+        )}
       </div>
 
       {/* contact option */}

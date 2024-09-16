@@ -5,9 +5,21 @@ import photo from "../../../assets/news.png";
 import Image from "next/image";
 import { Pagination } from "antd";
 import Link from "next/link";
+import { useGetBlogsQuery } from "@/redux/features/web/api/blogApi";
+import NoContent from "@/components/shared/NoContent";
+import { TBlog } from "@/types/common";
+import { imageUrl } from "@/redux/api/api";
 
 const NewsClient = () => {
   const [page, setPage] = useState(1);
+
+  const { data, isLoading } = useGetBlogsQuery([
+    { name: "limit", value: 8 },
+    { name: "page", value: page },
+  ]);
+  if (isLoading) return <p>Loading...</p>;
+
+  console.log(data);
   return (
     <div className="container py-10">
       {/* heading  */}
@@ -17,41 +29,53 @@ const NewsClient = () => {
 
       {/* news container */}
 
-      <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
-        {[...Array(6)].map((news, index) => {
-          return (
-            <div
-              key={index}
-              className="flex relative bg-red-200 items-end group overflow-hidden cursor-pointer"
-            >
-              <Image alt="PHOTO" src={photo} width={1300} height={300} />
+      {data?.data?.length > 0 ? (
+        <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
+          {data?.data?.map((news: TBlog, index: number) => {
+            return (
+              <div
+                key={index}
+                className="flex relative bg-red-200 items-end group overflow-hidden cursor-pointer"
+              >
+                <Image
+                  alt="news"
+                  src={`${imageUrl}${news?.image}`}
+                  width={1300}
+                  height={300}
+                />
 
-              <div className="absolute w-full left-0  p-4">
-                <div className="translate-y-[86px]  transition-all duration-500 group-hover:translate-y-0">
-                  <Heading
-                    name="Rental Problem of Australia"
-                    style="font-semibold text-[24px] leading-[32px] mb-6 text-[#FAFAFA]"
-                  />
-                  <p className="text-[#FAFAFA]">
-                    Quis urna. tempor consectetur risus q
-                    <br />
-                    Quis urna. tempor consectetur risus q
-                  </p>
-                  <Link href={`/newsDetails/${index + 1}`}>
-                    <div className="text-[#FAFAFA] flex items-center gap-2 underline">
-                      <p>Visit Now</p>
-                    </div>
-                  </Link>
+                <div className="absolute w-full left-0  p-4">
+                  <div className="translate-y-[86px]  transition-all duration-500 group-hover:translate-y-0">
+                    <Heading
+                      name={news.title}
+                      style="font-semibold text-[24px] leading-[32px] mb-6 text-[#FAFAFA]"
+                    />
+                    <p className="text-[#FAFAFA]">
+                      {news.description.slice(0, 100)}
+                    </p>
+                    <Link href={`/newsDetails/${index + 1}`}>
+                      <div className="text-[#FAFAFA] flex items-center gap-2 underline">
+                        <p>Visit Now</p>
+                      </div>
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      ) : (
+        <NoContent title="" desc="" />
+      )}
 
       {/* pagination */}
       <div className="flex items-center justify-center mt-6">
-        <Pagination current={page} total={50} />
+        <Pagination
+          onChange={(value) => setPage(value)}
+          current={page}
+          pageSize={data?.meta.limit}
+          total={data?.meta.total}
+        />
       </div>
     </div>
   );
