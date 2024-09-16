@@ -6,18 +6,28 @@ interface IPropertyVerificationProps {
   open: boolean;
   openRentModal: boolean;
   setOpen: (open: boolean) => void;
-  setOpenRentModal: (open: boolean) => void;
+  setOpenRentModal: (open: boolean) => void; 
+  setRentData:any
 }
 
 const PropertyVerification: React.FC<IPropertyVerificationProps> = ({
   setOpen,
-  setOpenRentModal,
+  setOpenRentModal, 
+  setRentData
 }) => {
   const [checked, setChecked] = useState<boolean>(false);
-  const [form] = Form.useForm();
+  const [form] = Form.useForm(); 
 
-  const handleSwitch = (values: any) => {
-    setOpen(false);
+
+  const handleSwitch = (values: any) => {  
+    const data={
+      ownerType:values?.ownerType ,
+      ownershipImages:values?.documents ,
+      ownerNumber:values?.ownerNumber
+    }   
+
+    setRentData(data)
+    setOpen(false); 
     setOpenRentModal(true);
     form.resetFields();
   };
@@ -30,10 +40,10 @@ const PropertyVerification: React.FC<IPropertyVerificationProps> = ({
       className="grid grid-cols-12 gap-6"
     >
       <Form.Item
-        name="gender"
+        name="ownerType"
         label={
           <p className="font-medium text-[16px] leading-6 text-[#636363]">
-            Gender
+           Owner Type
           </p>
         }
         rules={[
@@ -61,13 +71,13 @@ const PropertyVerification: React.FC<IPropertyVerificationProps> = ({
             </div>
           }
         >
-          <Select.Option value="male">Male</Select.Option>
-          <Select.Option value="female">Female</Select.Option>
+          <Select.Option value="own-property">Own property</Select.Option>
+          <Select.Option value="others-property">Others property</Select.Option>
         </Select>
       </Form.Item>
 
       <Form.Item
-        name="reconfirm_number"
+        name="ownerNumber"
         label={
           <p className="font-medium text-[16px] leading-6 text-[#636363]">
             Re-Confirm number
@@ -118,7 +128,7 @@ const PropertyVerification: React.FC<IPropertyVerificationProps> = ({
         style={{ marginBottom: 0 }}
         className="col-span-12"
       >
-        <Upload maxCount={2}>
+        <Upload maxCount={2} >
           <div className="bg-[#FEFEFE] w-full flex items-center justify-between border border-[#E0E0E0] rounded-3xl h-12 pr-1 px-3">
             <p className="font-medium text-[16px] leading-6 text-[#818181]">
               Properties document/bills

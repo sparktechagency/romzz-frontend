@@ -8,6 +8,16 @@ const nextConfig = {
             hostname: 'localhost',
             pathname: '**',
           },
+          {
+            protocol: 'http',
+            hostname: '192.168.10.18',
+        
+          },
+          {
+            protocol: 'http',
+            hostname: 'i.ibb.co',
+        
+          },
         ],
       },
 };
