@@ -97,7 +97,7 @@ const Accommodation = () => {
       {/* slider accommodation */}
       <div className="h-fit">
         <Slider {...settings}>
-          {data?.slice(0, 10)?.map((property: TProperty, index) => {
+          {data?.data?.slice(0, 10)?.map((property: TProperty, index) => {
             return <PropertyCard key={index} property={property} />;
           })}
         </Slider>

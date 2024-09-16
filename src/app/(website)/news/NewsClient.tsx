@@ -19,6 +19,13 @@ const NewsClient = () => {
   ]);
   if (isLoading) return <p>Loading...</p>;
 
+  const handlePageChange = (page: number) => {
+    setPage(page);
+    const params = new URLSearchParams(window.location.search);
+    params.set("page", page.toString());
+    window.history.pushState(null, "", `?${params.toString()}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   return (
     <div className="container py-10">
       {/* heading  */}
@@ -73,7 +80,7 @@ const NewsClient = () => {
       {/* pagination */}
       <div className="flex items-center justify-center mt-6">
         <Pagination
-          onChange={(value) => setPage(value)}
+          onChange={handlePageChange}
           current={page}
           pageSize={data?.meta.limit}
           total={data?.meta.total}

@@ -85,7 +85,7 @@ const PropertyCard = ({ property }: { property: TProperty }) => {
           <Heading
             name={`Villa in ${property.location.address
               .split(" ")
-              .slice(1, 2)
+              .slice(1, 3)
               .join(" ")}`}
             style="font-bold text-[18px] leading-[27px] text-base"
           />

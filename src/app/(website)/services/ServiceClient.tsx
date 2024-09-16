@@ -12,11 +12,19 @@ import { TiArrowSortedDown } from "react-icons/ti";
 import Property from "@/assets/property.png";
 import Person from "@/assets/person.png";
 import Filter from "@/components/Filter";
+import { useGetApprovePropertiesQuery } from "@/redux/features/web/api/propertyApi";
+import PropertyCard from "@/components/Card/PropertyCard";
 
 const ServiceClient = () => {
-  const [tab, setTab] = useState("All");
   const [page, setPage] = useState<number>(1);
-  const [open, setOpen] = useState(false)
+  const { data } = useGetApprovePropertiesQuery([
+    { name: "limit", value: 10 },
+    { name: "page", value: page },
+  ]);
+  console.log(data);
+
+  const [tab, setTab] = useState("All");
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     const initialTab =
       new URLSearchParams(window.location.search).get("tab") || "All";
@@ -38,6 +46,7 @@ const ServiceClient = () => {
     const params = new URLSearchParams(window.location.search);
     params.set("page", page.toString());
     window.history.pushState(null, "", `?${params.toString()}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -59,9 +68,9 @@ const ServiceClient = () => {
             <Input
               suffix={
                 <Link href={"/search-filter"}>
-                <div className="w-10 cursor-pointer h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center">
-                  <FaMapLocationDot size={24} color="#00809E" />
-                </div>
+                  <div className="w-10 cursor-pointer h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center">
+                    <FaMapLocationDot size={24} color="#00809E" />
+                  </div>
                 </Link>
               }
               prefix={<IoLocationOutline size={24} color="#5C5C5C" />}
@@ -105,7 +114,10 @@ const ServiceClient = () => {
           </div>
 
           <div className="flex items-center justify-between gap-6 w-full lg:w-[200px] lg:px-0 px-3  ">
-            <div onClick={()=>setOpen(true)} className="flex items-center gap-3 cursor-pointer">
+            <div
+              onClick={() => setOpen(true)}
+              className="flex items-center gap-3 cursor-pointer"
+            >
               <SlidersHorizontal size={18} color="#5C5C5C" />
               <p className="text-base text-[16px] font-normal leading-6">
                 Filter
@@ -152,70 +164,24 @@ const ServiceClient = () => {
 
       {/* all property section */}
       <div className="container grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-6 mt-10  justify-items-center">
-        {[...Array(8)].map((item, index) => {
-          return (
-            <Link key={index} href={`/details/${index + 1}`}>
-              <div
-                className="max-w-[360px] group p-2 rounded-lg"
-                style={{
-                  boxShadow:
-                    "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
-                }}
-              >
-                <div className="mb-4 overflow-hidden">
-                  <Image
-                    alt="Logo"
-                    src={Property}
-                    style={{ objectFit: "contain" }}
-                    className="group-hover:scale-105 transition-all duration-300"
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <h1 className="text-primary font-semibold text-[24px] leading-5">
-                    $100<sub className="font-normal">/pw</sub>
-                  </h1>
-                  <Heart size={24} color="red" fill="transparent" />
-                </div>
-                <p className="text-secondary text-sm my-2 leading-[18px] font-medium">
-                  Whole-unit
-                </p>
-                <div className="flex items-center gap-4">
-                  <Image
-                    alt="Logo"
-                    src={Person}
-                    width={30}
-                    height={30}
-                    style={{ borderRadius: "100%", objectFit: "contain" }}
-                  />
-                  <Heading
-                    name="Villa in Tetouan"
-                    style="font-bold text-[18px] leading-[27px] text-base"
-                  />
-                </div>
-                <div className="flex items-center gap-2 mt-3">
-                  <TfiLocationPin size={22} color="#5C5C5C" />
-                  <p className="text-base text-sm  leading-[21px] font-normal">
-                    55/A , b park road , Abcd area, city
-                  </p>
-                </div>
-              </div>
-            </Link>
-          );
+        {data?.data.map((property, index) => {
+          return <PropertyCard property={property} key={index} />;
         })}
       </div>
 
       {/* pagination */}
       <div className="flex items-center justify-center mt-6">
         <Pagination
+          style={{
+            margin: "10px",
+          }}
           current={Number(page)}
           onChange={handlePageChange}
-          total={50}
+          pageSize={data?.meta.limit || 10}
+          total={data?.meta.total}
         />
       </div>
-      <Filter
-                open={open}
-                setOpen={setOpen}
-            />
+      <Filter open={open} setOpen={setOpen} />
     </div>
   );
 };
