@@ -10,7 +10,7 @@ import NoContent from "@/components/shared/NoContent";
 
 const WishlistClient = () => {
   const wishLists = useAppSelector((state) => state.wishlist.properties);
-  console.log(wishLists);
+  // console.log(wishLists);
   return (
     <div className="container pt-6">
       {/* heading */}

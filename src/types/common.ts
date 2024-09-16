@@ -28,3 +28,19 @@ export interface TFaq {
   updatedAt: string;
   __v: number;
 }
+
+export interface TBlog {
+  _id: string;
+  createdBy: string;
+  title: string;
+  description: string;
+  image: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+export type TQueryParam = {
+  name: string;
+  value: boolean | React.Key;
+};
