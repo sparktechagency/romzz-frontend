@@ -1,37 +1,27 @@
 "use client";
 import Heading from "@/components/shared/Heading";
 import Modal from "@/components/shared/Modal";
+import { useGetSubscriptionQuery } from "@/redux/apiSlices/ClientProfileSlices";
+import { Tabs, TabsProps } from "antd";
 import React, { useState } from "react";
 import { IoIosInformationCircle } from "react-icons/io";
 import { SlBadge } from "react-icons/sl";
 
 const SubscriptionClient = () => {
   const [open, setOpen] = useState(false);
-  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false); 
+  const {data:subscriptionPlans} = useGetSubscriptionQuery(undefined)  
+  const packages = subscriptionPlans?.data
+  console.log(subscriptionPlans) 
 
-  const packages = [
+  const items: TabsProps['items'] = [
     {
-      name: "Regular",
-      price: 10,
-      details: ["3 Post", "6 Months Validity", "Rules", "Rules"],
-    },
-    {
-      name: "Standard",
-      price: 20,
-      details: ["6 Post", "6 Months Validity", "Rules", "Rules"],
-    },
-    {
-      name: "Premium",
-      price: 20,
-      details: ["6 Post", "12 Months Validity", "Rules", "Rules"],
-    },
-  ];
-
-  const body = (
-    <div>
-      <div className="flex lg:flex-row flex-wrap items-center lg:justify-between justify-center gap-3">
-        {packages?.map((item, index) => {
-          return (
+      key: '1',
+      label: 'Monthly',
+      children: <div>
+            <div className="flex lg:flex-row flex-wrap items-center lg:justify-between justify-center gap-3">
+        {packages?.filter((item: any) => item.billingCycle === "monthly")?.map((item:any, index:number) => {
+          return ( 
             <div
               key={index}
               style={{
@@ -51,27 +41,27 @@ const SubscriptionClient = () => {
               <p
                 className={` ${
                   index === 1 ? "text-[#FEFEFE]" : "text-[#333333]"
-                } lg:text-[24px] text-[20px] lg:leading-[36px] leading-[20px] font-semibold mt-[12px] lg:mt-[25px]`}
+                } lg:text-[22px] text-[20px] lg:leading-[36px] leading-[20px] font-semibold mt-[12px] lg:mt-[20px]`}
               >
-                {item.name}
+                {item?.title}
               </p>
               <p
                 className={`${
                   index === 1 ? "text-[#FF9773]" : "text-primary"
                 } text-[14px] lg:leading-5 leading-[10px] font-semibold lg:mb-6 mb-2`}
               >
-                Package
+              {item.billingCycle} Package
               </p>
 
               <h1
                 className={` ${
                   index === 1 ? "text-[#FEFEFE]" : "text-[#333333]"
-                }  font-semibold lg:text-[40px] text-[24px] lg:leading-[60px] leading-7`}
+                }  font-semibold lg:text-[32px] text-[24px] lg:leading-[60px] leading-4`}
               >
-                $100/<sub className="font-normal">pw</sub>
+                ${item?.price}/<sub className="font-normal">pw</sub>
               </h1>
 
-              <div className="flex items-center justify-center lg:my-6 my-2">
+              <div className="flex items-center justify-center lg:my-4 my-2">
                 <button
                   className={`
                                             ${
@@ -80,15 +70,15 @@ const SubscriptionClient = () => {
                                                 : "bg-primary text-[#FAFAFA]"
                                             }
                                             
-                                            rounded-3xl mx-auto w-fit px-4 lg:h-10 h-full lg:text-[14px] text-[12px] lg:leading-6 leading-4 lg:font-bold font-semibold lg:py-0 py-1 
+                                            rounded-3xl mx-auto w-fit px-4 lg:h-10 h-full lg:text-[12px] text-[10px] lg:leading-4 leading-4 lg:font-bold font-semibold lg:py-0 py-1 
                                         `}
                 >
-                  Buy {item.name} Subscription
+                  Buy {item.title} Subscription
                 </button>
               </div>
 
               <ul className="grid grid-cols-1 gap-2">
-                {item.details.map((details, key) => {
+                {item?.features?.map((details:any, key:number) => {
                   return (
                     <li
                       key={key}
@@ -105,6 +95,98 @@ const SubscriptionClient = () => {
           );
         })}
       </div>
+      </div>,
+    },
+    {
+      key: '2',
+      label: 'Yearly',
+      children: <div> 
+        <div className="flex lg:flex-row flex-wrap items-center lg:justify-between justify-center gap-3">
+        {packages?.filter((item: any) => item.billingCycle === "yearly")?.map((item:any, index:number) => {
+          return ( 
+            <div
+              key={index}
+              style={{
+                backgroundImage:
+                  index === 1 ? `url('/premium.png')` : `url('/regular.png')`,
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "container",
+                borderRadius: 8,
+              }}
+              className="border border-gray-400 border-opacity-[50%] p-5 lg:w-[300px] w-[200px] lg:h-[465px] h-full"
+            >
+              <p className="lg:text-5xl text-3xl">
+                <SlBadge color={`${index === 1 ? "#FDD990" : "#333333"}`} />
+              </p>
+
+              <p
+                className={` ${
+                  index === 1 ? "text-[#FEFEFE]" : "text-[#333333]"
+                } lg:text-[22px] text-[20px] lg:leading-[36px] leading-[20px] font-semibold mt-[12px] lg:mt-[20px]`}
+              >
+                {item?.title}
+              </p>
+              <p
+                className={`${
+                  index === 1 ? "text-[#FF9773]" : "text-primary"
+                } text-[14px] lg:leading-5 leading-[10px] font-semibold lg:mb-6 mb-2`}
+              >
+              {item.billingCycle} Package
+              </p>
+
+              <h1
+                className={` ${
+                  index === 1 ? "text-[#FEFEFE]" : "text-[#333333]"
+                }  font-semibold lg:text-[32px] text-[24px] lg:leading-[60px] leading-4`}
+              >
+                ${item?.price}/<sub className="font-normal">pw</sub>
+              </h1>
+
+              <div className="flex items-center justify-center lg:my-4 my-2">
+                <button
+                  className={`
+                                            ${
+                                              index === 1
+                                                ? "text-[#FEFEFE] bg-[#FF9773]"
+                                                : "bg-primary text-[#FAFAFA]"
+                                            }
+                                            
+                                            rounded-3xl mx-auto w-fit px-4 lg:h-10 h-full lg:text-[12px] text-[10px] lg:leading-4 leading-4 lg:font-bold font-semibold lg:py-0 py-1 
+                                        `}
+                >
+                  Buy {item.title} Subscription
+                </button>
+              </div>
+
+              <ul className="grid grid-cols-1 gap-2">
+                {item?.features?.map((details:any, key:number) => {
+                  return (
+                    <li
+                      key={key}
+                      className={`list-disc list-inside lg:text-[16px] text-[12px] lg:leading-6 leading-4 font-normal text-[#5C5C5C] ${
+                        index === 1 ? "text-[#F3F3F3]" : "text-[#5C5C5C]"
+                      }`}
+                    >
+                      {details}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          );
+        })}
+      </div>
+      </div>,
+    },
+
+  ]; 
+
+
+  const body = (
+    <div> 
+      <Tabs defaultActiveKey="1" items={items}  /> 
+     
     </div>
   );
 
@@ -244,7 +326,8 @@ const SubscriptionClient = () => {
         setOpen={setDetailsOpen}
         body={detailsBody}
         width={350}
-      />
+      /> 
+ 
     </div>
   );
 };

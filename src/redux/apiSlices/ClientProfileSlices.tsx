@@ -24,9 +24,16 @@ const ClientProfileSlices = romzzApi.injectEndpoints({
          url:"/facilities"
       }
    }
- })
+ }) , 
+
+//  Subscription  
+  getSubscription:builder.query({
+   query:()=>({
+      url:"/pricing-plans"
+   })
+  })
   
 
       })
      })  
-     export const {useGetBookingHistoryQuery , useCreateBookingPostMutation ,useGetFacilitiesQuery} = ClientProfileSlices
+     export const {useGetBookingHistoryQuery , useCreateBookingPostMutation ,useGetFacilitiesQuery  , useGetSubscriptionQuery} = ClientProfileSlices
