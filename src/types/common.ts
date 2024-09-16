@@ -7,3 +7,14 @@ export type TFeedback = {
   facilities: string[]; // Array of ObjectId represented as strings
   visibilityStatus: "show" | "hide";
 };
+
+export interface OurStory {
+  _id: string;
+  createdBy: string;
+  title: string;
+  storyDetails: string;
+  image: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}

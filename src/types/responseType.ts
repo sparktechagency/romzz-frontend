@@ -22,3 +22,9 @@ export type Meta = {
   total: number;
   totalPage: number;
 };
+
+export type ApiResponse<T> = {
+  success: boolean;
+  message: string;
+  data: T;
+};
