@@ -2,10 +2,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import Heading from "./shared/Heading";
+import { useGetFaqsQuery } from "@/redux/features/web/api/faqApi";
+import { TFaq } from "@/types/common";
 
 type ContentRef = HTMLDivElement | null;
 
 const Faq = () => {
+  const { data: faqs } = useGetFaqsQuery({});
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const contentRefs = useRef<ContentRef[]>([]);
 
@@ -59,17 +62,17 @@ const Faq = () => {
             </span>
           </p>
           <>
-            {[...Array(5)].map((_item: any, index) => {
+            {faqs?.map((faq: TFaq, index) => {
               return (
                 <div
                   key={index}
                   className="overflow-hidden transition-max-height duration-300 ease-in-out rounded-lg bg-white cursor-pointer relative lg:h-[56px] h-[65px]"
                   onClick={() => toggleAccordion(index)}
                   style={{
-                    maxHeight:
+                    minHeight:
                       openIndex === index
                         ? `${contentRefs.current[index]?.scrollHeight}px`
-                        : "65px",
+                        : "50px",
                     boxShadow:
                       "rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
                   }}
@@ -84,9 +87,7 @@ const Faq = () => {
                   >
                     <div className="flex items-center justify-between">
                       <p className="text-[16px] leading-6 font-medium text-[#3E3E3E]">
-                        {
-                          "What are the foods like Steel Yat? How does the mail plan work?"
-                        }
+                        {faq?.question}
                       </p>
                       <MdKeyboardArrowRight
                         color="white"
@@ -95,8 +96,8 @@ const Faq = () => {
                         } `}
                       />
                     </div>
-                    <div className="text-[16px] leading-6 font-normal text-primary mt-3">
-                      {"Lorem30"}
+                    <div className="text-[16px] leading-6 font-normal text-primary my-5 pb-3">
+                      {faq?.answer}
                     </div>
                   </div>
                 </div>

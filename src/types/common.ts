@@ -18,3 +18,13 @@ export interface OurStory {
   updatedAt: string;
   __v: number;
 }
+
+export interface TFaq {
+  _id: string;
+  createdBy: string;
+  question: string;
+  answer: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
