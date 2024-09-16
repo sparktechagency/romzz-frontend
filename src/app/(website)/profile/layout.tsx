@@ -1,10 +1,7 @@
 import React from "react";
-import hostbanner from "@/assets/hostBanner.png";
-import person from "@/assets/person2.png";
-import Image from "next/image";
 import Heading from "@/components/shared/Heading";
-import { Rate } from "antd";
 import Sidebar from "@/components/Profile/Sidebar";
+import Banner from "@/components/Profile/Banner";
 
 const layout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -14,34 +11,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
         My <span className="text-primary">Profile</span>
       </Heading>
 
-      <div className="relative lg:h-[200px] h-[250px]">
-        <Image src={hostbanner} alt="host-profile" fill />
-        <div className="lg:w-[430px] w-[80%] absolute left-0 top-1/2 transform -translate-y-1/2 border-2 p-1 rounded-r-[90px] bg-[#E6F2F5] bg-opacity-[80%]">
-          <div className="flex items-center gap-6">
-            <Image
-              src={person}
-              alt="host-profile"
-              width={120}
-              height={120}
-              className="border-2 rounded-full p-1 border-primary"
-            />
-            <div>
-              <Heading
-                name="Aladin"
-                style="font-semibold text-[24px] leading-[36px] text-[#333333]"
-              />
-
-              <Rate style={{ color: "#FF9773" }} defaultValue={5} />
-              <p className="text-[#767676] text-[14px]  leading-6 font-normal">
-                R no 1 , Block B, CITY X, USA
-              </p>
-              <p className="text-[#767676] text-[14px]  leading-6 font-normal">
-                @gmail.com
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Banner />
 
       <div className="grid lg:grid-cols-12 grid-cols-1 bg-primary border">
         {/* sidebar */}

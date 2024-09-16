@@ -9,8 +9,11 @@ import React, { useState } from "react";
 
 const RentalDetailsClient = () => {
   const [open, setOpen] = useState(false);
-  const [page, setPage] = useState(1);
-  const [openRentModal, setOpenRentModal] = useState(false);
+  const [page, setPage] = useState(1);  
+  const [rentData , setRentData]= useState({}) 
+  console.log();
+
+  const [openRentModal, setOpenRentModal] = useState(false); 
 
   return (
     <div>
@@ -62,7 +65,8 @@ const RentalDetailsClient = () => {
           <PropertyVerification
             open={open}
             setOpen={setOpen}
-            openRentModal={openRentModal}
+            openRentModal={openRentModal} 
+            setRentData={setRentData}
             setOpenRentModal={setOpenRentModal}
           />
         }
@@ -73,7 +77,7 @@ const RentalDetailsClient = () => {
         title="Property New Post"
         open={openRentModal}
         setOpen={setOpenRentModal}
-        body={<RentPost open={openRentModal} setOpen={setOpenRentModal} />}
+        body={<RentPost open={openRentModal} setOpen={setOpenRentModal} rentData={rentData} />}
         width={852}
       />
     </div>

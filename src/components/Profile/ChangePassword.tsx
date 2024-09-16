@@ -1,13 +1,43 @@
 "use client";
+import { useChangePassMutation } from "@/redux/apiSlices/AuthSlices";
 import { Button, Form, Input } from "antd";
 import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React from "react";
+import Swal from "sweetalert2";
 
 const ChangePassword = () => {
   const [form] = Form.useForm();
-  form.setFieldsValue(undefined);
+  form.setFieldsValue(undefined);  
+  const router = useRouter()
+const [changePass] = useChangePassMutation()  
 
-  const handleSubmit = async (values: any) => {};
+
+  const handleSubmit = async (values: any) => { 
+    const {confirm_password , ...otherValue}= values 
+    console.log(otherValue);  
+
+    await changePass(otherValue).then(res =>{
+      if(res?.data?.success){
+        Swal.fire({
+            text: res?.data?.message,
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: false
+          }).then(() => {   
+            router.push("/login")
+       form.resetFields()  
+          });
+    }else{
+        Swal.fire({       
+        //@ts-ignore
+            text: res?.error?.data?.message,  
+            icon: "error",
+          });
+    }
+    })
+
+  };
   return (
     <Form
       onFinish={handleSubmit}
@@ -16,7 +46,7 @@ const ChangePassword = () => {
       className=" lg:w-[400px] w-full mx-auto"
     >
       <Form.Item
-        name="current_password"
+        name="currentPassword"
         label={
           <p className="font-medium text-[16px] leading-6 text-[#636363]">
             Current Password
@@ -65,17 +95,25 @@ const ChangePassword = () => {
       </Form.Item>
 
       <Form.Item
-        name="new_password"
+        name="newPassword"
         label={
           <p className="font-medium text-[16px] leading-6 text-[#636363]">
             New Password
           </p>
         }
-        rules={[
+            rules={[
           {
             required: true,
-            message: "Please Enter New Password!",
+            message: 'Please enter your new password!',
           },
+          ({ getFieldValue }) => ({
+            validator(_, value) {
+              if (!value || getFieldValue('currentPassword') === value) {
+                return Promise.reject(new Error('The new password must be different from the current password!'));
+              }
+              return Promise.resolve();
+            },
+          }),
         ]}
       >
         <Input.Password
@@ -123,8 +161,16 @@ const ChangePassword = () => {
         rules={[
           {
             required: true,
-            message: "Please Enter Confirm Password!",
+            message: 'Please confirm your password!',
           },
+          ({ getFieldValue }) => ({
+            validator(_, value) {
+              if (!value || getFieldValue('newPassword') === value) {
+                return Promise.resolve();
+              }
+              return Promise.reject(new Error('The new password that you entered do not match!'));
+            },
+          }),
         ]}
       >
         <Input.Password

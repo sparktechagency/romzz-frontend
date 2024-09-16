@@ -1,4 +1,7 @@
 "use client";
+import { imageUrl } from "@/redux/api/api";
+import { useCreateBookingPostMutation, useGetFacilitiesQuery } from "@/redux/apiSlices/ClientProfileSlices";
+
 import {
   Button,
   Checkbox,
@@ -12,33 +15,77 @@ import {
   CalendarDays,
   ChevronDown,
   DollarSign,
-  Eye,
-  FilePlus,
 } from "lucide-react";
+import moment from "moment";
 import React, { useState } from "react";
 import { FaMapLocationDot } from "react-icons/fa6";
 
 interface IRentPostProps {
   open: boolean;
-  setOpen: (open: boolean) => void;
+  setOpen: (open: boolean) => void; 
+  rentData:any
 }
 
-const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
-  const [fileList, setFileList] = useState([]);
-  const [form] = Form.useForm();
+const RentPost: React.FC<IRentPostProps> = ({ setOpen  , rentData}) => {   
 
-  const handleSwitch = (values: any) => {
-    setOpen(false);
-    form.resetFields();
-    setFileList([]);
+  const {data:facilities}= useGetFacilitiesQuery(undefined) 
+  const [createBookingPost] = useCreateBookingPostMutation()
+  const [fileList, setFileList] = useState([]);
+  const [form] = Form.useForm(); 
+
+
+  const handleSwitch = async(values: any) => {   
+    const formData = new FormData()
+    const {address, propertyImages ,unavailableDay ,moveOn , ...otherValues}= values    
+
+    const propertyImagesFiles = fileList.map((file: any) => file?.originFileObj)  
+    if(propertyImagesFiles){
+      for(const image of propertyImagesFiles){
+        formData.append("propertyImages" ,image )
+      }
+    } 
+
+    const ownerShipImageList = rentData?.ownershipImages?.map((file: any) => file?.originFileObj)   
+    console.log(ownerShipImageList); 
+
+    if(ownerShipImageList){
+      for(const image of ownerShipImageList){       
+        formData.append("ownershipImages", image)
+      }
+    }
+
+    const formattedUnavailableDays = unavailableDay.map((day: any) =>
+      moment(day).format('YYYY-MM-DD')
+    ); 
+
+    const formatMoveOn = moment(moveOn).format("YYYY-MM-DD")  
+
+    const location = {
+      address:address
+    } 
+
+    const datas = {
+      unavailableDay:formattedUnavailableDays ,
+      moveOn:formatMoveOn ,
+      location:location ,
+      ownerType:rentData?.ownerType ,
+      ownerNumber:rentData?.ownerNumber ,
+      ...otherValues
+    } 
+
+  formData.append("data" , JSON.stringify(datas))  
+
+await createBookingPost(formData).then(res => console.log(res)
+
+)
+
+
+    // setOpen(false); 
+    // form.resetFields(); 
+    // setFileList([]); 
   };
 
-  const facilitiesOptions = [
-    { label: "Relation with owner", value: "relation_with_owner" },
-    { label: "Wi-Fi", value: "wifi" },
-    { label: "Location", value: "location" },
-    { label: "Comfortable", value: "comfortable" },
-  ];
+  const facilitiesOptions = facilities?.data
   return (
     <Form
       form={form}
@@ -50,8 +97,8 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
         <div className=" grid overflow-y-auto grid-cols-12 gap-6">
           {/* property name */}
           <Form.Item
-            name="property_image"
-            valuePropName="property_image"
+            name="propertyImages"
+            valuePropName="propertyImages"
             getValueFromEvent={(e) => e && setFileList(e.fileList)}
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
@@ -84,7 +131,7 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
 
           {/* property name */}
           <Form.Item
-            name="property_name"
+            name="title"
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
                 Property Name
@@ -185,9 +232,10 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
                 </div>
               }
             >
-              <Select.Option value="male">Room Mate</Select.Option>
-              <Select.Option value="female">Flate Mate</Select.Option>
-              <Select.Option value="female">Whole Unit</Select.Option>
+              <Select.Option value="room-mate">Room Mate</Select.Option>
+              <Select.Option value="flat-mate">Flate Mate</Select.Option>
+              <Select.Option value="whole-unit">Whole Unit</Select.Option>
+              <Select.Option value="house">House</Select.Option>
             </Select>
           </Form.Item>
 
@@ -206,10 +254,16 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
               },
             ]}
             style={{ marginBottom: 0 }}
-            className="lg:col-span-6 col-span-12"
+            className="lg:col-span-6 col-span-12"  
+            // getValueFromEvent={(e) => {
+            //   const value = e.target.value;
+            //   return value ? parseInt(value, 10) : '';
+            // }} 
+
           >
             <Input
-              placeholder="Enter Property Price!"
+              placeholder="Enter Property Price!" 
+              // type="number" 
               prefix={<DollarSign size={24} color="#A1A1A1" />}
               style={{
                 width: "100%",
@@ -226,7 +280,7 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
 
           {/* price type */}
           <Form.Item
-            name="price_type"
+            name="priceType"
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
                 Price Type
@@ -257,9 +311,10 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
                 </div>
               }
             >
-              <Select.Option value="male">Per Week</Select.Option>
-              <Select.Option value="male">Per Month</Select.Option>
-              <Select.Option value="female">Per Year</Select.Option>
+              <Select.Option value="day">Per day</Select.Option>
+              <Select.Option value="week">Per week</Select.Option>
+              <Select.Option value="month">Per month</Select.Option>
+              <Select.Option value="year">Per year</Select.Option>
             </Select>
           </Form.Item>
 
@@ -330,7 +385,7 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
 
           {/* property decorated */}
           <Form.Item
-            name="decorated"
+            name="decorationType"
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
                 Decorated
@@ -361,13 +416,14 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
                 </div>
               }
             >
-              <Select.Option value="male">Furnished</Select.Option>
+              <Select.Option value="furnished">Furnished</Select.Option>
+              <Select.Option value="unfurnished">Unfurnished</Select.Option>
             </Select>
           </Form.Item>
 
           {/* floor */}
           <Form.Item
-            name="Floor"
+            name="flore"
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
                 Floor
@@ -380,10 +436,15 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
               },
             ]}
             style={{ marginBottom: 0 }}
-            className="lg:col-span-6 col-span-12"
+            className="lg:col-span-6 col-span-12" 
+            getValueFromEvent={(e) => {
+              const value = e.target.value;
+              return value ? parseInt(value, 10) : '';
+            }}
           >
             <Input
-              placeholder="Enter Floor number!"
+              placeholder="Enter Floor number!" 
+               type="number" 
               style={{
                 width: "100%",
                 height: 48,
@@ -399,7 +460,7 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
 
           {/* property type */}
           <Form.Item
-            name="property_type"
+            name="propertyType"
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
                 property_type
@@ -430,40 +491,51 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
                 </div>
               }
             >
-              <Select.Option value="male">Furnished</Select.Option>
+              <Select.Option value="family-house">Family House</Select.Option>
+              <Select.Option value="apartment">Apartment</Select.Option>
+              <Select.Option value="lodge">Lodge</Select.Option>
+              <Select.Option value="villa">Vila</Select.Option>
+              <Select.Option value="cottage">Cottage</Select.Option>
             </Select>
           </Form.Item>
 
           {/* bed type */}
           <Form.Item
-            name=""
+            name="bedType"
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
-                Re-Confirm number
+                Bed Type
               </p>
             }
             rules={[
               {
                 required: true,
-                message: "Please Enter Re-Confirm number!",
+                message: "Please Select Bed Type",
               },
             ]}
             style={{ marginBottom: 0 }}
-            className="lg:col-span-6 col-span-12"
+            className="lg:col-span-6 col-span-12 customSelect"
           >
-            <Input
-              placeholder="Give your house owner or  reliable number"
+            <Select
+              placeholder={
+                <p className="text-[#818181] text-[16px] font-normal leading-6">
+                 Bed Type
+                </p>
+              }
               style={{
-                width: "100%",
                 height: 48,
-                boxShadow: "none",
-                outline: "none",
-                border: "1px solid #E0E0E0",
                 borderRadius: 24,
-                background: "#FEFEFE",
               }}
-              className=" placeholder:text-[#818181] placeholder:text-[16px] placeholder:font-normal placeholder:leading-6"
-            />
+              suffixIcon={
+                <div className="w-10 h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center">
+                  <ChevronDown size={24} color="#00809E" />
+                </div>
+              }
+            >
+              <Select.Option value="sofa">Sofa</Select.Option>
+              <Select.Option value="single-bed">Single bed</Select.Option>
+              <Select.Option value="double-bed">Double bed</Select.Option>
+            </Select>
           </Form.Item>
 
           {/* bed rooms */}
@@ -481,10 +553,15 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
               },
             ]}
             style={{ marginBottom: 0 }}
-            className="lg:col-span-6 col-span-12"
+            className="lg:col-span-6 col-span-12" 
+            getValueFromEvent={(e) => {
+              const value = e.target.value;
+              return value ? parseInt(value, 10) : '';
+            }}
           >
             <Input
-              placeholder="Enter Bedrooms number"
+              placeholder="Enter Bedrooms number" 
+               type="number"
               style={{
                 width: "100%",
                 height: 48,
@@ -500,7 +577,7 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
 
           {/* bathroom */}
           <Form.Item
-            name=""
+            name="bathrooms"
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
                 Bathroom
@@ -513,10 +590,15 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
               },
             ]}
             style={{ marginBottom: 0 }}
-            className="lg:col-span-6 col-span-12"
+            className="lg:col-span-6 col-span-12" 
+            getValueFromEvent={(e) => {
+              const value = e.target.value;
+              return value ? parseInt(value, 10) : '';
+            }}
           >
             <Input
-              placeholder="Enter Bathroom number"
+              placeholder="Enter Bathroom number"  
+               type="number"
               style={{
                 width: "100%",
                 height: 48,
@@ -532,7 +614,7 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
 
           {/* balcony */}
           <Form.Item
-            name=""
+            name="balcony"
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
                 Balcony
@@ -545,10 +627,15 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
               },
             ]}
             style={{ marginBottom: 0 }}
-            className="lg:col-span-6 col-span-12"
+            className="lg:col-span-6 col-span-12" 
+            getValueFromEvent={(e) => {
+              const value = e.target.value;
+              return value ? parseInt(value, 10) : '';
+            }}
           >
             <Input
-              placeholder="Enter Balcony number!"
+              placeholder="Enter Balcony number!" 
+               type="number"
               style={{
                 width: "100%",
                 height: 48,
@@ -564,7 +651,7 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
 
           {/* Kitchen */}
           <Form.Item
-            name=""
+            name="kitchen"
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
                 Kitchen
@@ -577,10 +664,16 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
               },
             ]}
             style={{ marginBottom: 0 }}
-            className="lg:col-span-6 col-span-12"
+            className="lg:col-span-6 col-span-12" 
+            getValueFromEvent={(e) => {
+              const value = e.target.value;
+              return value ? parseInt(value, 10) : '';
+            }} 
           >
             <Input
-              placeholder="Enter Kitchen number!"
+              placeholder="Enter Kitchen number!" 
+               type="number" 
+               
               style={{
                 width: "100%",
                 height: 48,
@@ -596,7 +689,7 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
 
           {/* Dining */}
           <Form.Item
-            name=""
+            name="dining"
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
                 Dining
@@ -609,10 +702,15 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
               },
             ]}
             style={{ marginBottom: 0 }}
-            className="lg:col-span-6 col-span-12"
+            className="lg:col-span-6 col-span-12" 
+            getValueFromEvent={(e) => {
+              const value = e.target.value;
+              return value ? parseInt(value, 10) : '';
+            }}
           >
             <Input
-              placeholder="Enter Dining "
+              placeholder="Enter Dining " 
+               type="number"
               style={{
                 width: "100%",
                 height: 48,
@@ -628,7 +726,7 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
 
           {/* drawing room */}
           <Form.Item
-            name=""
+            name="drawing"
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
                 Drawing
@@ -641,10 +739,16 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
               },
             ]}
             style={{ marginBottom: 0 }}
-            className="col-span-12"
+            className="col-span-12" 
+            getValueFromEvent={(e) => {
+              const value = e.target.value;
+              return value ? parseInt(value, 10) : '';
+            }}
           >
             <Input
-              placeholder="Enter Drawing"
+              placeholder="Enter Drawing" 
+               type="number" 
+             
               style={{
                 width: "100%",
                 height: 48,
@@ -660,7 +764,7 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
 
           {/* entry date */}
           <Form.Item
-            name="move"
+            name="moveOn"
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
                 Move on
@@ -711,7 +815,7 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
 
           {/* leave date */}
           <Form.Item
-            name="decorated"
+            name="unavailableDay"
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
                 Unavailable Dates
@@ -726,13 +830,14 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
             style={{ marginBottom: 0 }}
             className="lg:col-span-6 col-span-12 customSelect"
           >
-            <DatePicker
+            <DatePicker 
+            multiple
               suffixIcon={
                 <div
                   style={{
                     background: "#E6F2F5",
                     width: 40,
-                    height: 40,
+                   
                     borderRadius: "100%",
                     display: "flex",
                     alignItems: "center",
@@ -749,7 +854,7 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
               placeholder="Select Move on Date"
               style={{
                 width: "100%",
-                height: 48,
+               
                 boxShadow: "none",
                 outline: "none",
                 border: "1px solid #E0E0E0",
@@ -762,7 +867,7 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
 
           {/* allowed gender */}
           <Form.Item
-            name="decorated"
+            name="allowedGender"
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
                 Allowed Gender
@@ -793,13 +898,15 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
                 </div>
               }
             >
-              <Select.Option value="male">Furnished</Select.Option>
+              <Select.Option value="male">Male</Select.Option>
+              <Select.Option value="female">Female</Select.Option>
+              <Select.Option value="others">Others</Select.Option>
             </Select>
           </Form.Item>
 
           {/* guest type */}
           <Form.Item
-            name="decorated"
+            name="guestType"
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
                 Guest Type
@@ -830,15 +937,15 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
                 </div>
               }
             >
-              <Select.Option value="male">All</Select.Option>
-              <Select.Option value="male">Male</Select.Option>
-              <Select.Option value="male">Female</Select.Option>
+              <Select.Option value="single">Single</Select.Option>
+              <Select.Option value="couple">Couple</Select.Option>
+              <Select.Option value="family">Family</Select.Option>
             </Select>
           </Form.Item>
 
           {/* Occupation */}
           <Form.Item
-            name="Occupation"
+            name="occupation"
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
                 Occupation
@@ -869,15 +976,15 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
                 </div>
               }
             >
-              <Select.Option value="male">All</Select.Option>
-              <Select.Option value="male">Student</Select.Option>
-              <Select.Option value="male">Professional</Select.Option>
+              <Select.Option value="any">All</Select.Option>
+              <Select.Option value="student">Student</Select.Option>
+              <Select.Option value="professional">Professional</Select.Option>
             </Select>
           </Form.Item>
 
           {/* facilities */}
           <Form.Item
-            name={"facilities"}
+            name="facilities"
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
                 Facilities
@@ -892,10 +999,10 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
             className="col-span-12"
           >
             <Checkbox.Group className="style-checkbox flex items-center flex-wrap">
-              {facilitiesOptions.map((option) => (
+              {facilitiesOptions?.map((option:any) => (
                 <Checkbox
-                  key={option.value}
-                  value={option.value}
+                  key={option?._id}
+                  value={option?._id}
                   style={{
                     background: "#F3F3F3",
                     height: 40,
@@ -908,9 +1015,9 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen }) => {
                     color: "red",
                   }}
                   className="flex text-primary items-center justify-center rounded-xl"
-                >
+                > 
                   <p className="text-[#333333] font-medium text-[14px] leading-6">
-                    {option.label}
+                    {option.name}
                   </p>
                 </Checkbox>
               ))}

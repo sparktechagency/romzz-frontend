@@ -1,13 +1,53 @@
 "use client";
+import { useGetProfileQuery, useUpdateProfileMutation } from "@/redux/apiSlices/AuthSlices";
 import { Button, Form, Input, Select } from "antd";
 import { ChevronDown } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
+import Swal from "sweetalert2";
 
 const UserDetails = () => {
   const [form] = Form.useForm();
-  form.setFieldsValue(undefined);
+  form.setFieldsValue(undefined); 
+  const {data , refetch} = useGetProfileQuery(undefined)  
+  const [updateProfile] = useUpdateProfileMutation() 
+  const userInfo = data?.data  
 
-  const handleSubmit = async (values: any) => {};
+
+  useEffect(()=>{ 
+if(userInfo){
+  form.setFieldsValue({fullName:userInfo?.fullName , 
+    email:userInfo?.email , 
+    phoneNumber:userInfo?.phoneNumber , 
+    nidNumber:userInfo?.nidNumber , 
+    gender:userInfo?.gender , 
+    permanentAddress:userInfo?.permanentAddress , 
+    ineNumber:userInfo?.ineNumber , 
+    presentAddress:userInfo?.presentAddress })
+}
+  },[userInfo])
+
+  const handleSubmit = async (values: any) => {    
+    const formData = new FormData() 
+    formData.append("data",JSON.stringify(values))
+    await updateProfile(formData).then(res=>{
+      if(res?.data?.success){
+        Swal.fire({
+            text: res?.data?.message,
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: false
+          }).then(() => {  
+            refetch() 
+          });
+    }else{
+        Swal.fire({       
+        //@ts-ignore
+            text: res?.error?.data?.message,  
+            icon: "error",
+          });
+    }
+    })
+  };
 
   return (
     <div>
@@ -15,10 +55,10 @@ const UserDetails = () => {
         onFinish={handleSubmit}
         form={form}
         layout="vertical"
-        className="grid lg:grid-cols-12 grid-cols-1 gap-6"
+        className="grid lg:grid-cols-12 grid-cols-1 gap-6" 
       >
         <Form.Item
-          name="name"
+          name="fullName"
           label={
             <p className="font-medium text-[16px] leading-6 text-[#636363]">
               User Name
@@ -62,13 +102,14 @@ const UserDetails = () => {
               border: "1px solid #E0E0E0",
               borderRadius: 24,
               background: "#FEFEFE",
-            }}
+            }} 
+            readOnly
             className=" placeholder:text-[#818181] placeholder:text-[14px] placeholder:font-normal placeholder:leading-6"
           />
         </Form.Item>
 
         <Form.Item
-          name="contact"
+          name="phoneNumber"
           label={
             <p className="font-medium text-[16px] leading-6 text-[#636363]">
               Contact No
@@ -93,7 +134,7 @@ const UserDetails = () => {
         </Form.Item>
 
         <Form.Item
-          name="nid"
+          name="nidNumber"
           label={
             <p className="font-medium text-[16px] leading-6 text-[#636363]">
               NID No
@@ -149,7 +190,7 @@ const UserDetails = () => {
         </Form.Item>
 
         <Form.Item
-          name="ine_no"
+          name="ineNumber"
           label={
             <p className="font-medium text-[16px] leading-6 text-[#636363]">
               INE No.
@@ -174,7 +215,7 @@ const UserDetails = () => {
         </Form.Item>
 
         <Form.Item
-          name="permanent_address"
+          name="permanentAddress"
           label={
             <p className="font-medium text-[16px] leading-6 text-[#636363]">
               Permanent Address
@@ -199,7 +240,7 @@ const UserDetails = () => {
         </Form.Item>
 
         <Form.Item
-          name="present_address"
+          name="presentAddress"
           label={
             <p className="font-medium text-[16px] leading-6 text-[#636363]">
               Present Address

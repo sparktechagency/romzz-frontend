@@ -5,6 +5,7 @@ export const romzzApi = createApi({
   reducerPath: "romzzApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "http://192.168.10.18:5000/api/v1",
+    headers: { Authorization: `Bearer ${token}` },
     //
   }),
   endpoints: () => ({}),
