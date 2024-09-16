@@ -1,6 +1,8 @@
 "use client";
+import PaymentCard from "@/components/Card/PaymentCard";
 import Heading from "@/components/shared/Heading";
 import Modal from "@/components/shared/Modal";
+import { useGetProfileQuery } from "@/redux/apiSlices/AuthSlices";
 import { useGetSubscriptionQuery } from "@/redux/apiSlices/ClientProfileSlices";
 import { Tabs, TabsProps } from "antd";
 import React, { useState } from "react";
@@ -9,10 +11,17 @@ import { SlBadge } from "react-icons/sl";
 
 const SubscriptionClient = () => {
   const [open, setOpen] = useState(false);
-  const [detailsOpen, setDetailsOpen] = useState(false); 
-  const {data:subscriptionPlans} = useGetSubscriptionQuery(undefined)  
-  const packages = subscriptionPlans?.data
-  console.log(subscriptionPlans) 
+  const [detailsOpen, setDetailsOpen] = useState(false);  
+
+  const {data:subscriptionPlans} = useGetSubscriptionQuery(undefined)   
+  const packages = subscriptionPlans?.data 
+  const {data:userInfo} = useGetProfileQuery(undefined) 
+  console.log(userInfo);
+  console.log(subscriptionPlans)  
+
+  const handleRedirect =()=>{
+
+  }
 
   const items: TabsProps['items'] = [
     {
@@ -62,7 +71,7 @@ const SubscriptionClient = () => {
               </h1>
 
               <div className="flex items-center justify-center lg:my-4 my-2">
-                <button
+                <button   onClick={() => handleRedirect()}
                   className={`
                                             ${
                                               index === 1
@@ -144,7 +153,7 @@ const SubscriptionClient = () => {
               </h1>
 
               <div className="flex items-center justify-center lg:my-4 my-2">
-                <button
+                <button   onClick={() => handleRedirect()}
                   className={`
                                             ${
                                               index === 1
@@ -326,7 +335,9 @@ const SubscriptionClient = () => {
         setOpen={setDetailsOpen}
         body={detailsBody}
         width={350}
-      /> 
+      />  
+
+
  
     </div>
   );
