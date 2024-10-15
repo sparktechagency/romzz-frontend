@@ -64,7 +64,7 @@ const Faq = () => {
           </p>
           <>
             {faqs && faqs.length > 0 ? (
-              faqs.map((faq: TFaq, index) => (
+              faqs?.map((faq: TFaq, index) => (
                 <div
                   key={index}
                   className="overflow-hidden transition-max-height duration-300 ease-in-out rounded-lg bg-white cursor-pointer relative lg:h-[56px] h-[65px]"

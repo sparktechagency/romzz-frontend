@@ -10,25 +10,32 @@ const UserDetails = () => {
   form.setFieldsValue(undefined); 
   const {data , refetch} = useGetProfileQuery(undefined)  
   const [updateProfile] = useUpdateProfileMutation() 
-  const userInfo = data?.data  
+  const userInfo = data?.data   
 
 
   useEffect(()=>{ 
-if(userInfo){
+  if(userInfo){
   form.setFieldsValue({fullName:userInfo?.fullName , 
     email:userInfo?.email , 
     phoneNumber:userInfo?.phoneNumber , 
     nidNumber:userInfo?.nidNumber , 
     gender:userInfo?.gender , 
-    permanentAddress:userInfo?.permanentAddress , 
+    permanentLocation:userInfo?.permanentLocation?.address , 
     ineNumber:userInfo?.ineNumber , 
-    presentAddress:userInfo?.presentAddress })
+    presentLocation:userInfo?.presentLocation?.address })
 }
-  },[userInfo])
+  },[userInfo , form ])
 
-  const handleSubmit = async (values: any) => {    
+  const handleSubmit = async (values: any) => {     
+    const {presentLocation , permanentLocation , ...otherValue} = values 
+    const newValues ={
+      presentLocation:{address:presentLocation} , 
+      permanentLocation:{address:permanentLocation} , 
+      ...otherValue
+    } 
+    //console.log(newValues);
     const formData = new FormData() 
-    formData.append("data",JSON.stringify(values))
+    formData.append("data",JSON.stringify(newValues))
     await updateProfile(formData).then(res=>{
       if(res?.data?.success){
         Swal.fire({
@@ -215,7 +222,7 @@ if(userInfo){
         </Form.Item>
 
         <Form.Item
-          name="permanentAddress"
+          name="permanentLocation"
           label={
             <p className="font-medium text-[16px] leading-6 text-[#636363]">
               Permanent Address
@@ -240,7 +247,7 @@ if(userInfo){
         </Form.Item>
 
         <Form.Item
-          name="presentAddress"
+          name="presentLocation"
           label={
             <p className="font-medium text-[16px] leading-6 text-[#636363]">
               Present Address

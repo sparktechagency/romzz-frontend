@@ -12,15 +12,17 @@ import {
   addToWishlist,
   removeFromWishlist,
 } from "@/redux/features/web/slices/wishlistSlice";
+import { imageUrl } from "@/redux/api/api";
 const PropertyCardSmall = ({ property }: { property: TProperty }) => {
-  const wishLists = useAppSelector((state) => state.wishlist.properties);
+  const wishLists = useAppSelector((state) => state?.wishlist?.properties);
   const isInWishlist = wishLists.some(
-    (wishlistProperty) => wishlistProperty._id === property._id
-  );
+    (wishlistProperty) => wishlistProperty?._id === property?._id
+  ); 
+  console.log(property);
   const dispatch = useAppDispatch();
   const handleWishList = () => {
     if (isInWishlist) {
-      dispatch(removeFromWishlist(property._id));
+      dispatch(removeFromWishlist(property?._id));
       notification.success({
         message: "Romzz",
         description: "Property removed from wishlist successfully",
@@ -36,34 +38,41 @@ const PropertyCardSmall = ({ property }: { property: TProperty }) => {
     }
   };
   return (
-    <div className="pb-2 h-full">
+    <div className="pb-2">
       <div
-        className="bg-white max-w-[240px] min-h-[320px] group p-2 rounded-lg flex flex-col"
+        className="bg-white max-w-[260px]  lg:min-h-[270px] min-h-[240px]  group p-2 rounded-lg flex flex-col"
         style={{
           boxShadow:
             "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
         }}
       >
         <Link
-          href={`/details/${property._id}`}
-          className="mb-4 h-[150px] overflow-hidden flex-grow"
+          href={`/details/${property?._id}`}
+          className="lg:mb-4 mb-2 overflow-hidden flex-grow"
         >
           <Image
             alt="Property Image"
             src={
-              property.propertyImages.length > 0
-                ? property.propertyImages[0]
+              property?.propertyImages?.length > 0
+                ? `${imageUrl}${property?.propertyImages[0]}` 
                 : Property
             }
-            width={225}
-            height={150}
-            className="group-hover:scale-105 object-cover transition-all duration-300"
+            width={250}
+            height={150} 
+            // style={{height:"150px"}} 
+            className="group-hover:scale-105 object-cover transition-all duration-300  rounded-sm lg:h-[170px] h-[110px]"
           />
         </Link>
         <div className="flex items-center justify-between">
-          <h1 className="text-primary font-semibold text-[24px] leading-5">
-            ${property.price}
-            <sub className="font-normal">/{property.priceType}</sub>
+          <h1 className="text-primary font-semibold lg:text-[24px] text-[21px] leading-5">
+            ${property?.price}
+            <sub className="font-normal"> {property?.priceType === "day"
+                        ? `/pd`
+                        : property?.priceType === "week"
+                        ? "/pw"
+                        : property?.priceType === "month"
+                        ? "/pm"
+                        : "/py"}</sub>
           </h1>
           <Heart
             onClick={handleWishList}
@@ -74,28 +83,27 @@ const PropertyCardSmall = ({ property }: { property: TProperty }) => {
           />
         </div>
         <p className="text-secondary capitalize text-sm my-2 leading-[18px] font-medium">
-          {property.category?.replace(/-/g, " ") || "General"}
+          {property?.category?.replace(/-/g, " ") || "General"}
         </p>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center lg:gap-4 gap-2">
           <Image
             alt="Logo"
-            src={property.createdBy.avatar}
+            src={`${imageUrl}${property?.createdBy?.avatar}`}
             width={30}
             height={30}
-            style={{ borderRadius: "100%", objectFit: "contain" }}
+            style={{ borderRadius: "100%", objectFit: "contain"  }}
           />
           <Heading
-            name={`Villa in ${property.location.address
-              .split(" ")
+            name={`Villa in ${property?.address?.split(" ")
               .slice(1, 2)
               .join(" ")}`}
             style="font-bold text-[18px] leading-[27px] text-base"
           />
         </div>
-        <div className="flex items-center gap-2 mt-3 h-full">
+        <div className="flex items-center gap-2 lg;mt-3 mt-2 h-full">
           <TfiLocationPin size={22} color="#5C5C5C" />
-          <p className="text-base text-sm leading-[21px] font-normal">
-            {property.location.address}
+          <p className=" text-sm leading-[21px] font-normal truncate">
+            {property?.address}
           </p>
         </div>
       </div>

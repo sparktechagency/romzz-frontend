@@ -10,4 +10,12 @@ export const getFromLocalStorage = (key: any) => {
     return localStorage.getItem(key);
   }
   return null;
-};
+}; 
+
+
+interface IResultProps{
+  children: React.ReactNode
+} 
+
+export const logEvent = (name:any) => (event:any) => {};
+export const Result: React.FC<IResultProps> = ({children}) => <div className="result">{children}</div>;

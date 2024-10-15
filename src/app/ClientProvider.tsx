@@ -6,6 +6,7 @@ import AOS from "aos";
 import { Provider } from "react-redux";
 import { persistor, store } from "@/redux/store";
 import { PersistGate } from "redux-persist/integration/react";
+import { UserProvider } from "./provider/User";
 
 const ClientProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
@@ -18,9 +19,12 @@ const ClientProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <React.Fragment>
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
+      <Provider store={store}> 
+
+        <PersistGate loading={null} persistor={persistor}> 
+          <UserProvider >             
           {children}
+          </UserProvider>
           <Toaster />
         </PersistGate>
       </Provider>

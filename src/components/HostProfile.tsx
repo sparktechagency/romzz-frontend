@@ -9,6 +9,7 @@ import { Eye } from "lucide-react";
 import ClientProfile from "./ClientProfile";
 import { useGetPropertyHostDetailsQuery } from "@/redux/features/web/api/propertyApi";
 import { useGetFeedBackByIdQuery } from "@/redux/features/web/api/feedbackApi";
+import { imageUrl } from "@/redux/api/api";
 
 interface IHostProfileProps {
   id: string;
@@ -16,8 +17,9 @@ interface IHostProfileProps {
   setOpen: (open: boolean) => void;
 }
 const HostProfile: React.FC<IHostProfileProps> = ({ id, open, setOpen }) => {
-  const { data: hostProfile } = useGetPropertyHostDetailsQuery(id);
-  const { data: feedbacks } = useGetFeedBackByIdQuery(hostProfile?._id);
+  const { data: hostProfile } = useGetPropertyHostDetailsQuery(id); 
+  const { data: feedbacks } = useGetFeedBackByIdQuery(id); 
+  console.log(hostProfile); 
 
   const [openModal, setOpenModal] = useState(false);
 
@@ -25,14 +27,15 @@ const HostProfile: React.FC<IHostProfileProps> = ({ id, open, setOpen }) => {
     <div className="">
       {/* banner image and profile image section */}
       <div className="relative h-[200px]">
-        <Image src={hostbanner} alt="host-profile" fill />
+        <Image src={hostProfile?.coverImage ? `${imageUrl}${hostProfile?.coverImage}` : hostbanner} alt="host-profile" fill />
         <div className="absolute left-4 -bottom-12 border-2 p-1 rounded-full border-primary">
           <Image
-            src={hostProfile?.avatar}
+            src={`${imageUrl}${hostProfile?.avatar}`}
             alt="host-profile"
-            className="w-full h-full object-cover rounded-full"
             width={120}
-            height={120}
+            height={120} 
+            style={{width:"120px" , height:"120px" , borderRadius:"100%"}}
+           
           />
         </div>
       </div>
@@ -60,7 +63,7 @@ const HostProfile: React.FC<IHostProfileProps> = ({ id, open, setOpen }) => {
               :
             </span>
             <span className="font-medium text-[16px] leading-6 text-[#818181] w-full">
-              {hostProfile?.permanentAddress}
+              {hostProfile?.permanentLocation?.address}
             </span>
           </div>
 

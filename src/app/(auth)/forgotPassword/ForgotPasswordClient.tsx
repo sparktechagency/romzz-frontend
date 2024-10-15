@@ -22,10 +22,10 @@ const ForgotPasswordClient = () => {
         }   
 
         const data = {email:values?.email} 
-        // console.log(data); 
+        // //console.log(data); 
 
         await forgetPass(data).then((res)=>{ 
-            console.log(res); 
+            // //console.log(res);  
             if(res?.data?.success){
                 Swal.fire({
                     text: res?.data?.message,

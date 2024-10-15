@@ -11,16 +11,18 @@ import {
   addToWishlist,
   removeFromWishlist,
 } from "@/redux/features/web/slices/wishlistSlice";
+import { imageUrl } from "@/redux/api/api";
 
-const PropertyCard = ({ property }: { property: TProperty }) => {
+const PropertyCard = ({ property }: { property: TProperty }) => {  
+
   const wishLists = useAppSelector((state) => state.wishlist.properties);
   const isInWishlist = wishLists.some(
-    (wishlistProperty) => wishlistProperty._id === property._id
+    (wishlistProperty) => wishlistProperty._id === property?._id
   );
   const dispatch = useAppDispatch();
   const handleWishList = () => {
     if (isInWishlist) {
-      dispatch(removeFromWishlist(property._id));
+      dispatch(removeFromWishlist(property?._id));
       notification.success({
         message: "Romzz",
         description: "Property removed from wishlist successfully",
@@ -37,7 +39,7 @@ const PropertyCard = ({ property }: { property: TProperty }) => {
   };
 
   return (
-    <div className="pb-2">
+    <div className="pb-2 lg:w-[330px] w-[310px]">
       <div
         className="group p-2 rounded-lg"
         style={{
@@ -45,22 +47,28 @@ const PropertyCard = ({ property }: { property: TProperty }) => {
             "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
         }}
       >
-        <Link href={`/details/${property._id}`}>
-          <div className="mb-4 h-[208px] w-[315px]  overflow-hidden">
+        <Link href={`/details/${property?._id}`}>
+          <div className="mb-4 h-[208px] overflow-hidden">
             <Image
               alt="Property Image"
               height={200}
               width={300}
-              src={property.propertyImages[0]}
+              src={`${imageUrl}${property?.propertyImages[0]}`}
               style={{ objectFit: "cover" }}
-              className="group-hover:scale-105 w-full transition-all duration-300"
+              className="group-hover:scale-105 w-full transition-all duration-300 rounded-sm"
             />
           </div>
         </Link>
         <div className="flex items-center justify-between">
           <h1 className="text-primary font-semibold text-[24px] leading-5">
             ${property.price}
-            <sub className="font-normal">/{property.priceType}</sub>
+            <sub className="font-normal">{property?.priceType === "day"
+                        ? `/pd`
+                        : property?.priceType === "week"
+                        ? "/pw"
+                        : property?.priceType === "month"
+                        ? "/pm"
+                        : "/py"}</sub>
           </h1>
           <Heart
             className="cursor-pointer"
@@ -71,20 +79,20 @@ const PropertyCard = ({ property }: { property: TProperty }) => {
           />
         </div>
         <p className="text-secondary capitalize text-sm my-2 leading-[18px] font-medium">
-          {property.category?.replace(/-/g, " ") || "General"}
+          {property?.category?.replace(/-/g, " ") || "General"}
         </p>
+    
 
         <div className="flex items-center gap-4">
           <Image
             alt="Avatar"
-            src={property.createdBy.avatar}
+            src={`${imageUrl}${property?.createdBy?.avatar}`}
             width={30}
             height={30}
-            style={{ borderRadius: "100%", objectFit: "contain" }}
+            style={{ height:"30px" , width:"30px" , borderRadius: "100%", objectFit: "contain" }}
           />
           <Heading
-            name={`Villa in ${property.location.address
-              .split(" ")
+            name={`Villa in ${property?.address?.split(" ")
               .slice(1, 3)
               .join(" ")}`}
             style="font-bold text-[18px] leading-[27px] text-base"
@@ -92,8 +100,8 @@ const PropertyCard = ({ property }: { property: TProperty }) => {
         </div>
         <div className="flex items-center gap-2 mt-3">
           <TfiLocationPin size={22} color="#5C5C5C" />
-          <p className="text-base text-sm leading-[21px] font-normal">
-            {property.location.address}
+          <p className="text-base text-sm leading-[21px] font-normal truncate">
+            {property?.address}
           </p>
         </div>
       </div>

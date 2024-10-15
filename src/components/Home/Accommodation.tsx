@@ -9,7 +9,9 @@ import { TProperty } from "@/types/propertyTypes";
 import PropertyCard from "../Card/PropertyCard";
 
 const Accommodation = () => {
-  const { data } = useGetApprovePropertiesQuery([]);
+  const { data } = useGetApprovePropertiesQuery([]);  
+  const propertyLength = data?.data?.length 
+  console.log(propertyLength); 
   const ArrowLeft = ({
     currentSlide,
     slideCount,
@@ -36,9 +38,11 @@ const Accommodation = () => {
     </button>
   );
 
-  const settings: Settings = {
-    infinite: true,
+  const settings: Settings = { 
+    //@ts-ignore 
+    infinite: false,
     speed: 500,
+    initialSlide: 0, 
     arrows: true,
     slidesToShow: 4,
     slidesToScroll: 3,
@@ -91,7 +95,8 @@ const Accommodation = () => {
       {/* slider accommodation */}
       <div className="h-fit">
         <Slider {...settings}>
-          {data?.data?.slice(0, 10)?.map((property: TProperty, index) => {
+          {data?.data?.slice(0, 10)?.map((property: TProperty, index) => { 
+            //console.log(index);
             return <PropertyCard key={index} property={property} />;
           })}
         </Slider>

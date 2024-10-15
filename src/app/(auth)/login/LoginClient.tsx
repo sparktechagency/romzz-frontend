@@ -3,21 +3,21 @@ import Heading from '@/components/shared/Heading';
 import { Button, Checkbox, Form, Input } from 'antd'
 import Link from 'next/link';
 import React from 'react';
-import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import { useLoginMutation } from '@/redux/apiSlices/AuthSlices';
+import { useGetProfileQuery, useLoginMutation } from '@/redux/apiSlices/AuthSlices';
 import Swal from 'sweetalert2';
 import { setToLocalStorage } from '@/util/localStorage';
 
 const LoginClient = () => {
     const [form] = Form.useForm(); 
-    const [login] = useLoginMutation()
+    const [login] = useLoginMutation() 
+    const {data , refetch} = useGetProfileQuery(undefined)
     const router = useRouter();
     form.setFieldsValue(undefined);
 
 
     const handleSubmit = async(values: any) => { 
-        console.log(values); 
+        // //console.log(values); 
         await login(values).then((res)=>{
             if(res?.data?.success){
                 Swal.fire({
@@ -27,8 +27,9 @@ const LoginClient = () => {
                     showConfirmButton: false
                   }).then(() => {   
                     setToLocalStorage("romzzToken" , res?.data?.data?.accessToken)
-                    router.push("/"); 
                     form.resetFields()
+                    refetch()
+                    router.push("/");  
                   });
             }else{
                 Swal.fire({

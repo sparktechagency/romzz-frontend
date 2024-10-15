@@ -5,17 +5,20 @@ import React, { useEffect, useState } from 'react'
 import { FaMapLocationDot } from 'react-icons/fa6'
 import { IoLocationOutline } from 'react-icons/io5'
 import { TiArrowSortedDown } from 'react-icons/ti';
-import Property from "@/assets/property.png";
-import Person from "@/assets/person.png";
 import Link from 'next/link';
-import Image from 'next/image';
-import Heading from '@/components/shared/Heading';
-import { TfiLocationPin } from 'react-icons/tfi';
 import Filter from '@/components/Filter';
+import { useGetApprovePropertiesQuery } from '@/redux/features/web/api/propertyApi';
+import PropertyCard from '@/components/Card/PropertyCard';
 
 const FilterClient = () => {
     const [open, setOpen] = useState(false)
-    const [page, setPage] = useState<number>(1);
+    const [page, setPage] = useState<number>(1);  
+    const [area , setArea] = useState()  
+    const [search , setSearch] = useState("") 
+    const [filter , setFilter] = useState()  
+  
+    const { data } = useGetApprovePropertiesQuery({page , search , area , filter}); 
+
 
     useEffect(() => {
         const initialPage = new URLSearchParams(window.location.search).get("page") || "1";
@@ -27,7 +30,19 @@ const FilterClient = () => {
         const params = new URLSearchParams(window.location.search);
         params.set("page", page.toString());
         window.history.pushState(null, "", `?${params.toString()}`);
-    };
+    }; 
+
+    // search location  
+    const handleSearchValue =(e:any)=>{
+        const searchValue = e.target.value  
+        setSearch(searchValue)
+       
+    } 
+
+    //  select area  
+const handleSelectLocation = ( value:any) =>{ 
+    setArea(value) 
+  }
 
     return (
         <div>
@@ -40,7 +55,8 @@ const FilterClient = () => {
                 >
 
                     <div className="lg:w-[350px] w-full">
-                        <Input
+                        <Input 
+                        onChange={(e)=>handleSearchValue(e)}
                             suffix={
                                 <Link href={"/search-filter"}>
                                     <div className="w-10 cursor-pointer h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center">
@@ -62,7 +78,7 @@ const FilterClient = () => {
                     </div>
 
                     <div id="banner" className="lg:my-0 my-3 ">
-                        <Select
+                        <Select onChange={handleSelectLocation}
                             placeholder={
                                 <p className="text-base text-[16px] leading-6 font-normal">Property Area</p>
                             }
@@ -107,59 +123,8 @@ const FilterClient = () => {
                 {/* all property section */}
                 <div className="container grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-6  justify-items-center">
                     {
-                        [...Array(8)].map((item, index) => {
-                            return (
-                                <Link key={index} href={`/details/${index + 1}`}>
-                                    <div
-                                        className="max-w-[360px] group p-2 rounded-lg"
-                                        style={{
-                                            boxShadow:"rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px"
-                                        }}
-                                    >
-                                        <div className="mb-4 overflow-hidden">
-                                        <Image
-                                            alt="Logo"
-                                            src={Property}
-                                            style={{ objectFit: "contain" }}
-                                            className="group-hover:scale-105 transition-all duration-300"
-                                        />
-                                        </div>
-                                        <div className="flex items-center justify-between">
-                                            <h1 className="text-primary font-semibold text-[24px] leading-5">
-                                                $100<sub className="font-normal">/pw</sub>
-                                            </h1>
-                                            <Heart size={24} color="red" fill="transparent" />
-                                        </div>
-
-                                        <p className="text-secondary text-sm my-2 leading-[18px] font-medium">
-                                        Whole-unit
-                                        </p>
-
-
-                                        <div className="flex items-center gap-4">
-                                            <Image
-                                                alt="Logo"
-                                                src={Person}
-                                                width={30}
-                                                height={30}
-                                                style={{ borderRadius: "100%", objectFit: "contain" }}
-                                            />
-                                            <Heading
-                                                name="Villa in Tetouan"
-                                                style="font-bold text-[18px] leading-[27px] text-base"
-                                            />
-                                        </div>
-
-                                        <div className="flex items-center gap-2 mt-3">
-                                            <TfiLocationPin size={22} color="#5C5C5C" />
-                                            <p className="text-base text-sm  leading-[21px] font-normal">
-                                                55/A , b park road , Abcd area, city
-                                            </p>
-                                        </div>
-
-                                    </div>
-                                </Link>
-                            )
+                        data?.data?.map((property:any, index) => {
+                            return <PropertyCard key={index} property={property} />;
                         })
                     }
                 </div>
@@ -169,7 +134,7 @@ const FilterClient = () => {
                     <Pagination
                         current={Number(page)}
                         onChange={handlePageChange}
-                        total={50}
+                        total={data?.meta?.total}
                     />
                 </div>
 
@@ -177,7 +142,8 @@ const FilterClient = () => {
 
             <Filter
                 open={open}
-                setOpen={setOpen}
+                setOpen={setOpen} 
+                setFilter={setFilter}
             />
         </div>
     )

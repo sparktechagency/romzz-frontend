@@ -3,10 +3,6 @@ import Heading from "@/components/shared/Heading";
 import Image from "next/image";
 import React from "react";
 import banner from "@/assets/about.png";
-import { LuPhoneCall } from "react-icons/lu";
-import { Mailbox, ShieldCheck } from "lucide-react";
-import { FaMapLocationDot } from "react-icons/fa6";
-import { RiRefund2Line } from "react-icons/ri";
 import Amenities from "@/components/Amenities";
 import { useGetOurStoryQuery } from "@/redux/features/web/api/ourStoryApi";
 import { imageUrl } from "@/redux/api/api";
@@ -16,7 +12,7 @@ const AboutClient = () => {
   const { data } = useGetOurStoryQuery({});
   return (
     <div className=" pt-10">
-      <div className="container">
+      <div className="container lg:pb-0 pb-5 ">
         {/* heading  */}
         <Heading style="font-normal text-[32px]  leading-[48px] text-[#3E3E3E] mb-6">
           Our <span className="text-primary">Story</span>
@@ -25,7 +21,7 @@ const AboutClient = () => {
         {data ? (
           <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
             <div className=" ">
-              <p className="text-[#5C5C5C] font-normal text-[14px] leading-5">
+              <p className="text-[#5C5C5C] text-[19px] leading-3 font-medium">
                 {data?.title}
               </p>
               <br />
@@ -34,7 +30,7 @@ const AboutClient = () => {
               </p>
             </div>
 
-            <div className=" h-[455px] w-[607px] ">
+            <div className=" lg:h-[455px] h-full w-full lg:w-[607px] ">
               <Image
                 alt="Catering"
                 width={500}

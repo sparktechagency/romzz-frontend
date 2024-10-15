@@ -14,9 +14,8 @@ import PropertyCard from "@/components/Card/PropertyCard";
 
 const OtherProperty = ({ id }: { id: string }) => {
   const { data } = useGetSinglePropertyQuery(id);
-  const { data: properties } = useGetOtherPropertyQuery(
-    data?.data.createdBy._id
-  );
+  const { data: properties } = useGetOtherPropertyQuery(data?.data.createdBy._id); 
+
   const ArrowLeft = ({
     currentSlide,
     slideCount,
@@ -44,8 +43,9 @@ const OtherProperty = ({ id }: { id: string }) => {
   );
 
   const settings: Settings = {
-    infinite: properties?.length > 1,
+    infinite: false,
     speed: 500,
+    initialSlide: 0, 
     arrows: true,
     slidesToShow: 4,
     slidesToScroll: 3,
@@ -83,7 +83,7 @@ const OtherProperty = ({ id }: { id: string }) => {
   return (
     <div className="mt-[60px] container mb-20">
       {/* heading  */}
-      <div className="flex items-center justify-between mb-5">
+      <div className="lg:flex items-center justify-between mb-5">
         <Heading style="font-normal lg:text-[32px] text-[24px] leading-[48px] text-[#3E3E3E]">
           <span className="text-primary">Accommodation</span> For you
         </Heading>
@@ -98,11 +98,11 @@ const OtherProperty = ({ id }: { id: string }) => {
       {/* slider accommodation */}
       <div className="h-fit">
         <Slider {...settings}>
-          {properties
-            ?.slice(0, 10)
+
+          {properties?.data
             ?.map((property: TProperty, index: number) => {
               return <PropertyCard key={index} property={property} />;
-            })}
+            }).slice(0, 10)}
         </Slider>
       </div>
     </div>

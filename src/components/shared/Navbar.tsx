@@ -6,18 +6,25 @@ import Link from "next/link";
 import { AiOutlineUser } from "react-icons/ai";
 import { Badge, Drawer } from "antd";
 import { Bell, Heart, Menu, X } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Languages from "../Languages";
 import { useAppSelector } from "@/redux/hooks";
+import { useGetNotificationQuery, useUpdateMakeAsSeenMutation } from "@/redux/features/web/api/notification";
+import { useGetProfileQuery } from "@/redux/apiSlices/AuthSlices";
+import { imageUrl } from "@/redux/api/api";
 
 const Navbar = () => {
   const wishlist = useAppSelector((state) => state.wishlist.properties);
-
-  const [open, setOpen] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const pathName = usePathname();
-
+  const [isScrolled, setIsScrolled] = useState(false);   
+  const [updateMakeAsSeen]= useUpdateMakeAsSeenMutation() 
+  const {data:Notifications , refetch:notificationFetch}= useGetNotificationQuery(undefined) 
+  const {data:userInfo , refetch} = useGetProfileQuery(undefined)   
+  //console.log(userInfo);
+  const pathName = usePathname();  
+  const router = useRouter() 
+  const totalNotification = Notifications?.data?.result?.filter((item:any) => item?.isSeen === false).length  
+  //console.log(totalNotification);
   useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
@@ -33,7 +40,18 @@ const Navbar = () => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, []); 
+
+  const handleUpdateNotification =async()=>{
+  await updateMakeAsSeen(undefined).then((res)=>{//console.log(res) 
+    notificationFetch()
+    router.push("/notification")
+  }) 
+  }  
+  console.log(userInfo);
+
+  const profileImg = userInfo?.data?.avatar.startsWith("https") ? userInfo?.data?.avatar :`${imageUrl}${userInfo?.data?.avatar}`
+
 
   const item = [
     {
@@ -107,25 +125,49 @@ const Navbar = () => {
             </Badge>
           </Link>
 
-          <Link href={"/notification"}>
-            <Badge count={5} color="#FF9773">
+          <div onClick={()=>handleUpdateNotification()}>
+            <Badge count={totalNotification} color="#FF9773">
               <Bell color="#767676" size={24} />
             </Badge>
-          </Link>
+          </div> 
 
-          <Link
+
+          {
+
+              userInfo?.data ?   
+              
+              <Link
+              href="/profile"
+              className=" "
+            > 
+            <div className=" flex items-center gap-1 font-normal  text-[#767676]  text-[16px]">
+            <Image
+  src={profileImg}
+  alt="Profile Image"
+  height={42}
+  width={42}
+  style={{ borderRadius: "100%" }}
+ unoptimized 
+/>
+              <p>{userInfo?.data?.fullName}</p>
+            </div>
+            
+            </Link> 
+
+            : 
+
+            <Link
             href={"/login"}
             className="font-normal w-[120px] h-12 rounded-[24px] bg-primary text-[#F3F3F3] hidden  lg:flex items-center justify-center gap-2 text-[16px] leading-6"
           >
             <AiOutlineUser size={20} color="#F3F3F3" /> Sign In
-          </Link>
+          </Link> 
 
-          <Link
-            href={"/profile"}
-            className="font-normal w-12 h-12 rounded-[24px] bg-primary text-[#F3F3F3] flex items-center justify-center text-[16px] leading-6"
-          >
-            <AiOutlineUser size={20} color="#F3F3F3" />
-          </Link>
+          }
+
+      
+
+       
         </div>
 
         <div className="block lg:hidden">
@@ -184,18 +226,41 @@ const Navbar = () => {
             </Badge>
           </Link>
 
-          <Link href={"/notification"}>
-            <Badge count={5} color="#FF9773">
-              <Bell color="#767676" size={24} />
+         
+          <div  onClick={()=>handleUpdateNotification()} >
+          <Badge count={totalNotification} color="#FF9773">
+              <Bell color="#767676" size={24}    />
             </Badge>
-          </Link>
+          </div>
+           
+          {
 
-          <Link
-            href={"/login"}
-            className="font-normal w-[120px] h-12 rounded-[24px] bg-primary text-[#F3F3F3] flex items-center justify-center gap-2 text-[16px] leading-6"
-          >
-            <AiOutlineUser size={20} color="#F3F3F3" /> Sign In
-          </Link>
+userInfo?.data ?   
+
+<Link
+href="/profile"
+className=" "
+> 
+<div className=" flex items-center gap-1 font-normal  text-[#767676]  text-[16px]">
+<Image src={profileImg} alt="" height={42} width={42} style={{ borderRadius:"100%"}} unoptimized /> 
+<p>{userInfo?.data?.fullName}</p>
+</div>
+
+</Link> 
+
+: 
+
+<Link
+href={"/login"}
+className="font-normal w-[120px] h-12 rounded-[24px] bg-primary text-[#F3F3F3] flex items-center justify-center gap-2 text-[16px] leading-6"
+>
+<AiOutlineUser size={20} color="#F3F3F3" /> Sign In
+</Link>
+
+} 
+
+
+    
         </div>
       </Drawer>
     </div>

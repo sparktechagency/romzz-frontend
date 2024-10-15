@@ -16,16 +16,16 @@ const ResetPasswordClient = () => {
   const userData = getFromLocalStorage("userData");
   const userInfo = userData ? JSON.parse(userData) : null;
   const email = userInfo?.email;
-  console.log(email);
+  //console.log(email);
 
   const handleSubmit = async (values: any) => {
     const data = {
       email: email,
       newPassword: values?.newPassword,
     };
-    console.log(data);
+    //console.log(data);
     await resetPass(data).then((res) => {
-      console.log(res);
+      //console.log(res);
       if (res?.data?.success) {
         Swal.fire({
           text: res?.data?.message,

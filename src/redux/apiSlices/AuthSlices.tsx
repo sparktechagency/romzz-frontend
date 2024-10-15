@@ -10,7 +10,7 @@ const authSlice = romzzApi.injectEndpoints({
     // signUp page
     signUp: builder.mutation({
       query: (data) => {
-        console.log(`user:${data}`);
+        //console.log(`user:${data}`);
         return {
           url: "/users/create-user",
           method: "POST",
@@ -74,7 +74,7 @@ const authSlice = romzzApi.injectEndpoints({
    
     updateProfile:builder.mutation({
       query:(value)=>{ 
-         console.log(value);
+         //console.log(value);
          return{
       url:"/users/update-profile" ,
       method:"PATCH" ,

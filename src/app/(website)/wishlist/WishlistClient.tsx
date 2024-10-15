@@ -10,7 +10,7 @@ import NoContent from "@/components/shared/NoContent";
 
 const WishlistClient = () => {
   const wishLists = useAppSelector((state) => state.wishlist.properties);
-  // console.log(wishLists);
+  // //console.log(wishLists);
   return (
     <div className="container pt-6">
       {/* heading */}
@@ -21,7 +21,7 @@ const WishlistClient = () => {
       {/* wishlist container */}
       {wishLists.length > 0 ? (
         <div className="grid lg:grid-cols-4 grid-cols-1 justify-items-center gap-6 mb-6">
-          {wishLists.map((property, index) => {
+          {wishLists?.map((property, index) => {
             return <PropertyCard property={property} key={index} />;
           })}
         </div>

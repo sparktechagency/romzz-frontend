@@ -63,7 +63,7 @@ const SupportsClient = () => {
               style="font-medium text-[24px] leading-[29px] text-primary"
             />
             <p className="text-[#7676761] text-[14px] leading-[21px] font-normal">
-              email@gmail.com
+              romzzinfo@gmail.com
             </p>
           </div>
         </div>

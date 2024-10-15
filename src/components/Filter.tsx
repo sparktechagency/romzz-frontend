@@ -7,33 +7,29 @@ import { IoLocationOutline } from 'react-icons/io5';
 import { TiArrowSortedDown } from 'react-icons/ti';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
+import { useGetFacilitiesQuery } from '@/redux/apiSlices/ClientProfileSlices';
 
 interface IFilterProps{
     open: boolean;
-    setOpen: (open: boolean)=>void;
+    setOpen: (open: boolean)=>void; 
+    setFilter:any
 }
 
 
-const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
-    const [tab, setTab] = useState("Room mate");
+const Filter:React.FC<IFilterProps> = ({open, setOpen , setFilter}) => {
+    const [tab, setTab] = useState("flat-mate");
     const [form] = Form.useForm();
     form.getFieldsValue();
-    const [price, setPrice] = useState([0, 5000]);
-
-    const facilitiesOptions = [
-        { label: "Wi-Fi", value: "wifi" },
-        { label: "Baño privado", value: "baño_privado" },
-        { label: "Linnen ( pillow, bed sheets, towel)", value: "linnen" },
-        { label: "AC", value: "ac" },
-        { label: "Parking", value: "parking" },
-        { label: "Pet allowed", value: "pet-allowed" },
-        { label: "Heater", value: "Heater" },
-    ];
+    const [price, setPrice] = useState([0, 5000]);  
+    const {data:facilities} = useGetFacilitiesQuery(undefined) 
+    const facilitiesOptions = facilities?.data  
+    console.log(facilitiesOptions);
+   
 
     const ratingOptions = [
-        { label: "Amazing 😊", value: "5" },
-        { label: "Very Good 😊", value: "4" },
-        { label: "Good 😊", value: "3" },
+        { label: "Amazing 😊", value: "4" },
+        { label: "Very Good 😊", value: "3" },
+        { label: "Good 😊", value: "2" },
         { label: "OK 😊", value: "1" }
     ];
 
@@ -43,13 +39,39 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
         { label: "Less than 5km", value: "5" },
     ];
 
-    const handleSubmit=(values:any)=>{
-        console.log(values)
+    const handleSubmit=(values:any)=>{ 
+      
+        const {price , ...othersValue} = values   
+        
+        let newPrice = undefined;
+        if(price){
+               newPrice= `${price[0]}-${price[1]}`
+        }
+        const filterData={
+            price:newPrice , 
+            category:tab , 
+            ...othersValue
+
+        } 
+        setFilter(filterData) 
+        setOpen(false)
     }
 
     const handleReload=()=>{
         form.resetFields();
-    }
+    } 
+
+    const category = [
+        {
+            name: "Flat mate" ,
+            value:"flat-mate"
+        } , 
+        {
+            name: "Room mate" ,
+            value:"room-mate"
+        } ,  
+
+    ]
 
 
     const body =(
@@ -57,7 +79,7 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
             <div className="mt-2 border-b-[1px] border-[#C0C0C0] pb-4">
                 <ul className="flex flex-wrap items-center gap-6">
                     {
-                        ["Room mate", "Flat mate"].map((item, index) => {
+                        category.map((item, index) => {
                             return (
                                 <li
                                     key={index}
@@ -67,15 +89,15 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
                                         flex items-center justify-center 
                                         text-[16px] leading-6
                                         ${
-                                        item === tab
+                                        item?.value === tab
                                             ? "bg-white text-[#00809E] border border-primary transition-all duration-200"
                                             : "bg-[#F3F3F3] text-[#767676] border border-transparent"
                                         }
                                         rounded-3xl cursor-pointer
                                     `}
-                                    onClick={() => setTab(item)}
+                                    onClick={() => setTab(item?.value)}
                                 >
-                                    {item}
+                                    {item?.name}
                                 </li>
                             );
                         })
@@ -118,8 +140,8 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
                     </Form.Item>
                     
                     <Form.Item
-                        name={"property-type"}
-                        label={<p className="font-medium text-[16px] leading-6 text-[#636363]">Property Type</p>}
+                        name={"area"}
+                        label={<p className="font-medium text-[16px] leading-6 text-[#636363]">Property Area</p>}
                         className='col-span-6'
                         style={{marginBottom: 0}}
                     >
@@ -207,7 +229,7 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
                                                 style={{ width: 120 }}
                                                 onChange={(e) => {
                                                     const newValue = parseInt(e.target.value) || 0;
-                                                    const newPrice = [price[0], Math.max(newValue, price[0])]; // Ensure it doesn't go below the lower value
+                                                    const newPrice = [price[0], Math.max(newValue, price[0])]; 
                                                     setPrice(newPrice);
                                                 }}
                                                 className="font-semibold"
@@ -239,7 +261,7 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
                     </div>
 
                     <Form.Item
-                        name={"bed-type"}
+                        name={"bedType"}
                         label={<p className="font-medium text-[16px] leading-6 text-[#636363]">Bed Type</p>}
                         className='col-span-6'
                         style={{marginBottom: 0}}
@@ -260,16 +282,16 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
                                 </div>
                             }
                         >
-                            <Select.Option value="Sydney">Sofa</Select.Option>
-                            <Select.Option value="Sydney">Sofa Bed</Select.Option>
-                            <Select.Option value="Sydney">Single Bed</Select.Option>
-                            <Select.Option value="Melbourne">Double Bed</Select.Option>
+                            <Select.Option value="sofa">Sofa </Select.Option>
+                            <Select.Option value="sofa">Sofa Bed</Select.Option>
+                            <Select.Option value="single-bed">Single Bed</Select.Option>
+                            <Select.Option value="double-bed">Double Bed</Select.Option>
                         </Select>
                     </Form.Item>
 
 
                     <Form.Item
-                        name={"importance"}
+                        name={"sort"}
                         label={<p className="font-medium text-[16px] leading-6 text-[#636363]">Sort By</p>}
                         className='col-span-6'
                         style={{marginBottom: 0}}
@@ -290,11 +312,8 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
                                 </div>
                             }
                         >
-                            <Select.Option value="Melbourne">Rent (Low to high)</Select.Option>
-                            <Select.Option value="Melbourne">Rent ( High to low)</Select.Option>
-                            <Select.Option value="Melbourne">Featured First</Select.Option>
-                            <Select.Option value="Melbourne">Newest Listings</Select.Option>
-                            <Select.Option value="Melbourne">Earliest Available</Select.Option>
+                            <Select.Option value="price">Rent (Low to high)</Select.Option>
+                            <Select.Option value="-price">Rent ( High to low)</Select.Option>
                         </Select>
                     </Form.Item>
                     
@@ -322,19 +341,19 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
                                 </div>
                             }
                         >
-                            <Select.Option value="Sydney">Furnished</Select.Option>
-                            <Select.Option value="Melbourne">unFurnished</Select.Option>
+                            <Select.Option value="furnished">Furnished</Select.Option>
+                            <Select.Option value="unfurnished">unFurnished</Select.Option>
                         </Select>
                     </Form.Item>
                     
                     <Form.Item
-                        name={"property-type"}
+                        name={"propertyType"}
                         label={<p className="font-medium text-[16px] leading-6 text-[#636363]">Property Type</p>}
                         className='col-span-6'
                         style={{marginBottom: 0}}
                     >
                         <Select
-                            placeholder={<p className='text-base text-[16px] leading-6 font-normal'>Property Area</p>}
+                            placeholder={<p className='text-base text-[16px] leading-6 font-normal'>Property Type</p>}
                             style={{
                                 width: "100%",
                                 height: 48,
@@ -349,17 +368,17 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
                                 </div>
                             }
                         >
-                            <Select.Option value="Sydney">Sydney</Select.Option>
-                            <Select.Option value="Melbourne">Melbourne</Select.Option>
-                            <Select.Option value="Brisbane">Brisbane</Select.Option>
-                            <Select.Option value="Adelaide">Adelaide</Select.Option>
-                            <Select.Option value="Hobart">Hobart</Select.Option>
-                            <Select.Option value="Perth">Perth</Select.Option>
+                            <Select.Option value="family-house">Family House</Select.Option>
+                            <Select.Option value="apartment">Apartment</Select.Option>
+                            <Select.Option value="lodge">Lodge</Select.Option>
+                            <Select.Option value="villa">Villa</Select.Option>
+                            <Select.Option value="cottage">Cottage</Select.Option>
+                          
                         </Select>
                     </Form.Item>
 
                     <Form.Item
-                        name={"price-type"}
+                        name={"priceType"}
                         label={<p className="font-medium text-[16px] leading-6 text-[#636363]">Price Type</p>}
                         className='col-span-6'
                         style={{marginBottom: 0}}
@@ -380,9 +399,10 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
                                 </div>
                             }
                         >
-                            <Select.Option value="Sydney">Daily</Select.Option>
-                            <Select.Option value="Sydney">Weekly</Select.Option>
-                            <Select.Option value="Melbourne">Monthly</Select.Option>
+                            <Select.Option value="day">Daily</Select.Option>
+                            <Select.Option value="week">Weekly</Select.Option>
+                            <Select.Option value="month">Monthly</Select.Option>
+                            <Select.Option value="year">Yearly</Select.Option>
                         </Select>
                     </Form.Item>
                     
@@ -408,9 +428,9 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
                                 </div>
                             }
                         >
-                            <Select.Option value="Sydney">Male</Select.Option>
-                            <Select.Option value="Melbourne">Female</Select.Option>
-                            <Select.Option value="Melbourne">Others</Select.Option>
+                            <Select.Option value="male">Male</Select.Option>
+                            <Select.Option value="female">Female</Select.Option>
+                            <Select.Option value="others">Others</Select.Option>
                         </Select>
                     </Form.Item>
 
@@ -436,26 +456,26 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
                                 </div>
                             }
                         >
-                            <Select.Option value="Sydney">All</Select.Option>
-                            <Select.Option value="Melbourne">Student</Select.Option>
-                            <Select.Option value="Melbourne">Professional</Select.Option>
+                            <Select.Option value="any">Any</Select.Option>
+                            <Select.Option value="student">Student</Select.Option>
+                            <Select.Option value="professional">Professional</Select.Option>
                         </Select>
                     </Form.Item>
 
                    
                     {/* facilities */}
                     <Form.Item
-                        name={"sortBy"}
+                        name={"facilities"}
                         label={<p className="font-medium text-[16px] leading-6 text-[#636363]">Facilities</p>}
                         className='col-span-12'
                         style={{marginBottom: 0}}
                     >
                         <Checkbox.Group className="style-checkbox flex items-center flex-wrap">
                             {
-                                facilitiesOptions.map((option) => (
+                                facilitiesOptions?.map((option:any) => (
                                     <Checkbox
-                                        key={option.value}
-                                        value={option.value}
+                                        key={option._id}
+                                        value={option._id}
                                         style={{
                                             background: "#F3F3F3",
                                             height: 40,
@@ -470,7 +490,7 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
                                         className="flex text-primary items-center justify-center rounded-xl"
                                     >
                                         <p className="text-[#333333] font-medium text-[14px] leading-6">
-                                            {option.label}
+                                            {option.name}
                                         </p>
                                     </Checkbox>
                                 ))
@@ -548,7 +568,7 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen}) => {
                 </div>
 
                 <div className='flex items-center justify-between pt-4 border-t-[1px] border-[#C0C0C0]'>
-                    <Checkbox>Do You Remember this Filter?</Checkbox>
+                    <Checkbox>Save Filter</Checkbox>
                     <div className='flex items-center gap-2'>
                         <Button 
                             htmlType='button'

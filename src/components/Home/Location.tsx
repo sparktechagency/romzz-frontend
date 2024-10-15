@@ -1,21 +1,33 @@
 import React, { useEffect, useState } from "react";
 import Heading from "../shared/Heading";
-import Image from "next/image";
-import map from "@/assets/map.png";
-import ReactMapGL, { Marker } from "react-map-gl";
-import marker from "@/assets/marker.png";
+
 import "mapbox-gl/dist/mapbox-gl.css";
+import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import { useGetApprovePropertiesQuery } from "@/redux/features/web/api/propertyApi";
 
 const Location = () => {
+  const { data } = useGetApprovePropertiesQuery({}); 
+  const properties = data?.data;  
+  console.log(properties);
+
   const [viewport, setViewport] = useState({
     latitude: 0,
     longitude: 0,
     zoom: 8,
   });
 
-  const handleViewportChange = (event: any) => {
-    const { viewState } = event;
-    setViewport(viewState);
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey:"AIzaSyBnGMvBf21Petlmxsdv9UpGydeker8V2JA",
+  });
+
+  const [map, setMap] = useState(null);
+
+  const onLoad = (map: any) => {
+    setMap(map);
+  };
+
+  const onUnmount = () => {
+    setMap(null);
   };
 
   const [userLocation, setUserLocation] = useState({
@@ -66,20 +78,30 @@ const Location = () => {
             "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
         }}
       >
-        <ReactMapGL
-          {...viewport}
-          style={{ width: "100%", height: "100%", borderRadius: 20 }}
-          mapboxAccessToken="pk.eyJ1Ijoib2huYWRpciIsImEiOiJjbGYzbXB2cG4wcjNsM3FuZGkyeXgzaGp3In0.UW7J5lIaWc-P3nXa2WmRxQ"
-          mapStyle="mapbox://styles/mapbox/streets-v9"
-          onMove={handleViewportChange}
-        >
-          <Marker
-            latitude={userLocation.latitude}
-            longitude={userLocation.longitude}
-          >
-            <Image src={marker} alt="marker" width={30} height={30} />
-          </Marker>
-        </ReactMapGL>
+           {isLoaded ? (
+            <GoogleMap
+              center={{ lat: viewport.latitude, lng: viewport.longitude }}
+              zoom={10}
+              onLoad={onLoad}
+              onUnmount={onUnmount}
+              mapContainerStyle={{ width: "100%", height: "100%", borderRadius: "20px" }}
+            >
+              {properties?.map((item, index) => ( 
+              
+                   <Marker  key={index}
+                 position={{ lat: item?.location?.latitude, lng: item?.location?.longitude }} 
+                icon={{
+                  url: "/marker.png",
+                  scaledSize: new google.maps.Size(25, 30), 
+                }} 
+               
+              />   
+            ))} 
+            </GoogleMap> 
+           ) :  (
+              <div>Loading map...</div>
+            )
+            }
       </div>
     </div>
   );

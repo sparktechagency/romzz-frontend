@@ -15,7 +15,7 @@ const [changePass] = useChangePassMutation()
 
   const handleSubmit = async (values: any) => { 
     const {confirm_password , ...otherValue}= values 
-    console.log(otherValue);  
+    //console.log(otherValue);  
 
     await changePass(otherValue).then(res =>{
       if(res?.data?.success){

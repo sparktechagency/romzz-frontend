@@ -13,6 +13,7 @@ export type TProperty = {
   flore: number;
   propertyType: "apartment" | "villa" | "room" | string; // You can extend these based on your property types
   bedType: string;
+  address: string;
   bedrooms: number;
   bathrooms: number;
   balcony: number;

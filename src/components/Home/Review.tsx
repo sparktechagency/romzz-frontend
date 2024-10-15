@@ -5,9 +5,13 @@ import Slider, { Settings } from "react-slick";
 import { Rate } from "antd";
 import review from "@/assets/review.png";
 import Image from "next/image";
+import { useGetHomePageFeedbackQuery } from "@/redux/features/web/api/feedbackApi";
+import { imageUrl } from "@/redux/api/api";
 
 const Review = () => {
-  const [slideIndex, setSlideIndex] = useState(0);
+  const [slideIndex, setSlideIndex] = useState(0);  
+  const {data:userReviews} = useGetHomePageFeedbackQuery(undefined) 
+  
 
   const CustomDot = ({
     onClick,
@@ -76,7 +80,7 @@ const Review = () => {
 
       <div>
         <Slider {...settings}>
-          {[...Array(5)].map((item, index) => (
+          {userReviews?.data?.map((item:any, index:number) => (
             <div
               className={`${
                 index === slideIndex ? "slide-active" : ""
@@ -84,17 +88,15 @@ const Review = () => {
               key={index}
             >
               <div className="lg:px-14 px-3 py-6  text-black text-center flex flex-col justify-center items-center gap-3 ">
-                <Image alt="person" width={100} height={100} src={review} />
+                <Image alt="person" width={100} height={100} src={`${imageUrl}${item?.userId?.avatar}`} />
                 <p className="text=[#333333] font-normal text-[18px] leading-5">
-                  {"Adaline"}
+                  {item?.userId?.fullName}
                 </p>
                 <div className="flex items-center justify-center">
-                  <Rate allowHalf value={2.5} />
+                  <Rate allowHalf value={item?.rating} />
                 </div>
                 <p className="text-[#767676] font-normal text-[16px] leading-5">
-                  {
-                    "Literally I didn't expect but the facilities and the neighbourhood are so great, not mentioning the nice staffs from the reception."
-                  }
+                  {item?.feedback}
                 </p>
               </div>
             </div>

@@ -54,7 +54,7 @@ const NewsClient = () => {
                   <div className="translate-y-[86px]  transition-all duration-500 group-hover:translate-y-0">
                     <Heading
                       name={news.title}
-                      style="font-semibold text-[24px] leading-[32px] mb-6 text-[#FAFAFA]"
+                      style="font-semibold lg:text-[24px] text-[21px] leading-[32px] mb-6 text-[#FAFAFA]"
                     />
                     <p className="text-[#FAFAFA]">
                       {news.description.slice(0, 100)}

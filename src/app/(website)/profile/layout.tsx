@@ -2,6 +2,7 @@ import React from "react";
 import Heading from "@/components/shared/Heading";
 import Sidebar from "@/components/Profile/Sidebar";
 import Banner from "@/components/Profile/Banner";
+import PrivateProvider from "./privateProvider";
 
 const layout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -20,7 +21,11 @@ const layout = ({ children }: { children: React.ReactNode }) => {
         </div>
 
         {/* main content */}
-        <div className="col-span-10 bg-[#F7F7F7] lg:p-6 p-3">{children}</div>
+        <div className="col-span-10 bg-[#F7F7F7] lg:p-6 p-3">
+          <PrivateProvider>     
+          {children} 
+          </PrivateProvider>
+          </div>
       </div>
     </div>
   );

@@ -11,25 +11,28 @@ import { setToLocalStorage } from '@/util/localStorage';
 
 const RegisterClient = () => { 
     const [signUp , {isSuccess ,isError ,data ,error}] = useSignUpMutation() 
-    console.log(data);
+    //console.log(data);
     const router = useRouter(); 
     const [form] = Form.useForm()
 
     const handleSubmit = async (values: any) => { 
         const nidNo = parseInt(values?.nidNumber) 
-        const {confirm_password , nidNumber , ...otherValues} = values   
-        const data = {
+        const {confirm_password , nidNumber , permanentLocation ,  ...otherValues} = values   
+        const data = { 
+            permanentLocation:{
+                address: permanentLocation
+            } ,
             nidNumber:nidNo ,
             ...otherValues
         }
-        console.log(data); 
+        //console.log(data); 
         const userData = {
             email:values?.email ,
             verificationType:"emailVerification"
         }
         // router.push('/');   
         await signUp(data).then((res)=>{ 
-            console.log(res);
+            //console.log(res);
             if(res?.data?.success){
                 Swal.fire({
                     title: "Register Successful",
@@ -144,7 +147,7 @@ const RegisterClient = () => {
                 </Form.Item>
 
                 <Form.Item
-                    name="permanentAddress"
+                    name="permanentLocation"
                     label={<p className='font-medium text-[16px] leading-6 text-[#636363]'>Permanent Address</p>}
                     rules={[
                         {

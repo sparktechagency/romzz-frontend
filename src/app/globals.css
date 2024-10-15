@@ -169,4 +169,13 @@
 .priceSlider .ant-form-item .ant-form-item-label >label{
     display: block !important;
     height: 28px !important;
-}
+} 
+
+/* map close btn   */ 
+.gm-style-iw button.gm-ui-hover-effect {
+    width: 40px !important;
+height: 20px !important;
+    top: 0px;
+    right: 0px;
+    border-radius: 50%;
+  } 

@@ -1,17 +1,26 @@
-10;
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    remotePatterns: [
+  images: { 
+    remotePatterns: [ 
       {
         protocol: "http",
-        hostname: "**",
+        hostname: "*",
       },
       {
         protocol: "https",
-        hostname: "**",
+        hostname: "*",
+      },
+      {
+        protocol: "https",
+        hostname: "i.ibb.co",
+        port: "",
+        pathname: "/**",
       },
     ],
+    // remotePatterns: [
+  
+    // ],
   },
 };
 

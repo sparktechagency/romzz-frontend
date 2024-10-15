@@ -37,7 +37,7 @@ const Footer = () => {
     },
     {
       label: "Terms & Conditions",
-      path: "/term-and-conditions",
+      path: "/terms",
     },
     {
       label: "Supports",
@@ -62,7 +62,7 @@ const Footer = () => {
         });
       }
     } catch (error) {
-      console.error("Failed to send email", error);
+      //console.error("Failed to send email", error);
     }
   };
   return (
@@ -77,7 +77,7 @@ const Footer = () => {
         backgroundSize: "cover",
       }}
     >
-      <div className="container grid grid-cols-12 py-[30px] gap-8 md:gap-0">
+      <div className="lg:container grid grid-cols-12 py-[30px] px-1 gap-8 md:gap-0">
         <Link href={"/"} className="col-span-12 mb-4">
           <Image alt="Logo" src={Logo} width={188} height={150} />
         </Link>
@@ -94,8 +94,7 @@ const Footer = () => {
             return (
               <Link
                 key={index}
-                className={`
-                                        h-[21px]
+                className={`h-[21px]
                                         font-normal text-[16px] leading-6 
                                         text-[#F3F3F3]
                                         border-[#D9D9D9]
@@ -132,7 +131,7 @@ const Footer = () => {
             name="Get in touch !"
             style="font-semibold text-[16px] leading-[20px] text-[#F3F3F3] mb-2"
           />
-          <div className="w-full flex md:items-center flex-col md:flex-row gap-4">
+          <div className="w-full flex md:items-center flex-col md:flex-row lg:gap-4 gap-2 p-1">
             <Input
               placeholder="Enter Your Email"
               style={{

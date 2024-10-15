@@ -2,8 +2,6 @@
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import Heading from '../shared/Heading'; 
-import hostbanner from "@/assets/hostBanner.png";
-import person from "@/assets/person2.png";
 import { Rate } from 'antd';
 import { useGetProfileQuery, useUpdateProfileMutation } from '@/redux/apiSlices/AuthSlices';
 import { CiEdit } from 'react-icons/ci';
@@ -17,10 +15,17 @@ const Banner = () => {
     const [coverFile , setCoverFile] = useState("") 
     const [coverUrl , setCoverUrl] = useState("") 
 
-    const {data}= useGetProfileQuery(undefined) 
-    const [updateProfile]=useUpdateProfileMutation()  
+    const {data , refetch}= useGetProfileQuery(undefined) 
+    const [updateProfile]=useUpdateProfileMutation()   
+    const [rating, setRating] = useState<number>(0);
+   
+    const userInfo = data?.data    
 
-    const userInfo = data?.data  
+  useEffect(() => {
+    if (data?.data?.rating) {
+      setRating(parseInt(data.data.rating));
+    }
+  }, [data]);
 
 //   profile 
     const onImageChange= async(e:any)=>{
@@ -29,12 +34,13 @@ const Banner = () => {
   setImgFile(file)  
   setImgUrl(URL.createObjectURL(file))
   const formData = new FormData()  
-
-  if(imgFile){
-     formData.append("avatar" ,JSON.stringify(imgFile)) 
+  //console.log("imgFile",file);
+  if(file){
+     formData.append("avatar",file) 
   }  
-  await updateProfile(formData).then((res)=>{
-     console.log(res);
+  await updateProfile(formData).then((res)=>{ 
+    refetch()
+     //console.log(res);
   }) 
 
     }  
@@ -45,21 +51,22 @@ const Banner = () => {
  setCoverFile(file) 
  setCoverUrl(URL.createObjectURL(file)) 
 
- const formData = new FormData()  
+ const formData = new FormData()   
+//console.log(file);
 
- if(coverFile){
-    formData.append("coverImage" ,JSON.stringify(coverFile)) 
+ if(file){
+    formData.append("coverImage",file) 
  }  
 
- await updateProfile(formData).then((res)=>{
-    console.log(res);
+ await updateProfile(formData).then((res)=>{ 
+  refetch()
+    //console.log(res);
  }) 
 
   } 
 
   const profileImg= imgUrl ? imgUrl : userInfo?.avatar?.startsWith("https") ? userInfo?.avatar : `${imageUrl}${userInfo?.avatar}`  
   const coverImg = coverUrl? coverUrl: userInfo?.coverImage?.startsWith("https") ? userInfo?.coverImage : `${imageUrl}${userInfo?.coverImage}`  
-  console.log(coverImg);
 
     return (
         <div>
@@ -73,7 +80,7 @@ const Banner = () => {
                   width: "100%",
                 }}
               >
-          <Image src={ coverImg ? coverImg : hostbanner} alt="host-profile" width={400} height={300} style={{height:"100%" , width:"100%" , zIndex:0 ,  objectFit: "cover", borderRadius:"10px"}} />  
+          <Image src={coverImg} alt="host-profile" width={400} height={300} style={{height:"100%" , width:"100%" , zIndex:0 ,  objectFit: "cover", borderRadius:"10px"}}  />  
                        <label
                   htmlFor="imageUploadBanner"
                   style={{
@@ -113,11 +120,12 @@ const Banner = () => {
                 }}
               >
                   <Image
-              src={profileImg ? profileImg : person}
+              src={profileImg}
               alt="host-profile"
               width={120}
               height={120}
-              className="border-2 rounded-full p-1 border-primary"
+              className="border-2 rounded-full p-1 border-primary" 
+            unoptimized
             />
                
                     
@@ -144,7 +152,7 @@ const Banner = () => {
             id="imageUpload"
             type="file"
             src=""
-            onChange={onImageChange}
+            onChange={(e)=>onImageChange(e)}
             style={{ display: "none" }}
             alt=""
           />
@@ -156,8 +164,8 @@ const Banner = () => {
                 name={userInfo?.fullName}
                 style="font-semibold text-[24px] leading-[36px] text-[#333333]"
               />
-
-              <Rate style={{ color: "#FF9773" }} defaultValue={userInfo?.rating} />
+            <Rate disabled defaultValue={rating} />
+        
               <p className="text-[#767676] text-[14px]  leading-6 font-normal">
                {userInfo?.presentAddress}
               </p>

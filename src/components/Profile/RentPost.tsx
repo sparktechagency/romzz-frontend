@@ -1,6 +1,6 @@
 "use client";
 import { imageUrl } from "@/redux/api/api";
-import { useCreateBookingPostMutation, useGetFacilitiesQuery } from "@/redux/apiSlices/ClientProfileSlices";
+import { useCreateBookingPostMutation, useGetFacilitiesQuery, useUpdatePostMutation } from "@/redux/apiSlices/ClientProfileSlices";
 
 import {
   Button,
@@ -8,6 +8,7 @@ import {
   DatePicker,
   Form,
   Input,
+  message,
   Select,
   Upload,
 } from "antd";
@@ -17,28 +18,105 @@ import {
   DollarSign,
 } from "lucide-react";
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaMapLocationDot } from "react-icons/fa6";
+import Swal from "sweetalert2";
 
 interface IRentPostProps {
   open: boolean;
   setOpen: (open: boolean) => void; 
-  rentData:any
+  rentData:any; 
+  updateInfo:any ;
+  refetchAllPost:any
 }
 
-const RentPost: React.FC<IRentPostProps> = ({ setOpen  , rentData}) => {   
+const RentPost: React.FC<IRentPostProps> = ({ setOpen  , rentData , updateInfo, refetchAllPost}) => {   
 
-  const {data:facilities}= useGetFacilitiesQuery(undefined) 
-  const [createBookingPost] = useCreateBookingPostMutation()
+  const {data:facilities , refetch}= useGetFacilitiesQuery(undefined) 
+  const [createBookingPost , {isSuccess , isError , error}] = useCreateBookingPostMutation() 
+  const [updatePost] = useUpdatePostMutation()
+  const [videoFile, setVideoFile] = useState<any[]>([]);
   const [fileList, setFileList] = useState([]);
   const [form] = Form.useForm(); 
+
+console.log(updateInfo);
+
+useEffect(() => {
+  if (updateInfo) {
+    form.setFieldsValue({
+      title: updateInfo?.title, 
+      address: updateInfo?.address, 
+      category: updateInfo?.category, 
+      price: updateInfo?.price, 
+      priceType: updateInfo?.priceType, 
+      description: updateInfo?.description,  
+      size: updateInfo?.size,  
+      decorationType: updateInfo?.decorationType,  
+      flore: updateInfo?.flore,  
+      propertyType: updateInfo?.propertyType, 
+      bedType: updateInfo?.bedType, 
+      bedrooms: updateInfo?.bedrooms, 
+      bathrooms: updateInfo?.bathrooms, 
+      balcony: updateInfo?.balcony, 
+      kitchen: updateInfo?.kitchen, 
+      dining: updateInfo?.dining, 
+      drawing: updateInfo?.drawing, 
+      moveOn: updateInfo?.moveOn ? moment(updateInfo.moveOn) : null,
+      unavailableDay: updateInfo?.unavailableDay?.map((day: string) => { 
+
+        return(
+
+        moment(day, 'YYYY-MM-DD')
+      ) || []
+    }) ,
+      allowedGender: updateInfo?.allowedGender, 
+      guestType: updateInfo?.guestType,  
+      occupation: updateInfo?.occupation,  
+      facilities: updateInfo?.facilities || [],  
+      propertyVideo: updateInfo?.propertyVideo
+        ? [{
+            uid: '-1',
+            name: 'property-video.mp4',
+            status: 'done',
+            url: `${imageUrl}${updateInfo.propertyVideo}`,
+          }]
+        : [],
+
+    });  
+
+    if (updateInfo?.propertyVideo) {
+      setVideoFile([{
+        uid: '-1',
+        name: 'property-video.mp4',
+        status: 'done',
+        url: `${imageUrl}${updateInfo.propertyVideo}`,
+      }]);
+    }else{
+      setVideoFile([])
+    }
+
+    if (updateInfo?.propertyImages) {
+      const imageFiles = updateInfo?.propertyImages?.map((image: string, index: number) => ({
+        uid: index, 
+        name: `image-${index + 1}.jpg`,
+        status: 'done',
+        url: `${imageUrl}${image}`, 
+      }));
+      setFileList(imageFiles); 
+    }
+
+  }
+}, [updateInfo, form]); 
+
 
 
   const handleSwitch = async(values: any) => {   
     const formData = new FormData()
-    const {address, propertyImages ,unavailableDay ,moveOn , ...otherValues}= values    
+    const { propertyImages ,unavailableDay ,moveOn ,propertyVideo , ...otherValues}= values     
 
-    const propertyImagesFiles = fileList.map((file: any) => file?.originFileObj)  
+    //console.log(propertyVideo);
+
+    const propertyImagesFiles = fileList?.map((file: any) => file?.originFileObj)  
     if(propertyImagesFiles){
       for(const image of propertyImagesFiles){
         formData.append("propertyImages" ,image )
@@ -46,13 +124,17 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen  , rentData}) => {
     } 
 
     const ownerShipImageList = rentData?.ownershipImages?.map((file: any) => file?.originFileObj)   
-    console.log(ownerShipImageList); 
+    //console.log(ownerShipImageList); 
 
     if(ownerShipImageList){
       for(const image of ownerShipImageList){       
         formData.append("ownershipImages", image)
       }
     }
+ 
+    if (videoFile && videoFile[0]?.originFileObj) {
+      formData.append("propertyVideo", videoFile[0].originFileObj);
+    } 
 
     const formattedUnavailableDays = unavailableDay.map((day: any) =>
       moment(day).format('YYYY-MM-DD')
@@ -60,30 +142,55 @@ const RentPost: React.FC<IRentPostProps> = ({ setOpen  , rentData}) => {
 
     const formatMoveOn = moment(moveOn).format("YYYY-MM-DD")  
 
-    const location = {
-      address:address
-    } 
-
     const datas = {
       unavailableDay:formattedUnavailableDays ,
       moveOn:formatMoveOn ,
-      location:location ,
       ownerType:rentData?.ownerType ,
       ownerNumber:rentData?.ownerNumber ,
       ...otherValues
     } 
 
-  formData.append("data" , JSON.stringify(datas))  
+  formData.append("data" , JSON.stringify(datas))     
 
-await createBookingPost(formData).then(res => console.log(res)
+  const id = updateInfo?._id
 
-)
+  if(id){
+await updatePost({id,formData}).then((res)=>{  
+  console.log(res);
+  handleResponse(res)
+})
+  }else{ 
+    await createBookingPost(formData).then(res => {  
+      console.log(res);
+      handleResponse(res)
+  }
+    ) } 
+   }; 
 
-
-    // setOpen(false); 
-    // form.resetFields(); 
-    // setFileList([]); 
-  };
+  const handleResponse = (res:any)=>{
+    if(res?.data?.success){
+      Swal.fire({
+          text: res?.data?.message,
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false
+        }).then(() => {   
+          setOpen(false)
+          setVideoFile([])
+          setFileList([]) 
+          refetchAllPost()
+          refetch()
+          form.resetFields()  
+        });
+  }
+  else{
+      Swal.fire({
+      //@ts-ignore
+          text: res?.error?.data?.message,  
+          icon: "error",
+        });
+  }  
+  }
 
   const facilitiesOptions = facilities?.data
   return (
@@ -93,9 +200,38 @@ await createBookingPost(formData).then(res => console.log(res)
       layout="vertical"
       className="h-[650px] flex flex-col "
     >
-      <div className="flex-1 overflow-y-auto custom-scrollbar-container pr-3">
+      <div className="flex-1 overflow-y-auto custom-scrollbar-container pr-3"> 
         <div className=" grid overflow-y-auto grid-cols-12 gap-6">
-          {/* property name */}
+  
+ {/* property video   */} 
+ <Form.Item
+  name="propertyVideo"
+
+  getValueFromEvent={(e) =>{e && setVideoFile(e.fileList)} }
+  label={<p className="font-medium text-[16px] leading-6 text-[#636363]">Property Video</p>}
+  style={{ marginBottom: 0 }}
+  className="col-span-4"
+>
+  <Upload
+    accept="video/*"
+    maxCount={1}
+    listType="picture-card"
+   
+    beforeUpload={(file) => {
+      const isVideo = file?.type?.startsWith("video/");
+      if (!isVideo) {
+        message.error(`${file.name} is not a video file`);
+      }
+      return isVideo;
+    }}
+    onChange={({ fileList }) =>{setVideoFile(fileList)}}  
+    fileList={videoFile}
+  >
+    {videoFile.length < 1 && "+ Upload"}
+  </Upload>
+</Form.Item>
+
+      {/* property image  */}
           <Form.Item
             name="propertyImages"
             valuePropName="propertyImages"
@@ -117,7 +253,7 @@ await createBookingPost(formData).then(res => console.log(res)
               },
             ]}
             style={{ marginBottom: 0 }}
-            className="col-span-12"
+            className="col-span-8"
           >
             <Upload
               multiple
@@ -125,9 +261,10 @@ await createBookingPost(formData).then(res => console.log(res)
               listType="picture-card"
               fileList={fileList}
             >
-              {fileList.length < 5 && "+ Upload"}
+              {fileList.length < 12 && "+ Upload"}
             </Upload>
           </Form.Item>
+        
 
           {/* property name */}
           <Form.Item

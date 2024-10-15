@@ -1,104 +1,105 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import ReactMapGL, { Marker } from "react-map-gl";
-import marker from "@/assets/marker.png";
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, MoveLeft, Search, SlidersHorizontal } from "lucide-react";
 import Heading from "@/components/shared/Heading";
-import { Input, Select } from "antd";
+import { Input, notification, Select, Tooltip } from "antd";
 import { IoLocationOutline } from "react-icons/io5";
 import { TiArrowSortedDown } from "react-icons/ti";
-import Person from "@/assets/person.png";
 import { TfiLocationPin } from "react-icons/tfi";
-import "mapbox-gl/dist/mapbox-gl.css";
+import { useGetApprovePropertiesQuery } from "@/redux/features/web/api/propertyApi";
+import { GoogleMap, InfoWindow, Marker, useJsApiLoader } from "@react-google-maps/api"; 
+import LocationCard from "./LocationCard";
+import { imageUrl } from "@/redux/api/api";
+import Filter from "@/components/Filter";
 
-const SearchFilter = () => {
+const SearchFilter = () => { 
+const  [search , setSearch] = useState() 
+const [area , setArea] = useState() 
+const [activeMarker, setActiveMarker] = useState<number | null>(null); 
+const [open, setOpen] = useState(false); 
+const [filter , setFilter] = useState({})   
+  const { data } = useGetApprovePropertiesQuery({search , area ,filter }); 
+  const properties = data?.data; 
+  console.log(properties);    
+
+
+  const handleMarkerClick = (index: number) => { 
+    if (activeMarker === index) {
+      setActiveMarker(null); 
+    } else {
+      setActiveMarker(index); 
+    }
+  }; 
+
+//  search location 
+ const handleLocation =(e:any) =>{ 
+  const searchValue = e.target.value 
+  setSearch(searchValue)
+  //console.log(searchValue);
+ } 
+
+//  select area  
+const handleSelectLocation = ( value:any) =>{ 
+  setArea(value) 
+}
+
   const [viewport, setViewport] = useState({
     latitude: 0,
     longitude: 0,
     zoom: 3,
   });
 
-  const handleViewportChange = (event: any) => {
-    const { viewState } = event;
-    setViewport(viewState);
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey:"AIzaSyBnGMvBf21Petlmxsdv9UpGydeker8V2JA",
+  });
+
+  const [map, setMap] = useState(null);
+
+  const onLoad = (map: any) => {
+    setMap(map);
   };
 
-  const properties = [
-    {
-      latitude: 20.593683,
-      longitude: 78.962883,
-    },
-    {
-      latitude: 19.075983,
-      longitude: 72.877655,
-    },
-    {
-      latitude: 12.97675,
-      longitude: 77.57528,
-    },
-    {
-      latitude: 23.810331,
-      longitude: 90.412521,
-    },
-    {
-      latitude: 30.550435,
-      longitude: 76.930733,
-    },
-    {
-      latitude: 33.664925,
-      longitude: 74.935684,
-    },
-    {
-      latitude: 34.320755,
-      longitude: 77.79213,
-    },
-    {
-      latitude: 33.658067,
-      longitude: 73.0196,
-    },
-  ];
-
-  /* const [userLocation, setUserLocation] = useState({
-        latitude: 0,
-        longitude: 0,
-    }); */
+  const onUnmount = () => {
+    setMap(null);
+  };
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
-      /* setUserLocation({
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-            }); */
       setViewport((prev) => ({
         ...prev,
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
       }));
     });
-  }, []);
+  }, []); 
+
+  // const ropertityDetails =(value:any)=> <div> hello</div> 
 
   return (
     <div className="container lg:h-[calc(100vh-96px)] h-full py-6">
       <div className="rounded-lg grid lg:grid-cols-12 grid-cols-1 h-full border border-base border-opacity-[10%]">
+        {/* Sidebar */}
         <div className="col-span-4 bg-[#F9F9F9] p-2 flex flex-col overflow-hidden">
+          {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <Link href={"/"}>
-              <div className="w-[91px] h-[31px] rounded-[90px] flex  items-center justify-center gap-1 bg-[#F3F3F3] text-base">
+              <div className="w-[91px] h-[31px] rounded-[90px] flex items-center justify-center gap-1 bg-[#F3F3F3] text-base">
                 <MoveLeft size={18} color="#5C5C5C" />
                 Back
               </div>
             </Link>
 
-            {/* heading  */}
-            <Heading style="font-normal text-[32px]  leading-[48px] text-[#3E3E3E]">
+            <Heading style="font-normal text-[32px] leading-[48px] text-[#3E3E3E]">
               <span className="text-primary">Romzz</span> Map
             </Heading>
           </div>
 
+          {/* Search and Filters */}
           <div className="px-2 border-b-[1px] border-base pb-4 border-opacity-[20%]">
-            <Input
+            <Input 
+            onChange={(e)=>handleLocation(e)}
               suffix={
                 <div className="w-10 cursor-pointer h-10 rounded-full bg-[#00809E] flex items-center justify-center">
                   <Search size={24} color="#F3F3F3" />
@@ -113,112 +114,131 @@ const SearchFilter = () => {
                 boxShadow: "none",
               }}
               placeholder="Search your destination"
-              className="placeholder:text-[#767676] placeholder:text-[16px] placeholder:font-bold placeholder:leading-[14px]"
+              className="placeholder:text-[#767676] placeholder:text-[16px] placeholder:font-bold"
             />
 
-            <div
-              className="flex items-center justify-between gap-10"
-              id="search-filter"
-            >
-              <Select
-                placeholder={
-                  <p className="text-base text-[16px] leading-6 font-normal">
-                    Property Area
-                  </p>
-                }
-                style={{
-                  width: "100%",
-                  height: 48,
-                  borderRadius: 24,
-                  padding: 0,
-                }}
+            <div className="flex items-center justify-between gap-10" id="search-filter">
+              <Select onChange={handleSelectLocation} 
+                placeholder={<p className="text-base text-[16px] font-normal">Property Area</p>}
+                style={{ width: "100%", height: 48, borderRadius: 24 }}
                 suffixIcon={
                   <div className="w-10 h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center">
                     <TiArrowSortedDown size={24} color="#00809E" />
                   </div>
                 }
               >
-                <Select.Option value="Sydney">Sydney</Select.Option>
-                <Select.Option value="Melbourne">Melbourne</Select.Option>
-                <Select.Option value="Brisbane">Brisbane</Select.Option>
-                <Select.Option value="Adelaide">Adelaide</Select.Option>
-                <Select.Option value="Hobart">Hobart</Select.Option>
-                <Select.Option value="Perth">Perth</Select.Option>
+                {["Sydney", "Melbourne", "Brisbane", "Adelaide", "Hobart", "Perth"].map((city) => (
+                  <Select.Option key={city} value={city} >
+                    {city}
+                  </Select.Option>
+                ))}
               </Select>
 
-              <div className="flex items-center gap-3 cursor-pointer">
+              <div  onClick={() => setOpen(true)} className="flex items-center gap-3 cursor-pointer">
                 <SlidersHorizontal size={14} color="#5C5C5C" />
-                <p className="text-base text-[16px] font-normal leading-6">
-                  Filter
-                </p>
+                <p className="text-base text-[16px] font-normal">Filter</p>
               </div>
             </div>
           </div>
 
-          {/* property tainer */}
-          <div className="flex-1 overflow-y-auto mt-1 chat">
-            {[...Array(10)].map((item, index) => {
-              return (
-                <div
-                  key={index}
-                  className="border bg-white rounded-lg mb-2 border-gray-50 p-[10px]"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-4 ">
-                      <Image
-                        alt="Logo"
-                        src={Person}
-                        width={30}
-                        height={30}
-                        style={{ borderRadius: "100%", objectFit: "contain" }}
-                      />
-                      <Heading
-                        name="Villa in Tetouan"
-                        style="font-bold text-[18px] leading-[27px] text-base"
-                      />
-                    </div>
-                    <Heart size={24} color="red" fill="transparent" />
-                  </div>
+          {/* Properties List */}
+          <div className="flex-1 overflow-y-auto mt-1">
+            {properties?.map((item, index) => ( 
 
-                  <div className="flex items-center justify-between">
-                    <p className="text-base text-sm  flex items-center gap-2 leading-[21px] font-normal">
-                      <TfiLocationPin size={22} color="#5C5C5C" />
-                      55/A , b park road , Abcd area, city
-                    </p>
-                    <h1 className="text-primary font-semibold text-[24px] leading-5">
-                      $100<sub className="font-normal">/pw</sub>
-                    </h1>
-                  </div>
-                </div>
-              );
-            })}
+           <LocationCard key={index} item={item} />
+            ))}
           </div>
         </div>
 
+        {/* Map Section */}
         <div className="lg:col-span-8 col-span-12 w-full lg:h-full h-[400px] overflow-hidden p-3">
-          <ReactMapGL
-            {...viewport}
-            style={{ width: "100%", height: "100%", borderRadius: 20 }}
-            mapboxAccessToken="pk.eyJ1Ijoib2huYWRpciIsImEiOiJjbGYzbXB2cG4wcjNsM3FuZGkyeXgzaGp3In0.UW7J5lIaWc-P3nXa2WmRxQ"
-            mapStyle="mapbox://styles/mapbox/streets-v9"
-            onMove={handleViewportChange}
-          >
-            {properties?.map((item, index) => {
-              return (
-                <Marker
-                  key={index}
-                  latitude={item.latitude}
-                  longitude={item.longitude}
-                >
-                  <div>
-                    <Image src={marker} alt="marker" width={30} height={30} />
+          {isLoaded ? (
+            <GoogleMap
+              center={{ lat: viewport.latitude, lng: viewport.longitude }}
+              zoom={10}
+              onLoad={onLoad}
+              onUnmount={onUnmount}
+              mapContainerStyle={{ width: "100%", height: "100%", borderRadius: "20px" }}
+            >
+              {properties?.map((item, index) => ( 
+              
+                   <Marker   key={index}
+                position={{ lat: item?.location?.latitude, lng: item?.location?.longitude }} 
+                icon={{
+                  url: "/marker.png",
+                  scaledSize: new google.maps.Size(25, 30), 
+                }} 
+                onClick={() => handleMarkerClick(index)}
+              >  
+                {activeMarker === index && (  
+                  <div className="  "> 
+                  <InfoWindow
+              position={{ lat: item?.location?.latitude, lng: item?.location?.longitude }}
+              onCloseClick={() => setActiveMarker(null)}
+            >
+              <div className="grid grid-cols-12 gap-2 " style={{ minWidth: "250px", borderRadius: "10px" }}>
+                {/* Left Column with Image */}
+                <div className="col-span-6">
+                  <Image
+                    src={`${imageUrl}${item?.propertyImages[0]}`} // Ensure the image path is valid
+                    alt={item?.title}
+                    width={100}
+                    height={100}
+                    style={{ borderRadius: "20px", objectFit: "cover" }}
+                  />
+                </div>
+
+                {/* Right Column with Details */}
+                <div className="col-span-6">
+                  <h1 className="text-primary font-semibold text-[15px] my-1">
+                    {item?.price}
+                    <sub>
+                      {item?.priceType === "day"
+                        ? `/pd`
+                        : item?.priceType === "week"
+                        ? "/pw"
+                        : item?.priceType === "month"
+                        ? "/pm"
+                        : "/py"}
+                    </sub>
+                  </h1>
+                  <p className="py-1 text-[14px] font-semibold ">{item?.category}</p>
+
+                  {/* User and Title */}
+                  <div className="flex items-center gap-2">
+                    <Image
+                      alt="User Avatar"
+                      src={`${imageUrl}${item?.createdBy?.avatar}`}
+                      width={20}
+                      height={20}
+                      style={{ borderRadius: "100%", objectFit: "contain" }}
+                    />
+                    <Heading name={item?.title} style="font-bold text-[14px] leading-[15px]" />
                   </div>
-                </Marker>
-              );
-            })}
-          </ReactMapGL>
+
+                  {/* Address */}
+                  <p className="text-sm flex items-center gap-2 font-normal py-1">
+                    <TfiLocationPin size={14} color="#5C5C5C" />
+                    {item?.location?.address}
+                  </p>
+                </div>
+              </div>
+            </InfoWindow>
+
+                  </div>
+          )} 
+
+               </Marker>
+            
+             
+              ))}
+            </GoogleMap>
+          ) : (
+            <div>Loading map...</div>
+          )}
         </div>
-      </div>
+      </div> 
+      <Filter open={open} setOpen={setOpen} setFilter={setFilter} />
     </div>
   );
 };

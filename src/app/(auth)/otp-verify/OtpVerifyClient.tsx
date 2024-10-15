@@ -22,7 +22,7 @@ const userInfo= userData ? JSON.parse(userData) : null;
  const handleResend =async()=>{
  const data = {email: userInfo?.email} 
  await resendEmail(data).then(res =>{
-  console.log(res); 
+  //console.log(res); 
       if(res?.data?.success){
       Swal.fire({
         text: res?.data?.message,
@@ -44,14 +44,14 @@ const userInfo= userData ? JSON.parse(userData) : null;
 
 
   const handleSubmit = async (values: any) => {  
-    console.log(values);  
+    //console.log(values);  
 
     const otpValue={
      email: userInfo?.email ,
      verificationType: userInfo?.verificationType , 
      otp:parseInt(values?.otp)
     } 
-    console.log(otpValue); 
+    //console.log(otpValue); 
 
     if(userInfo?.verificationType === "emailVerification"){
   await verifyOtp(otpValue).then(res =>{

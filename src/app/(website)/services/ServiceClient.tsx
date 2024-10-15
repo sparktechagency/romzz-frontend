@@ -7,27 +7,24 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { IoLocationOutline } from "react-icons/io5";
-import { TfiLocationPin } from "react-icons/tfi";
 import { TiArrowSortedDown } from "react-icons/ti";
-import Property from "@/assets/property.png";
-import Person from "@/assets/person.png";
 import Filter from "@/components/Filter";
 import { useGetApprovePropertiesQuery } from "@/redux/features/web/api/propertyApi";
 import PropertyCard from "@/components/Card/PropertyCard";
 
 const ServiceClient = () => {
-  const [page, setPage] = useState<number>(1);
-  const { data } = useGetApprovePropertiesQuery([
-    { name: "limit", value: 10 },
-    { name: "page", value: page },
-  ]);
-  console.log(data);
+  const [page, setPage] = useState<number>(1); 
+  const [filter , setFilter] = useState({})   
+  //console.log(filter);
+  const { data } = useGetApprovePropertiesQuery({page ,filter });
+  //console.log(data);
 
-  const [tab, setTab] = useState("All");
+  const [tab, setTab] = useState(""); 
+  //console.log(tab);
   const [open, setOpen] = useState(false);
   useEffect(() => {
     const initialTab =
-      new URLSearchParams(window.location.search).get("tab") || "All";
+      new URLSearchParams(window.location.search).get("tab") || "";
     const initialPage =
       new URLSearchParams(window.location.search).get("page") || "1";
     setPage(Number(initialPage));
@@ -39,6 +36,13 @@ const ServiceClient = () => {
     const params = new URLSearchParams(window.location.search);
     params.set("tab", tab);
     window.history.pushState(null, "", `?${params.toString()}`);
+
+    const data = {
+      category: tab
+    }  
+
+    setFilter(data)
+
   };
 
   const handlePageChange = (page: number) => {
@@ -47,7 +51,23 @@ const ServiceClient = () => {
     params.set("page", page.toString());
     window.history.pushState(null, "", `?${params.toString()}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  }; 
+
+  const categories = [
+    {
+      name: "All" ,
+      value:""
+  } , 
+    {
+      name: "Flat mate" ,
+      value:"flat-mate"
+  } , 
+  {
+      name: "Room mate" ,
+      value:"room-mate"
+  } , 
+
+  ]
 
   return (
     <div>
@@ -123,18 +143,16 @@ const ServiceClient = () => {
                 Filter
               </p>
             </div>
-            <Link href={"/filter?search="}>
               <div className="lg:w-[62px] w-[40px] cursor-pointer lg:h-[62px] h-[40px] rounded-full bg-primary flex items-center justify-center">
                 <Search size={24} color="#F3F3F3" />
               </div>
-            </Link>
           </div>
         </div>
 
         {/* property type section */}
         <div className="mt-8">
           <ul className="flex lg:flex-row flex-wrap items-center justify-center gap-6">
-            {["All", "Room mate", "Flat mate", "Whole Unit", "House"].map(
+            {categories.map(
               (item, index) => {
                 return (
                   <li
@@ -145,15 +163,15 @@ const ServiceClient = () => {
                                             flex items-center justify-center 
                                             text-[16px] leading-5 text-base
                                             ${
-                                              item === tab
+                                              item?.value === tab
                                                 ? "bg-secondary "
                                                 : "bg-[#ADADAD] "
                                             }
                                             rounded-3xl text-white cursor-pointer
                                         `}
-                    onClick={() => handleTabChange(item)}
+                    onClick={() => handleTabChange(item?.value)}
                   >
-                    {item}
+                    {item?.name}
                   </li>
                 );
               }
@@ -164,7 +182,7 @@ const ServiceClient = () => {
 
       {/* all property section */}
       <div className="container grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-6 mt-10  justify-items-center">
-        {data?.data.map((property, index) => {
+        {data?.data?.map((property, index) => {
           return <PropertyCard property={property} key={index} />;
         })}
       </div>
@@ -177,11 +195,10 @@ const ServiceClient = () => {
           }}
           current={Number(page)}
           onChange={handlePageChange}
-          pageSize={data?.meta.limit || 10}
           total={data?.meta.total}
         />
       </div>
-      <Filter open={open} setOpen={setOpen} />
+      <Filter open={open} setOpen={setOpen}  setFilter={setFilter}  />
     </div>
   );
 };

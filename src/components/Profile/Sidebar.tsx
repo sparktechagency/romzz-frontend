@@ -1,14 +1,24 @@
 "use client";
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Select } from 'antd';
 import { TiArrowSortedDown } from "react-icons/ti";
+import { useGetProfileQuery } from '@/redux/apiSlices/AuthSlices';
 
 const Sidebar = () => {
     const path = usePathname();
-    const pathName = path?.split("/")[2];
+    const pathName = path?.split("/")[2];  
+    const router = useRouter() 
+    const {data:userData} = useGetProfileQuery(undefined)  
+    const isSubscribe = userData?.data?.isSubscribed 
+    const isAccess = userData?.data?.hasAccess
+    //console.log(pathName); 
 
+    const handleLogout =()=>{
+        localStorage.removeItem("romzzToken") 
+        router.push("/login")
+    }
     const item = [
         {
             label: "Profile",
@@ -22,10 +32,7 @@ const Sidebar = () => {
             label: "Subscription",
             path: "subscription"
         },
-        {
-            label: "Rental Details",
-            path: "rental-details"
-        }
+      
     ]
     return (
         <div id='language-change'>
@@ -49,7 +56,28 @@ const Sidebar = () => {
                         </Link>
                     )
                 })
-            }
+            }  
+
+            {
+                 isAccess && isSubscribe ?  
+
+                 <li 
+                className={`
+                 text-[16px] leading-6 
+                                    font-normal text-[#F7F7F7] 
+                                    list-none h-[44px] pl-6  
+                                     ${ pathName === "rental-details" ? "bg-[#007490]" : "bg-transparent"}
+                                  hover:bg-[#007490] transition-all duration-150
+                                    flex items-center
+                `}  
+                onClick={()=>router.push("/profile/rental-details")}
+            >
+                Rental Details
+            </li>  
+            : ""
+            } 
+
+
             <li 
                 className={`
                     text-[16px] leading-6 
@@ -80,7 +108,8 @@ const Sidebar = () => {
                     list-none h-[44px] pl-6
                     hover:bg-[#007490] transition-all duration-150
                     flex items-center
-                `}
+                `}  
+                onClick={()=>handleLogout()}
             >
                 Logout
             </li>
