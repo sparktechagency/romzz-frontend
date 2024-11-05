@@ -82,9 +82,9 @@ const ServiceClient = () => {
       >
         <div
           data-aos="fade-up"
-          className="lg:w-[874px] bg-white lg:h-[78px] py-2 lg:rounded-[59px] rounded-[20px] flex lg:flex-row  flex-col items-center justify-between  pr-3"
+          className="lg:w-[574px] bg-white lg:h-[78px] py-2 lg:rounded-[59px] rounded-[20px] flex lg:flex-row  flex-col items-center justify-between  pr-3"
         >
-          <div className="lg:w-[350px] w-full">
+          <div className="lg:w-[320px] w-full">
             <Input
               suffix={
                 <Link href={"/search-filter"}>
@@ -104,33 +104,6 @@ const ServiceClient = () => {
               placeholder="Search your destination"
               className="placeholder:text-[#767676] placeholder:text-[16px] placeholder:font-semibold placeholder:leading-[14px]"
             />
-          </div>
-
-          <div id="banner" className="lg:my-0 my-3 ">
-            <Select
-              placeholder={
-                <p className="text-base text-[16px] leading-6 font-normal">
-                  Property Area
-                </p>
-              }
-              style={{
-                width: 255,
-                height: 48,
-                borderRadius: 24,
-              }}
-              suffixIcon={
-                <div className="w-10 h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center">
-                  <TiArrowSortedDown size={24} color="#00809E" />
-                </div>
-              }
-            >
-              <Select.Option value="Sydney">Sydney</Select.Option>
-              <Select.Option value="Melbourne">Melbourne</Select.Option>
-              <Select.Option value="Brisbane">Brisbane</Select.Option>
-              <Select.Option value="Adelaide">Adelaide</Select.Option>
-              <Select.Option value="Hobart">Hobart</Select.Option>
-              <Select.Option value="Perth">Perth</Select.Option>
-            </Select>
           </div>
 
           <div className="flex items-center justify-between gap-6 w-full lg:w-[200px] lg:px-0 px-3  ">

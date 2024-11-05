@@ -9,7 +9,7 @@ const Sliders = ({ data }: { data: any }) => {
     const [selectedMedia, setSelectedMedia] = useState<string | null>(null);
     const [sliderIndex, setSliderIndex] = useState(0);
     const videoRef = useRef<HTMLVideoElement>(null); 
- console.log(`${imageUrl}${data?.data?.propertyVideo}`);
+    
     // Set default video after refresh (or first load)
     useEffect(() => {
         const defaultMedia = `${imageUrl}${data?.data?.propertyVideo}`;

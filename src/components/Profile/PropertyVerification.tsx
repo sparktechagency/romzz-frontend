@@ -83,12 +83,6 @@ const PropertyVerification: React.FC<IPropertyVerificationProps> = ({
             Re-Confirm number
           </p>
         }
-        rules={[
-          {
-            required: true,
-            message: "Please Enter Re-Confirm number!",
-          },
-        ]}
         style={{ marginBottom: 0 }}
         className="lg:col-span-6 col-span-12"
       >
@@ -119,12 +113,6 @@ const PropertyVerification: React.FC<IPropertyVerificationProps> = ({
             </span>{" "}
           </p>
         }
-        rules={[
-          {
-            required: true,
-            message: "Please Upload Proof of ownership",
-          },
-        ]}
         style={{ marginBottom: 0 }}
         className="col-span-12"
       >

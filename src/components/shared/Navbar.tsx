@@ -19,12 +19,13 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);   
   const [updateMakeAsSeen]= useUpdateMakeAsSeenMutation() 
   const {data:Notifications , refetch:notificationFetch}= useGetNotificationQuery(undefined) 
-  const {data:userInfo , refetch} = useGetProfileQuery(undefined)   
-  //console.log(userInfo);
+  const {data:userInfo } = useGetProfileQuery(undefined);
+
+
   const pathName = usePathname();  
   const router = useRouter() 
   const totalNotification = Notifications?.data?.result?.filter((item:any) => item?.isSeen === false).length  
-  //console.log(totalNotification);
+
   useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
@@ -48,7 +49,6 @@ const Navbar = () => {
     router.push("/notification")
   }) 
   }  
-  console.log(userInfo);
 
   const profileImg = userInfo?.data?.avatar.startsWith("https") ? userInfo?.data?.avatar :`${imageUrl}${userInfo?.data?.avatar}`
 
@@ -127,7 +127,7 @@ const Navbar = () => {
 
           <div onClick={()=>handleUpdateNotification()}>
             <Badge count={totalNotification} color="#FF9773">
-              <Bell color="#767676" size={24} />
+              <Bell className="cursor-pointer" color="#767676" size={24} />
             </Badge>
           </div> 
 
@@ -242,7 +242,7 @@ href="/profile"
 className=" "
 > 
 <div className=" flex items-center gap-1 font-normal  text-[#767676]  text-[16px]">
-<Image src={profileImg} alt="" height={42} width={42} style={{ borderRadius:"100%"}} unoptimized /> 
+<Image src={profileImg} alt="asd" height={42} width={42} style={{ borderRadius:"100%"}}  /> 
 <p>{userInfo?.data?.fullName}</p>
 </div>
 

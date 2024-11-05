@@ -1,41 +1,65 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/zh-cn";
 import { Calendar } from "antd";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 const Calender = ({ unavailableDay }: { unavailableDay: string[] }) => {
-  const datesToDisable = unavailableDay?.map((date) =>
-    dayjs(date).startOf("day").toDate()
-  );
+  const [value, setValue] = useState<Dayjs>(dayjs()); // Controlled value
 
   const disabledDate = (date: Dayjs): boolean => {
-    // Disable dates that are in the `datesToDisable` array
-    return datesToDisable?.some((d) => dayjs(date).isSame(dayjs(d), "day"));
+    return unavailableDay?.some((d: any) => dayjs(date).isSame(dayjs(d), "day"));
+  };
+
+  const changeMonth = (direction: "prev" | "next") => {
+    const newValue = direction === "prev" ? value.subtract(1, "month") : value.add(1, "month");
+    setValue(newValue);
+  };
+
+  const changeYear = (direction: "prev" | "next") => {
+    const newValue = direction === "prev" ? value.subtract(1, "year") : value.add(1, "year");
+    setValue(newValue);
   };
 
   return (
     <div>
       <Calendar
+        value={value}
+        onPanelChange={setValue}
         fullscreen={false}
-        /* dateCellRender={(date) => {
-                    if (disabledDate(date)) {
-                        return <div className="text-gray-400">{date.date()}</div>;
-                    } else {
-                        return <div className="text-[#333333]">{date.date()}</div>;
-                    }
-                }} */
-
         disabledDate={disabledDate}
-        headerRender={({ value }: { value: any }) => {
+        headerRender={() => {
           return (
             <div className="flex items-center justify-between py-3 px-4">
-              <p className="text-[#333333] text-[16px] leading-6 font-semibold">
-                {dayjs(value).format("MMMM")}
-              </p>
-              <p className="text-[#333333] text-[16px] leading-6 font-semibold">
-                {dayjs(value).format("YYYY")}
-              </p>
+              {/* Month Controls */}
+              <div className="flex items-center space-x-4">
+                <LeftOutlined
+                  className="cursor-pointer"
+                  onClick={() => changeMonth("prev")}
+                />
+                <p className="text-[#333333] text-[16px] leading-6 font-semibold">
+                  {dayjs(value).format("MMMM")} {/* Only month name */}
+                </p>
+                <RightOutlined
+                  className="cursor-pointer"
+                  onClick={() => changeMonth("next")}
+                />
+              </div>
+              {/* Year Controls */}
+              <div className="flex items-center space-x-4">
+                <LeftOutlined
+                  className="cursor-pointer"
+                  onClick={() => changeYear("prev")}
+                />
+                <p className="text-[#333333] text-[16px] leading-6 font-semibold">
+                  {dayjs(value).format("YYYY")} {/* Only year */}
+                </p>
+                <RightOutlined
+                  className="cursor-pointer"
+                  onClick={() => changeYear("next")}
+                />
+              </div>
             </div>
           );
         }}

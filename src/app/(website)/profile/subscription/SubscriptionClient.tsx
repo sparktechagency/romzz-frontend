@@ -62,7 +62,7 @@ const SubscriptionClient = () => {
                   index === 1 ? "text-[#FEFEFE]" : "text-[#333333]"
                 }  font-semibold lg:text-[32px] text-[24px] lg:leading-[60px] leading-4`}
               >
-                ${item?.price}/<sub className="font-normal">PM</sub>
+                €{item?.price}/<sub className="font-normal">PM</sub>
               </h1>
 
               <div className="flex items-center justify-center lg:my-4 my-2"> 

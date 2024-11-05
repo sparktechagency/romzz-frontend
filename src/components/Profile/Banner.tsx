@@ -73,15 +73,24 @@ const Banner = () => {
                   <div className="relative lg:h-[200px] h-[250px]">  
 
                     {/* banner Image   */} 
-                    <div
+              <div
                 style={{
                   position: "relative", 
-                  height: "100%", 
+                  height: "200px", 
                   width: "100%",
                 }}
               >
-          <Image src={coverImg} alt="host-profile" width={400} height={300} style={{height:"100%" , width:"100%" , zIndex:0 ,  objectFit: "cover", borderRadius:"10px"}}  />  
-                       <label
+                <Image
+                  src={coverImg} 
+                  alt="host-profile" 
+                  fill
+                  quality={100}
+                  style={{
+                    borderRadius:"10px"
+                  }}
+                />  
+
+                <label
                   htmlFor="imageUploadBanner"
                   style={{
                     position: "absolute",

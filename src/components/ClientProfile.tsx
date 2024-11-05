@@ -6,9 +6,10 @@ import { Rate } from "antd";
 import person from "@/assets/person2.png";
 import Meeting from "@/assets/meet.png";
 import { Wifi } from "lucide-react";
+import { imageUrl } from "@/redux/api/api";
 
 interface IClientProfileProps {
-  open: boolean;
+  open: any;
   setOpen: (open: boolean) => void;
   value?: any;
 }
@@ -22,31 +23,35 @@ const ClientProfile: React.FC<IClientProfileProps> = ({
     <div>
       <div className="">
         <Image
-          src={person}
+          src={ open?.userId?.avatar?.startsWith("https") ? open?.userId?.avatar : `${Image}${open?.userId?.avatar}` }
           alt="host-profile"
           width={90}
           height={90}
-          style={{ objectFit: "contain", margin: "0 auto" }}
+          style={{ objectFit: "contain", clipPath: "circle()", margin: "0 auto" }}
         />
         <Heading
-          name="Aladin"
+          name={open?.userId?.fullName}
           style="font-normal mt-2 text-[18px] text-center leading-[20px] text-[#333333]"
         />
         <div className="flex items-center justify-center my-3">
-          <Rate defaultValue={3.5} allowHalf />
+          <Rate defaultValue={open?.rating} allowHalf />
         </div>
         <p className="text-[#767676] text-center text-[15px] mb-6 leading-5 font-normal">
-          Literally I didn&apos;t expect but the facilities and the
-          neighbourhood...
+        {open?.feedback}
         </p>
 
-        <Image
-          src={Meeting}
-          alt="host-profile"
-          width={150}
-          height={150}
-          style={{ objectFit: "contain" }}
-        />
+        {
+          open?.image
+          &&
+          <Image
+            src={`${imageUrl}${open?.image}`}
+            alt="host-profile"
+            width={150}
+            height={150}
+            style={{ objectFit: "contain" }}
+          />
+        }
+        
 
         {/* facilities */}
         <div className="mt-6">
@@ -55,14 +60,21 @@ const ClientProfile: React.FC<IClientProfileProps> = ({
             style="font-normal text-[24px] mb-4 leading-[36px] text-[#333333]"
           />
           <div className="flex lg:flex-row flex-wrap items-center gap-4">
-            {[...Array(5)].map((item, index) => {
+            {open?.facilities?.map((item:any, index:number) => {
               return (
                 <div
                   key={index}
                   className="bg-[#FFDFD4] gap-2 text-[#333333] rounded-3xl w-fit px-3 h-[40px] flex items-center justify-center"
                 >
-                  <Wifi size={24} color="#333333" />
-                  {"Wifi"}
+
+                  <Image
+                    src={`${imageUrl}${item?.icon}`}
+                    alt="host-profile"
+                    width={20}
+                    height={20}
+                    style={{ objectFit: "contain" }}
+                  />
+                  {item?.name}
                 </div>
               );
             })}

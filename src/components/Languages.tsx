@@ -4,7 +4,7 @@ import Image, { StaticImageData } from 'next/image';
 import React from 'react';
 import { MdOutlineTranslate } from 'react-icons/md';
 import English from "@/assets/english.jpg";
-import French from "@/assets/french.png";
+import French from "@/assets/french.jpg";
 import Chinese from "@/assets/chinese.png";
 import Spanish from "@/assets/spanish.png";
 import { IoIosArrowDown } from 'react-icons/io';
@@ -22,8 +22,7 @@ const Languages = () => {
             name: "English",
             value: "english",
             image: English
-        }
-        ,
+        },
         {
             name: "Spanish",
             value: "spanish",
@@ -77,9 +76,12 @@ const Languages = () => {
                                     <Image
                                         src={language.image}
                                         alt='language icon'
-                                        width={16}
-                                        height={16}
-                                        style={{ marginRight: 8 }}
+                                        width={35}
+                                        height={35}
+                                        style={{ 
+                                            marginRight: 8,
+                                            mixBlendMode: "multiply"
+                                         }}
                                     />
                                     {language.name}
                                 </div>

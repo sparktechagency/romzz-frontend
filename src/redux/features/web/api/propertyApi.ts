@@ -57,7 +57,7 @@ export const propertyApi = romzzApi.injectEndpoints({
         url: `/properties/${id}`,
         method: "GET",
       }),
-      transformResponse: (response: TSinglePropertyResponse) => {
+      transformResponse: (response:any) => {
         return response;
       },
     }),

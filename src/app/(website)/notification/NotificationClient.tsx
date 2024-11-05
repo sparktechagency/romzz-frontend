@@ -7,7 +7,8 @@ import React, { useState } from "react";
 
 const NotificationClient = () => {  
   const [page, setPage] = useState(1)
-  const {data}= useGetNotificationQuery(page)    
+  const {data}= useGetNotificationQuery(page);
+  console.log(data)    
 
   const [updateMarkAsRead] = useUpdateMarkAsReadMutation()
   const notificationData = data?.data 

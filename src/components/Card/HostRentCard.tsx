@@ -28,7 +28,7 @@ const HostRentCard: React.FC<IHostRentCardProps> = ({
     setUpdateInfo(property)
   }
 
-  const {propertyImages , _id , title , status,createdBy,category,address,priceType,price ,createdAt} = property
+  const {propertyImages , _id , title , status,createdBy,category,address,priceType,price ,createdAt} = property;
 
   return (
     <div className="flex lg:flex-row flex-col gap-6 p-2">
@@ -54,7 +54,7 @@ const HostRentCard: React.FC<IHostRentCardProps> = ({
         <div className="flex items-center gap-4">
           <Image
             alt="Logo"
-            src={`${imageUrl}${createdBy?.avatar}`}
+            src={ createdBy?.avatar?.startsWith("https") ? createdBy?.avatar : `${imageUrl}${createdBy?.avatar}`}
             width={30}
             height={30}
             style={{ borderRadius: "100%", objectFit: "contain" }}

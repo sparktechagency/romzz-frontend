@@ -1,9 +1,11 @@
+import { useSummaryQuery } from "@/redux/features/web/api/feedbackApi";
 import { Handshake, House, UsersRound } from "lucide-react";
 import React from "react";
 import CountUp from "react-countup";
 import { FaRegStar } from "react-icons/fa6";
 
 const SummeryCount = () => {
+  const { data:summary }= useSummaryQuery(undefined);
   return (
     <div className="bg-primary lg:h-[193px] h-full flex items-center justify-center lg:py-0 py-3">
       <div className="container flex lg:flex-row flex-col  items-center  text-center lg:justify-between ">
@@ -13,7 +15,7 @@ const SummeryCount = () => {
             color="rgba(247, 247, 247, 0.5)"
           />
           <div>
-            <CountUp end={5}>
+            <CountUp end={summary?.rommerz}>
               {({
                 countUpRef,
                 start,
@@ -23,7 +25,7 @@ const SummeryCount = () => {
               }) => (
                 <div className="lg:text-[48px] text-[24px] lg:leading-[62px] leading-[30px] font-normal flex items-center text-[#F7F7F7]">
                   <div ref={countUpRef} />
-                  K+
+                  {/* K+ */}
                 </div>
               )}
             </CountUp>
@@ -39,7 +41,7 @@ const SummeryCount = () => {
             color="rgba(247, 247, 247, 0.5)"
           />
           <div>
-            <CountUp end={5}>
+            <CountUp end={summary?.rents}>
               {({
                 countUpRef,
                 start,
@@ -49,7 +51,7 @@ const SummeryCount = () => {
               }) => (
                 <div className="lg:text-[48px] text-[24px] lg:leading-[62px] leading-[30px] font-normal flex items-center text-[#F7F7F7]">
                   <div ref={countUpRef} />
-                  K+
+                  {/* K+ */}
                 </div>
               )}
             </CountUp>
@@ -65,7 +67,7 @@ const SummeryCount = () => {
             color="rgba(247, 247, 247, 0.5)"
           />
           <div>
-            <CountUp end={5}>
+            <CountUp end={summary?.deals}>
               {({
                 countUpRef,
                 start,
@@ -75,7 +77,7 @@ const SummeryCount = () => {
               }) => (
                 <div className="lg:text-[48px] text-[24px] lg:leading-[62px] leading-[30px] font-normal flex items-center text-[#F7F7F7]">
                   <div ref={countUpRef} />
-                  K+
+                  {/* K+ */}
                 </div>
               )}
             </CountUp>
@@ -91,7 +93,7 @@ const SummeryCount = () => {
             color="rgba(247, 247, 247, 0.5)"
           />
           <div>
-            <CountUp end={5}>
+            <CountUp end={summary?.reviews}>
               {({
                 countUpRef,
                 start,
@@ -101,7 +103,7 @@ const SummeryCount = () => {
               }) => (
                 <div className="lg:text-[48px] text-[24px] lg:leading-[62px] leading-[30px] font-normal flex items-center text-[#F7F7F7]">
                   <div ref={countUpRef} />
-                  K+
+                  {/* K+ */}
                 </div>
               )}
             </CountUp>

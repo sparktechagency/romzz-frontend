@@ -8,8 +8,8 @@ const ManageAccount = () => {
   const router = useRouter() 
   const [createAccount , {isLoading}] = useCreateAccountMutation()
   const {data , refetch} = useGetProfileQuery(undefined)   
-  const stripeInfo = data?.stripeAccountInfo?.loginUrl
-  //console.log(data); 
+  const stripeInfo = data?.data?.stripeAccountInfo?.loginUrl
+  console.log(stripeInfo); 
 
   const handleCreateStripe =async()=>{ 
     await createAccount(undefined).then((res)=>{ 
@@ -19,8 +19,14 @@ const ManageAccount = () => {
         window.open(url, '_blank');
       }
     })
-
   }
+
+  const handleManage =async()=>{ 
+    if (stripeInfo) {
+      window.open(stripeInfo, '_blank');
+    }
+  }
+
     return (
         <div>
 
@@ -29,41 +35,42 @@ const ManageAccount = () => {
                 stripeInfo ?   <div className='flex justify-between items-center w-2/3'>
                 <p className='text-xl font-medium text-[#5C5C5C]'>Manage Stripe Account</p> 
                 <Button
-          htmlType="submit"
-          style={{
-            width: 100,
-            height: 40,
-            background: "#FF9773",
-            color: "#ffffff",
-            border: "none",
-            outline: "none",
-            borderRadius: 24,
-            fontWeight: 700,
-          }}
-        >
-          {"Manage"}
-        </Button>
+                  onClick={handleManage}
+                  htmlType="submit"
+                  style={{
+                    width: 100,
+                    height: 40,
+                    background: "#FF9773",
+                    color: "#ffffff",
+                    border: "none",
+                    outline: "none",
+                    borderRadius: 24,
+                    fontWeight: 700,
+                  }}
+                >
+                  {"Manage"}
+                </Button>
                 </div>  
                 : 
 
                 <div className='flex justify-between items-center w-2/3'>
                 <p className='text-xl font-medium text-[#5C5C5C]'>Create Stripe Account</p> 
                 <Button 
-                onClick={()=>handleCreateStripe()}
-          htmlType="submit"
-          style={{
-            width: 100,
-            height: 40,
-            background: "#00809E",
-            color: "#ffffff",
-            border: "none",
-            outline: "none",
-            borderRadius: 24,
-            fontWeight: 700,
-          }}
-        >
-      {isLoading ? "Loading..." : "Create"} 
-        </Button>
+                  onClick={()=>handleCreateStripe()}
+                  htmlType="submit"
+                  style={{
+                    width: 100,
+                    height: 40,
+                    background: "#00809E",
+                    color: "#ffffff",
+                    border: "none",
+                    outline: "none",
+                    borderRadius: 24,
+                    fontWeight: 700,
+                  }}
+                >
+                  {isLoading ? "Loading..." : "Create"} 
+                </Button>
                 </div> 
               }
 

@@ -3,7 +3,7 @@ import Heading from '@/components/shared/Heading';
 import { Button, Checkbox, Form, Input } from 'antd'
 import Link from 'next/link';
 import React from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useGetProfileQuery, useLoginMutation } from '@/redux/apiSlices/AuthSlices';
 import Swal from 'sweetalert2';
 import { setToLocalStorage } from '@/util/localStorage';
@@ -11,37 +11,42 @@ import { setToLocalStorage } from '@/util/localStorage';
 const LoginClient = () => {
     const [form] = Form.useForm(); 
     const [login] = useLoginMutation() 
-    const {data , refetch} = useGetProfileQuery(undefined)
     const router = useRouter();
+    const searchParams = useSearchParams();
     form.setFieldsValue(undefined);
+    const { refetch } = useGetProfileQuery(undefined);
+
+    const handleLoginSuccess = () => {
+        const redirectPath = searchParams.get('redirect') || '/';
+        router.push(redirectPath);
+    };
 
 
-    const handleSubmit = async(values: any) => { 
-        // //console.log(values); 
-        await login(values).then((res)=>{
-            if(res?.data?.success){
-                Swal.fire({
-                    text: res?.data?.message,
-                    icon: "success",
-                    timer: 1500,
-                    showConfirmButton: false
-                  }).then(() => {   
-                    setToLocalStorage("romzzToken" , res?.data?.data?.accessToken)
-                    form.resetFields()
-                    refetch()
-                    router.push("/");  
-                  });
-            }else{
-                Swal.fire({
-                    title: "Failed to Login", 
-                //@ts-ignore
-                    text: res?.error?.data?.message,  
-                    icon: "error",
-                  });
-            } 
-        })
-        // router.push('/');
-        // toast.success("Logged In Successfully")
+    const handleSubmit = async(values: any) => {
+
+        try {
+            await login(values).then((res)=>{
+                if(res?.data?.success){
+                    Swal.fire({
+                        text: res?.data?.message,
+                        icon: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {   
+                        setToLocalStorage("romzzToken" , res?.data?.data?.accessToken)
+                        form.resetFields();
+                        refetch();
+                        handleLoginSuccess();
+                    });
+                }
+            })
+        } catch (error:any) {
+            Swal.fire({
+                title: "Failed to Login",
+                text: error?.data?.message,  
+                icon: "error"
+            });
+        }
     };
 
 

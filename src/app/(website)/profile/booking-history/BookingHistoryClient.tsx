@@ -2,7 +2,7 @@
 import RentalCard from '@/components/Card/RentalCard';
 import Heading from '@/components/shared/Heading';
 import Modal from '@/components/shared/Modal';
-import { Button, Checkbox, Form, Input, Pagination, Radio, Upload } from 'antd';
+import { Button, Checkbox, Form, Input, Pagination, Empty , Upload } from 'antd';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import terrible from "@/assets/teriable.png";
@@ -11,31 +11,21 @@ import good from "@/assets/good.png";
 import okay from "@/assets/okay.png";
 import amazing from "@/assets/amazing.png";
 import { ImagePlus } from 'lucide-react';
-import checkbox from 'rc-checkbox';
 import { useCreateFeedbackMutation, useGetBookingHistoryQuery, useGetFacilitiesQuery } from '@/redux/apiSlices/ClientProfileSlices';
+import toast from 'react-hot-toast';
 
 const BookingHistoryClient = () => { 
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState<string>("1");
     const {data:bookingHistory} = useGetBookingHistoryQuery(page) 
     const [open, setOpen] = useState(false);
-    const [status, setStatus] = useState("")  
-    const [statusIndex , setStatusIndex] =useState<number>() 
-    const [propertyId , setPropertyId] = useState(null)
-    const [createFeedback] = useCreateFeedbackMutation() 
-    
-  const {data:facilities}= useGetFacilitiesQuery(undefined)  
-  const facilitiesOptions = facilities?.data
+    const [status, setStatus] = useState("")
+    const [propertyId , setPropertyId] = useState<string | null>(null)
+    const [createFeedback] = useCreateFeedbackMutation(); 
+    const {data:facilities}= useGetFacilitiesQuery(undefined)  
+    const facilitiesOptions = facilities?.data
     const [form] = Form.useForm(); 
-    const bookingHistories = bookingHistory?.data?.data 
-    //console.log(bookingHistory);
+    const bookingHistories = bookingHistory?.data?.data
 
-    
-
-    useEffect(()=>{
-        if(status){
-            form.setFieldsValue({rating: status})
-        }
-    }, [status, form])
 
 
     const getImageSrc = (index: number) => {
@@ -49,26 +39,34 @@ const BookingHistoryClient = () => {
 
  
     const handleSubmit= async(values: any)=>{  
-        const formData =  new FormData()
-      console.log(propertyId);
-        const {rating , image , ...otherValues } = values 
-        const newImage = image?.file?.originFileObj 
-        const data = {
-            rating: statusIndex , 
-            propertyId: propertyId , 
-            ...otherValues
-        }  
+        const formData =  new FormData();
 
-        formData.append("data" ,JSON.stringify(data)) 
-         if(newImage){
-            formData.append("image" , newImage)
-         } 
+        const {image, facilities, ...otherValues } = values;
+        if(image){
+            formData.append("image", image);
+        }
 
-         await createFeedback(formData).then(res=> 
-            console.log(res)  
-            )
+        for (const facility of facilities) {
+            formData.append("facilities[]", facility);
+        }
 
-        //console.log(data);
+        formData.append("propertyId", propertyId as string);
+
+        Object.keys(otherValues).forEach((key) => {
+            formData.append(key, values[key]);
+        });
+        
+        try {
+            await createFeedback(formData).unwrap().then(res=> {
+                console.log(res)
+                if(res.success == true){
+                    toast.success(res.message)
+                    setOpen(false)
+                }
+            })
+        } catch (error:any) {
+            toast.error(error.data?.message)
+        }
  
     } 
 
@@ -98,7 +96,10 @@ const BookingHistoryClient = () => {
                                 return(
                                     <div 
                                         key={index}
-                                        onClick={()=>{setStatus(item) , setStatusIndex(index+1) }} 
+                                        onClick={()=>{
+                                            setStatus(item);
+                                            form.setFieldsValue({rating: index+1});
+                                        }} 
                                         className={`
                                             w-20 cursor-pointer group h-20 flex items-center justify-center flex-col rounded-lg mx-auto
                                             ${status === item ? "bg-primary bg-opacity-[90%] text-[#F3F3F3] transition-all duration-200": "bg-[#F5F5F5]"}
@@ -146,6 +147,8 @@ const BookingHistoryClient = () => {
 
                 <Form.Item
                     name={"image"}
+                    valuePropName="image"
+                    getValueFromEvent={(e) => e?.file?.originFileObj }
                     label={<p className='text-[#5C5C5C] text-sm leading-[18px] font-normal'>What are the main reasons for you rating?</p>}
                 >
                     <Upload maxCount={1} className="customFile">
@@ -155,47 +158,47 @@ const BookingHistoryClient = () => {
                     </Upload>
                 </Form.Item>
          
-         {/* facilities */}
-         <Form.Item
-            name="facilities"
-            label={
-              <p className="font-medium text-[16px] leading-6 text-[#636363]">
-                Facilities
-              </p>
-            }
-            rules={[
-              {
-                required: true,
-                message: "Please Choose Taken Facilities",
-              },
-            ]}
-            className="col-span-12"
-          >
-            <Checkbox.Group className="style-checkbox flex items-center flex-wrap">
-              {facilitiesOptions?.map((option:any) => (
-                <Checkbox
-                  key={option?._id}
-                  value={option?._id}
-                  style={{
-                    background: "#F3F3F3",
-                    height: 40,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginBottom: 8,
-                    padding: "0 12px",
-                    borderRadius: "8px",
-                    color: "red",
-                  }}
-                  className="flex text-primary items-center justify-center rounded-xl"
-                > 
-                  <p className="text-[#333333] font-medium text-[14px] leading-6">
-                    {option.name}
-                  </p>
-                </Checkbox>
-              ))}
-            </Checkbox.Group>
-          </Form.Item>
+                {/* facilities */}
+                <Form.Item
+                    name="facilities"
+                    label={
+                    <p className="font-medium text-[16px] leading-6 text-[#636363]">
+                        Facilities
+                    </p>
+                    }
+                    rules={[
+                    {
+                        required: true,
+                        message: "Please Choose Taken Facilities",
+                    },
+                    ]}
+                    className="col-span-12"
+                >
+                    <Checkbox.Group className="style-checkbox flex items-center flex-wrap">
+                    {facilitiesOptions?.map((option:any) => (
+                        <Checkbox
+                        key={option?._id}
+                        value={option?._id}
+                        style={{
+                            background: "#F3F3F3",
+                            height: 40,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            marginBottom: 8,
+                            padding: "0 12px",
+                            borderRadius: "8px",
+                            color: "red",
+                        }}
+                        className="flex text-primary items-center justify-center rounded-xl"
+                        > 
+                        <p className="text-[#333333] font-medium text-[14px] leading-6">
+                            {option.name}
+                        </p>
+                        </Checkbox>
+                    ))}
+                    </Checkbox.Group>
+                </Form.Item>
 
                 <Form.Item
                     style={{
@@ -225,11 +228,11 @@ const BookingHistoryClient = () => {
                         {"Submit"}
                     </Button>
                 </Form.Item>
-
-
             </Form>
         </div>
     )
+
+
     return (
         <div>
 
@@ -250,11 +253,18 @@ const BookingHistoryClient = () => {
 
             {/* pagination */}
             <div className='flex items-center justify-center mt-6'>
-                <Pagination
-                    current={page}
-                    total={bookingHistory?.data?.meta?.total} 
-                    onChange={(page)=>setPage(page)}
-                />
+                {
+                    bookingHistories?.length > 0
+                    ?
+                    <Pagination
+                        current={parseInt(page)}
+                        total={bookingHistory?.data?.meta?.total} 
+                        onChange={(page:any)=>setPage(page)}
+                    />
+                    :
+                    <Empty />
+                }
+                
             </div>
 
             <Modal

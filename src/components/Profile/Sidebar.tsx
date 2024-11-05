@@ -2,15 +2,13 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Select } from 'antd';
-import { TiArrowSortedDown } from "react-icons/ti";
 import { useGetProfileQuery } from '@/redux/apiSlices/AuthSlices';
 
 const Sidebar = () => {
     const path = usePathname();
     const pathName = path?.split("/")[2];  
     const router = useRouter() 
-    const {data:userData} = useGetProfileQuery(undefined)  
+    const {data:userData, refetch} = useGetProfileQuery(undefined)  
     const isSubscribe = userData?.data?.isSubscribed 
     const isAccess = userData?.data?.hasAccess
     //console.log(pathName); 
@@ -18,6 +16,7 @@ const Sidebar = () => {
     const handleLogout =()=>{
         localStorage.removeItem("romzzToken") 
         router.push("/login")
+        refetch()
     }
     const item = [
         {
@@ -63,46 +62,22 @@ const Sidebar = () => {
 
                  <li 
                 className={`
-                 text-[16px] leading-6 
-                                    font-normal text-[#F7F7F7] 
-                                    list-none h-[44px] pl-6  
-                                     ${ pathName === "rental-details" ? "bg-[#007490]" : "bg-transparent"}
-                                  hover:bg-[#007490] transition-all duration-150
-                                    flex items-center
+                    text-[16px] leading-6 
+                    font-normal text-[#F7F7F7] 
+                    list-none h-[44px] pl-6  cursor-pointer
+                    ${ pathName === "rental-details" ? "bg-[#007490]" : "bg-transparent"}
+                    hover:bg-[#007490] transition-all duration-150
+                    flex items-center
                 `}  
                 onClick={()=>router.push("/profile/rental-details")}
             >
                 Rental Details
             </li>  
             : ""
-            } 
-
-
+            }
             <li 
                 className={`
-                    text-[16px] leading-6 
-                    font-normal text-[#F7F7F7] 
-                    list-none h-[44px] pl-6
-                    hover:bg-[#007490] transition-all duration-150
-                    flex items-center
-                `}
-            >
-                <Select
-                    placeholder={<p className='text-[#F7F7F7] text-[16px] font-normal leading-6'>English</p>}
-                    style={{
-                        width: "100%",
-                        marginRight: 24,
-                        background: "transparent"
-                    }}
-                    className=''
-                    suffixIcon={<TiArrowSortedDown size={24} color='#F7F7F7' />}
-                >
-                    <Select.Option value="male">English</Select.Option>
-                    <Select.Option value="female">Spanish</Select.Option>
-                </Select>
-            </li>
-            <li 
-                className={`
+                    cursor-pointer
                     text-[16px] leading-6 
                     font-normal text-[#F7F7F7] 
                     list-none h-[44px] pl-6

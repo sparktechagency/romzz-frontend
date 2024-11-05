@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import Heading from "../shared/Heading";
 
@@ -6,9 +7,7 @@ import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import { useGetApprovePropertiesQuery } from "@/redux/features/web/api/propertyApi";
 
 const Location = () => {
-  const { data } = useGetApprovePropertiesQuery({}); 
-  const properties = data?.data;  
-  console.log(properties);
+  const { data } = useGetApprovePropertiesQuery({});
 
   const [viewport, setViewport] = useState({
     latitude: 0,
@@ -86,17 +85,13 @@ const Location = () => {
               onUnmount={onUnmount}
               mapContainerStyle={{ width: "100%", height: "100%", borderRadius: "20px" }}
             >
-              {properties?.map((item, index) => ( 
-              
-                   <Marker  key={index}
-                 position={{ lat: item?.location?.latitude, lng: item?.location?.longitude }} 
-                icon={{
-                  url: "/marker.png",
-                  scaledSize: new google.maps.Size(25, 30), 
-                }} 
-               
-              />   
-            ))} 
+              <Marker 
+                  position={{ lat: viewport?.latitude, lng: viewport?.longitude }} 
+                  icon={{
+                    url: "/marker.png",
+                    scaledSize: new google.maps.Size(25, 30), 
+                  }}
+                />
             </GoogleMap> 
            ) :  (
               <div>Loading map...</div>

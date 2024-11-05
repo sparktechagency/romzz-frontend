@@ -10,8 +10,14 @@ export const feedbackApi = romzzApi.injectEndpoints({
 
     getHomePageFeedback:builder.query({
        query:()=>"/feedbacks/visible" 
+    }),
+    summary:builder.query({
+      query:()=>"/users/summary",
+      transformResponse: (data:any)=>{
+        return data?.data
+      } 
     })
   }),
 });
 
-export const { useGetFeedBackByIdQuery  ,useGetHomePageFeedbackQuery } = feedbackApi;
+export const { useGetFeedBackByIdQuery, useSummaryQuery, useGetHomePageFeedbackQuery } = feedbackApi;

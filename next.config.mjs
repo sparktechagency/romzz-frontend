@@ -13,15 +13,16 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "i.ibb.co",
-        port: "",
-        pathname: "/**",
+        hostname: "i.pinimg.com",
+        pathname: "**",
       },
-    ],
-    // remotePatterns: [
-  
-    // ],
-  },
+      {
+        protocol: "http",
+        hostname: "http://192.168.10.102",
+        pathname: "**",
+      }
+    ]
+  }
 };
 
 export default nextConfig;

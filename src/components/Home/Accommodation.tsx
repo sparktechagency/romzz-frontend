@@ -11,7 +11,6 @@ import PropertyCard from "../Card/PropertyCard";
 const Accommodation = () => {
   const { data } = useGetApprovePropertiesQuery([]);  
   const propertyLength = data?.data?.length 
-  console.log(propertyLength); 
   const ArrowLeft = ({
     currentSlide,
     slideCount,

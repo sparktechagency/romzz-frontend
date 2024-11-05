@@ -6,9 +6,9 @@ endpoints:(builder)=>({
     createIntent:builder.mutation({
         query:(value) =>{
             return{
- url:"/stripe/payments/create-intent" ,
- method:"POST" ,
- body: value
+                url:"/stripe/payments/create-intent" ,
+                method:"POST" ,
+                body: value
             }
         }
     })  ,

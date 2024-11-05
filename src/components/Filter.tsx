@@ -1,13 +1,19 @@
 "use client";
 import React, { useState } from 'react';
 import Modal from './shared/Modal';
-import { Button, Checkbox, ConfigProvider, Form, Input, Select } from 'antd';
+import { Button, Checkbox, ConfigProvider, Form, Input, Radio, Select } from 'antd';
 import { FaMapLocationDot } from 'react-icons/fa6';
 import { IoLocationOutline } from 'react-icons/io5';
 import { TiArrowSortedDown } from 'react-icons/ti';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import { useGetFacilitiesQuery } from '@/redux/apiSlices/ClientProfileSlices';
+import Image from 'next/image';
+import terrible from "@/assets/teriable.png";
+import bad from "@/assets/bad.png";
+import good from "@/assets/good.png";
+import okay from "@/assets/okay.png";
+import amazing from "@/assets/amazing.png";
 
 interface IFilterProps{
     open: boolean;
@@ -22,16 +28,17 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen , setFilter}) => {
     form.getFieldsValue();
     const [price, setPrice] = useState([0, 5000]);  
     const {data:facilities} = useGetFacilitiesQuery(undefined) 
-    const facilitiesOptions = facilities?.data  
-    console.log(facilitiesOptions);
+    const facilitiesOptions = facilities?.data
    
 
-    const ratingOptions = [
-        { label: "Amazing 😊", value: "4" },
-        { label: "Very Good 😊", value: "3" },
-        { label: "Good 😊", value: "2" },
-        { label: "OK 😊", value: "1" }
-    ];
+    const getImageSrc = (index: number) => {
+        if (index === 0) return terrible;
+        if (index === 1) return bad;
+        if (index === 2) return okay;
+        if (index === 3) return good;
+        if (index === 4) return amazing;
+        return '';
+    };
 
     const distanceOptions = [
         { label: "Less than 1km", value: "1" },
@@ -45,7 +52,7 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen , setFilter}) => {
         
         let newPrice = undefined;
         if(price){
-               newPrice= `${price[0]}-${price[1]}`
+            newPrice= `${price[0]}-${price[1]}`
         }
         const filterData={
             price:newPrice , 
@@ -53,6 +60,7 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen , setFilter}) => {
             ...othersValue
 
         } 
+        // console.log(filterData);
         setFilter(filterData) 
         setOpen(false)
     }
@@ -116,7 +124,7 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen , setFilter}) => {
                         name={"location"}
                         label={<p className="font-medium text-[16px] leading-6 text-[#636363]">Location</p>}
                         style={{marginBottom: 0}}
-                        className='col-span-6'
+                        className='col-span-12'
                     >
                         <Input
                             suffix={
@@ -139,7 +147,7 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen , setFilter}) => {
                         />
                     </Form.Item>
                     
-                    <Form.Item
+                    {/* <Form.Item
                         name={"area"}
                         label={<p className="font-medium text-[16px] leading-6 text-[#636363]">Property Area</p>}
                         className='col-span-6'
@@ -168,7 +176,7 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen , setFilter}) => {
                             <Select.Option value="Hobart">Hobart</Select.Option>
                             <Select.Option value="Perth">Perth</Select.Option>
                         </Select>
-                    </Form.Item>
+                    </Form.Item> */}
 
                     <div className='col-span-12 priceSlider px-2'>
                         <Form.Item
@@ -505,30 +513,39 @@ const Filter:React.FC<IFilterProps> = ({open, setOpen , setFilter}) => {
                         style={{marginBottom: 0}}
                     >
                         <div className='col-span-12 flex items-center gap-4'>
-                            {
-                                ratingOptions?.map((option) => (
-                                    <Checkbox
-                                        key={option.value}
-                                        value={option.value}
-                                        style={{
-                                            background: "#F3F3F3",
-                                            height: 40,
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            marginBottom: 8,
-                                            padding: "0 12px",
-                                            borderRadius: "8px",
-                                            color: "red",
-                                        }}
-                                        className="flex text-primary items-center justify-center rounded-xl"
-                                    >
-                                        <p className="text-[#333333] font-medium text-[14px] leading-6">
-                                            {option.label}
-                                        </p>
-                                    </Checkbox>
-                                ))
-                            }
+                            <Radio.Group
+                                style={{
+                                    background: "#F3F3F3",
+                                    height: 40,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    marginBottom: 8,
+                                    padding: "0 12px",
+                                    borderRadius: "8px",
+                                    color: "red",
+                                }}
+                                className="flex text-primary items-center justify-center rounded-xl"
+                            >
+                                {
+                                    ["Terrible", "Bad", "Okay", "Good", "Amazing"]?.map((option, index) => {
+                                        return(
+                                            <Radio key={index}  value={index + 1}>
+                                                <div className='flex items-center gap-2'>
+                                                    <span>{option}</span>
+                                                    <Image
+                                                        alt='emoji'
+                                                        width={20}
+                                                        height={20}
+                                                        src={getImageSrc(index)}
+                                                        className='group-hover:scale-110 transition-all duration-200'
+                                                    />
+                                                </div>
+                                            </Radio>
+                                        )
+                                    })
+                                }
+                            </Radio.Group>
                         </div>
                     </Form.Item>
 

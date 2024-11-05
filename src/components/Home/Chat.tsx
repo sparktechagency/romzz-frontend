@@ -11,8 +11,8 @@ import { BiSolidLeftArrow } from "react-icons/bi";
 import call from "@/assets/call.png";
 import Image from "next/image";
 import { Button, Form, Input } from "antd";
-import { Delete, ImagePlus, Send, X } from "lucide-react";
-import Logo from "@/assets/Logo.png";
+import { ImagePlus, Send, X } from "lucide-react";
+import Logo from "@/assets/chat-logo.jpg";
 import { useGetProfileQuery } from "@/redux/apiSlices/AuthSlices";
 import { useRouter } from "next/navigation";
 import {
@@ -29,22 +29,22 @@ const Chat = () => {
   const [open, setOpen] = useState(false);
   const [image, setImage] = useState<File | null>(null);
   const [text, setText] = useState<string | undefined>("");
-  const {socket} = useContext<any>(UserContext);
+  const { socket } = useContext<any>(UserContext);
   const [userId, setUserId] = useState(null);
-  const {data: userProfile } = useGetProfileQuery(undefined);
+  const { data: userProfile } = useGetProfileQuery(undefined);
   const [createConversation] = useCreateConversationMutation();
   const [sendMessage] = useSendMessageMutation();
   const { data: getMessages } = useGetMessagesQuery(userId);
-  const userMessages = getMessages?.data;
-  const [messageList, setMessageList] = useState<any>([]); 
- 
-  
+  const userMessages = getMessages?.data?.messages;
+  console.log(userMessages);
+  const [messageList, setMessageList] = useState<any>([]);
+
   const scrollRef = useRef<any>();
   const router = useRouter();
   const [form] = Form.useForm();
 
   useEffect(() => {
-      setMessageList(userMessages);
+    setMessageList(userMessages);
   }, [userMessages]);
 
   useEffect(() => {
@@ -53,13 +53,10 @@ const Chat = () => {
     }
   }, [messageList]);
 
-  const handleConnection = useCallback( 
-    ({data}: any) => { 
-        console.log(data);  
-        setMessageList((prev:any)=>[...prev , data])
-    },
-    []
-  );
+  const handleConnection = useCallback(({ data }: any) => {
+    console.log(data);
+    setMessageList((prev: any) => [...prev, data]);
+  }, []);
 
   useEffect(() => {
     const event = "messageReceived";
@@ -67,7 +64,7 @@ const Chat = () => {
     return () => {
       socket.off(event, handleConnection);
     };
-  }, [socket ,handleConnection ]);
+  }, [socket, handleConnection]);
 
   const handleChangeImage = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files?.[0]) {
@@ -84,7 +81,6 @@ const Chat = () => {
   const handleCreateConversion = async () => {
     if (userProfile?.data) {
       await createConversation(undefined).then((res) => {
-        // //console.log(res); 
         if (res?.data?.success) {
           setOpen(true);
           setUserId(res?.data?.data?._id);
@@ -105,12 +101,14 @@ const Chat = () => {
     if (values?.image) {
       formData.append("image", values?.image);
     }
-    formData.append("content", values?.text);
+    if (values?.text) {
+      formData.append("content", values?.text);
+    }
 
-    await sendMessage({ userId, formData })
-
-    form.resetFields();
-    setImage(null);
+    await sendMessage({ userId, formData }).then((result) => {
+      form.resetFields();
+      setImage(null);
+    });
   };
 
   return (
@@ -163,15 +161,18 @@ const Chat = () => {
           </div>
 
           {/* body */}
-          <div className="h-[325px] chat overflow-y-auto bg-white" ref={scrollRef}>
-            {messageList?.map((message: any, index: number) => { 
-                // console.log(message);  
-                // console.log(userProfile?.data?._id); 
+          <div
+            className="h-[325px] chat overflow-y-auto bg-white"
+            ref={scrollRef}
+          >
+            {messageList?.map((message: any, index: number) => {
+              // console.log(message);
+              // console.log(userProfile?.data?._id);
               return (
                 <div
                   key={index}
                   className={`flex p-2 ${
-                    userProfile?.data?._id === message?.senderId
+                    userProfile?.data?._id === message?.senderId?._id
                       ? "items-end justify-end"
                       : "items-start justify-start"
                   }`}
@@ -181,28 +182,34 @@ const Chat = () => {
                       <div>
                         {message?.attachments?.map(
                           (images: any, index: number) => (
-                            <Image key={index}
-                              src={`${imageUrl}${images}`}
-                              alt=""
-                              height={200}
-                              width={200}
-                              className=" w-[240] h-[120] p-2 rounded-lg"
-                            />
+                            <div
+                              key={index}
+                              className="bg-[#FFF5F1] p-2 rounded-lg"
+                            >
+                              <Image
+                                src={`${imageUrl}${images}`}
+                                alt="asd"
+                                height={200}
+                                width={200}
+                                className=" w-[240] h-[120] p-2 rounded-lg"
+                              />
+                              <p className="text-[14px] text-right leading-4 text-[#767676] font-medium">
+                                {message?.content}
+                              </p>
+                              <p className="text-right text-[13px] leading-6 text-[#A1A1A1] font-normal">
+                                {moment(message?.createdAt).format("h:mm a")}
+                              </p>
+                            </div>
                           )
                         )}
                       </div>
                     ) : (
-                      ""
+                      <div className="bg-[#FFF5F1] w-[240px] p-2 rounded-lg">
+                        <p className="text-[14px] leading-4 text-[#767676] font-medium">
+                          {message?.content}
+                        </p>
+                      </div>
                     )}
-                    <div className="bg-[#FFF5F1] w-[240px] p-2 rounded-lg">
-                      <p className="text-[14px] leading-4 text-[#767676] font-medium">
-                        {message?.content}
-                      </p>
-
-                      <p className="text-right text-[13px] leading-6 text-[#A1A1A1] font-normal">
-                        {moment(message?.createdAt).format("h:mm a")}
-                      </p>
-                    </div>
                   </div>
                 </div>
               );
@@ -222,8 +229,7 @@ const Chat = () => {
                 {image && (
                   <Image
                     alt="message-image"
-                    src={URL?.createObjectURL(image)} 
-                   
+                    src={URL?.createObjectURL(image)}
                     fill
                   />
                 )}
@@ -233,7 +239,7 @@ const Chat = () => {
             <Form
               form={form}
               onFinish={onSubmit}
-              className="flex items-center gap-2"
+              className="flex items-center justify-between"
             >
               <Form.Item style={{ marginBottom: 0 }} name={"image"}></Form.Item>
 
@@ -249,7 +255,7 @@ const Chat = () => {
                     width: "100%",
                     border: "none",
                     background: "#F3F3F3",
-                    borderRadius: 12,
+                    borderRadius: 4,
                     outline: "none",
                     boxShadow: "none",
                     height: 40,
@@ -260,6 +266,7 @@ const Chat = () => {
               <Form.Item
                 style={{
                   marginBottom: 0,
+                  marginLeft: 10,
                   background: "#00809E",
                   width: 40,
                   height: 40,
@@ -270,7 +277,6 @@ const Chat = () => {
                 }}
               >
                 <Button
-                  disabled={!text}
                   htmlType="submit"
                   style={{
                     background: "transparent",

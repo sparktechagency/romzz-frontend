@@ -25,9 +25,9 @@ const Banner = () => {
     >
       <div
         data-aos="fade-down"
-        className=" lg:w-[874px] w-[80%] bg-white lg:h-[78px] h-[200px] py-2 lg:rounded-[59px] rounded-[15px] flex lg:flex-row flex-col items-center justify-between  pr-3"
+        className=" lg:w-[574px] w-[80%] bg-white lg:h-[78px] h-[200px] py-2 lg:rounded-[59px] rounded-[15px] flex lg:flex-row flex-col items-center justify-between  pr-3"
       >
-        <div className="lg:w-[350px] w-full">
+        <div className="lg:w-[320px] w-full">
           <Input
             suffix={
               <Link href="/search-filter">
@@ -49,8 +49,7 @@ const Banner = () => {
           />
         </div>
 
-        <div className="w-full lg:w-[255px]" id="banner"> 
-                <Link href={"/filter?search="} >  
+        {/* <div className="w-full lg:w-[255px]" id="banner"> 
           <Select
             placeholder={
               <p className="text-base text-[16px] leading-6 font-normal">
@@ -77,8 +76,7 @@ const Banner = () => {
             <Select.Option value="Hobart">Hobart</Select.Option>
             <Select.Option value="Perth">Perth</Select.Option>
           </Select> 
-          </Link>
-        </div>
+        </div>  */}
 
         <div className="flex items-center justify-between gap-6 w-full lg:w-[200px] lg:px-0 px-3 ">
           <Link href={"/filter?search="}
@@ -103,13 +101,13 @@ const Banner = () => {
         </div>
       </div>
 
-      <div className="lg:absolute left-0 bottom-0 w-full">
+      {/* <div className="lg:absolute left-0 bottom-0 w-full">
         <div className="container  flex  flex-wrap items-center justify-center lg:gap-8 gap-2 lg:mt-20 mt-2">
           {data?.data?.slice(0, 3)?.map((property, index) => {
             return <PropertyCardSmall property={property} key={index} />;
           })}
         </div>
-      </div>
+      </div> */}
 
       {/* <Filter open={open} setOpen={setOpen} />  */}
     </div>

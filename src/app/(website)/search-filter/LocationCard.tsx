@@ -44,7 +44,7 @@ const handleWishList = () => {
                   <div className="flex items-center gap-4">
                     <Image
                       alt="Logo"
-                      src={`${imageUrl}${item?.item?.createdBy?.avatar}`}
+                      src={  item?.item?.createdBy?.avatar?.startsWith("https") ? item?.item?.createdBy?.avatar : `${imageUrl}${item?.item?.createdBy?.avatar}`}
                       width={30}
                       height={30}
                       style={{ borderRadius: "100%", objectFit: "contain" }}
@@ -65,7 +65,7 @@ const handleWishList = () => {
                     <TfiLocationPin size={22} color="#5C5C5C" />
                    {item?.item?.address}
                   </p>
-                  <h1 className="text-primary font-semibold text-[24px]">{item?.item?.price}<sub>{item?.item?.priceType === "day" ? `/pd` : item?.item?.priceType === "week" ? "/pw" : item?.item?.item?.priceType === "month" ? "/pm" : "/py" }</sub></h1>
+                  <h1 className="text-primary font-semibold text-[24px]">€{item?.item?.price}<sub>{item?.item?.priceType === "day" ? `/pd` : item?.item?.priceType === "week" ? "/pw" : item?.item?.item?.priceType === "month" ? "/pm" : "/py" }</sub></h1>
                 </div>
               </div>
         </div>

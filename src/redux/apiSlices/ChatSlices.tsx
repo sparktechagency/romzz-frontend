@@ -14,7 +14,7 @@ const ChatSlices = romzzApi.injectEndpoints({
         getMessages:builder.query({
             query:(id)=>{
                 return{
-                    url:`/messages/${id}`
+                    url:`/conversations/${id}`
                 }
             }
         }) , 

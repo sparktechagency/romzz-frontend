@@ -1,31 +1,28 @@
 "use client"
 import { useGetProfileQuery } from '@/redux/apiSlices/AuthSlices';
-import { useRouter } from 'next/navigation';
-
-
+import { useRouter, usePathname } from 'next/navigation';
 
 const PrivateProvider = ({ children }: { children: React.ReactNode }) => {
-  const router = useRouter();  
-  const { data: profile, isFetching, isLoading, isError } = useGetProfileQuery(undefined); 
-  
-  console.log(profile);
+  const router = useRouter();
+  const pathname = usePathname();
+  const { data: profile, isFetching, isLoading, isError } = useGetProfileQuery(undefined);
 
   if (isLoading || isFetching) {
     return <div>Loading...</div>;
   }
 
   if (isError || !profile?.data) {
-    router.push('/login');
-    return null; 
+    // Redirect to login with the current path as a redirect parameter
+    router.push(`/login?redirect=${pathname}`);
+    return null;
   }
 
   if (profile?.data?.role === 'USER') {
-    return children; 
+    return children;
   }
 
   router.push('/login');
-
-  return null;  
+  return null;
 };
 
 export default PrivateProvider;

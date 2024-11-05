@@ -15,14 +15,14 @@ import { imageUrl } from "@/redux/api/api";
 import Filter from "@/components/Filter";
 
 const SearchFilter = () => { 
-const  [search , setSearch] = useState() 
-const [area , setArea] = useState() 
-const [activeMarker, setActiveMarker] = useState<number | null>(null); 
-const [open, setOpen] = useState(false); 
-const [filter , setFilter] = useState({})   
+  const  [search , setSearch] = useState() 
+  const [area , setArea] = useState() 
+  const [activeMarker, setActiveMarker] = useState<number | null>(null); 
+  const [open, setOpen] = useState(false); 
+  const [filter , setFilter] = useState({})   
   const { data } = useGetApprovePropertiesQuery({search , area ,filter }); 
-  const properties = data?.data; 
-  console.log(properties);    
+  const properties = data?.data;
+  console.log(properties)
 
 
   const handleMarkerClick = (index: number) => { 
@@ -37,7 +37,6 @@ const [filter , setFilter] = useState({})
  const handleLocation =(e:any) =>{ 
   const searchValue = e.target.value 
   setSearch(searchValue)
-  //console.log(searchValue);
  } 
 
 //  select area  
@@ -75,7 +74,6 @@ const handleSelectLocation = ( value:any) =>{
     });
   }, []); 
 
-  // const ropertityDetails =(value:any)=> <div> hello</div> 
 
   return (
     <div className="container lg:h-[calc(100vh-96px)] h-full py-6">
@@ -118,7 +116,7 @@ const handleSelectLocation = ( value:any) =>{
             />
 
             <div className="flex items-center justify-between gap-10" id="search-filter">
-              <Select onChange={handleSelectLocation} 
+              {/* <Select onChange={handleSelectLocation} 
                 placeholder={<p className="text-base text-[16px] font-normal">Property Area</p>}
                 style={{ width: "100%", height: 48, borderRadius: 24 }}
                 suffixIcon={
@@ -132,7 +130,7 @@ const handleSelectLocation = ( value:any) =>{
                     {city}
                   </Select.Option>
                 ))}
-              </Select>
+              </Select> */}
 
               <div  onClick={() => setOpen(true)} className="flex items-center gap-3 cursor-pointer">
                 <SlidersHorizontal size={14} color="#5C5C5C" />
@@ -160,78 +158,76 @@ const handleSelectLocation = ( value:any) =>{
               onUnmount={onUnmount}
               mapContainerStyle={{ width: "100%", height: "100%", borderRadius: "20px" }}
             >
-              {properties?.map((item, index) => ( 
-              
-                   <Marker   key={index}
-                position={{ lat: item?.location?.latitude, lng: item?.location?.longitude }} 
-                icon={{
-                  url: "/marker.png",
-                  scaledSize: new google.maps.Size(25, 30), 
-                }} 
-                onClick={() => handleMarkerClick(index)}
-              >  
+              {properties?.map((item:any, index) => {
+                return (
+                  <Marker   key={index}
+                  position={{ lat: item?.location?.coordinates[1], lng: item?.location?.coordinates[0] }} 
+                  icon={{
+                    url: "/marker.png",
+                    scaledSize: new google.maps.Size(25, 30), 
+                  }} 
+                  onClick={() => handleMarkerClick(index)}
+                >  
                 {activeMarker === index && (  
                   <div className="  "> 
-                  <InfoWindow
-              position={{ lat: item?.location?.latitude, lng: item?.location?.longitude }}
-              onCloseClick={() => setActiveMarker(null)}
-            >
-              <div className="grid grid-cols-12 gap-2 " style={{ minWidth: "250px", borderRadius: "10px" }}>
-                {/* Left Column with Image */}
-                <div className="col-span-6">
-                  <Image
-                    src={`${imageUrl}${item?.propertyImages[0]}`} // Ensure the image path is valid
-                    alt={item?.title}
-                    width={100}
-                    height={100}
-                    style={{ borderRadius: "20px", objectFit: "cover" }}
-                  />
-                </div>
+                    <InfoWindow
+                      position={{ lat: item?.location?.coordinates[1], lng: item?.location?.coordinates[0] }}
+                      onCloseClick={() => setActiveMarker(null)}
+                    >
+                      <div className="grid grid-cols-12 " style={{ width: 350, borderRadius: "10px" }}>
+                        {/* Left Column with Image */}
+                        <div className="col-span-6">
+                          <Image
+                            src={`${imageUrl}${item?.propertyImages[0]}`} // Ensure the image path is valid
+                            alt={"ïmage"}
+                            width={100}
+                            height={100}
+                            style={{ borderRadius: 8, objectFit: "cover" }}
+                          />
+                        </div>
 
-                {/* Right Column with Details */}
-                <div className="col-span-6">
-                  <h1 className="text-primary font-semibold text-[15px] my-1">
-                    {item?.price}
-                    <sub>
-                      {item?.priceType === "day"
-                        ? `/pd`
-                        : item?.priceType === "week"
-                        ? "/pw"
-                        : item?.priceType === "month"
-                        ? "/pm"
-                        : "/py"}
-                    </sub>
-                  </h1>
-                  <p className="py-1 text-[14px] font-semibold ">{item?.category}</p>
+                        {/* Right Column with Details */}
+                        <div className="col-span-6">
+                          <h1 className="text-primary font-semibold text-[15px] my-1">
+                          €{item?.price}
+                            <sub>
+                              {item?.priceType === "day"
+                                ? `/pd`
+                                : item?.priceType === "week"
+                                ? "/pw"
+                                : item?.priceType === "month"
+                                ? "/pm"
+                                : "/py"}
+                            </sub>
+                          </h1>
+                          <p className="py-1 text-[14px] font-semibold ">{item?.category}</p>
 
-                  {/* User and Title */}
-                  <div className="flex items-center gap-2">
-                    <Image
-                      alt="User Avatar"
-                      src={`${imageUrl}${item?.createdBy?.avatar}`}
-                      width={20}
-                      height={20}
-                      style={{ borderRadius: "100%", objectFit: "contain" }}
-                    />
-                    <Heading name={item?.title} style="font-bold text-[14px] leading-[15px]" />
+                          {/* User and Title */}
+                          <div className="flex items-center gap-2">
+                            <Image
+                              alt="User Avatar"
+                              src={ item?.createdBy?.avatar?.startsWith("https") ? item?.createdBy?.avatar : `${imageUrl}${item?.createdBy?.avatar}` }
+                              width={20}
+                              height={20}
+                              style={{ borderRadius: "100%", objectFit: "contain" }}
+                            />
+                            <Heading name={item?.title} style="font-bold text-[14px] leading-[15px]" />
+                          </div>
+
+                          {/* Address */}
+                          <p className="text-sm flex gap-2 font-normal py-1">
+                            <TfiLocationPin size={14} color="#5C5C5C" />
+                            {item?.address}
+                          </p>
+                        </div>
+                      </div>
+                    </InfoWindow>
                   </div>
+                )} 
 
-                  {/* Address */}
-                  <p className="text-sm flex items-center gap-2 font-normal py-1">
-                    <TfiLocationPin size={14} color="#5C5C5C" />
-                    {item?.location?.address}
-                  </p>
-                </div>
-              </div>
-            </InfoWindow>
-
-                  </div>
-          )} 
-
-               </Marker>
-            
-             
-              ))}
+                  </Marker>
+                )
+              })}
             </GoogleMap>
           ) : (
             <div>Loading map...</div>

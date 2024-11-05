@@ -12,6 +12,7 @@ import {
   Select,
   Upload,
 } from "antd";
+import dayjs from "dayjs";
 import {
   CalendarDays,
   ChevronDown,
@@ -33,13 +34,11 @@ interface IRentPostProps {
 const RentPost: React.FC<IRentPostProps> = ({ setOpen  , rentData , updateInfo, refetchAllPost}) => {   
 
   const {data:facilities , refetch}= useGetFacilitiesQuery(undefined) 
-  const [createBookingPost , {isSuccess , isError , error}] = useCreateBookingPostMutation() 
+  const [createBookingPost] = useCreateBookingPostMutation() 
   const [updatePost] = useUpdatePostMutation()
   const [videoFile, setVideoFile] = useState<any[]>([]);
   const [fileList, setFileList] = useState([]);
-  const [form] = Form.useForm(); 
-
-console.log(updateInfo);
+  const [form] = Form.useForm();
 
 useEffect(() => {
   if (updateInfo) {
@@ -56,11 +55,9 @@ useEffect(() => {
       propertyType: updateInfo?.propertyType, 
       bedType: updateInfo?.bedType, 
       bedrooms: updateInfo?.bedrooms, 
-      bathrooms: updateInfo?.bathrooms, 
-      balcony: updateInfo?.balcony, 
+      bathrooms: updateInfo?.bathrooms,
       kitchen: updateInfo?.kitchen, 
-      dining: updateInfo?.dining, 
-      drawing: updateInfo?.drawing, 
+      dining: updateInfo?.dining,
       moveOn: updateInfo?.moveOn ? moment(updateInfo.moveOn) : null,
       unavailableDay: updateInfo?.unavailableDay?.map((day: string) => { 
 
@@ -137,10 +134,11 @@ useEffect(() => {
     } 
 
     const formattedUnavailableDays = unavailableDay.map((day: any) =>
-      moment(day).format('YYYY-MM-DD')
-    ); 
+      dayjs(day.$d).format('MM/DD/YYYY')
+    );
+    
 
-    const formatMoveOn = moment(moveOn).format("YYYY-MM-DD")  
+    const formatMoveOn = dayjs(moveOn.$d).format('MM/DD/YYYY')
 
     const datas = {
       unavailableDay:formattedUnavailableDays ,
@@ -148,24 +146,22 @@ useEffect(() => {
       ownerType:rentData?.ownerType ,
       ownerNumber:rentData?.ownerNumber ,
       ...otherValues
-    } 
+    }
 
   formData.append("data" , JSON.stringify(datas))     
 
   const id = updateInfo?._id
 
-  if(id){
-await updatePost({id,formData}).then((res)=>{  
-  console.log(res);
-  handleResponse(res)
-})
-  }else{ 
-    await createBookingPost(formData).then(res => {  
-      console.log(res);
-      handleResponse(res)
-  }
-    ) } 
-   }; 
+    if(id){
+      await updatePost({id,formData}).then((res)=>{
+        handleResponse(res)
+      })
+    }else{ 
+      await createBookingPost(formData).then(res => {
+        handleResponse(res)
+      }) 
+    } 
+  }; 
 
   const handleResponse = (res:any)=>{
     if(res?.data?.success){
@@ -193,6 +189,7 @@ await updatePost({id,formData}).then((res)=>{
   }
 
   const facilitiesOptions = facilities?.data
+
   return (
     <Form
       form={form}
@@ -206,7 +203,17 @@ await updatePost({id,formData}).then((res)=>{
  {/* property video   */} 
  <Form.Item
   name="propertyVideo"
-
+  rules={[
+    {
+      required: true,
+      validator: () => {
+        if (videoFile?.length === 0) {
+          return Promise.reject("Please Upload Property Video");
+        }
+        return Promise.resolve();
+      },
+    },
+  ]}
   getValueFromEvent={(e) =>{e && setVideoFile(e.fileList)} }
   label={<p className="font-medium text-[16px] leading-6 text-[#636363]">Property Video</p>}
   style={{ marginBottom: 0 }}
@@ -371,8 +378,8 @@ await updatePost({id,formData}).then((res)=>{
             >
               <Select.Option value="room-mate">Room Mate</Select.Option>
               <Select.Option value="flat-mate">Flate Mate</Select.Option>
-              <Select.Option value="whole-unit">Whole Unit</Select.Option>
-              <Select.Option value="house">House</Select.Option>
+              {/* <Select.Option value="whole-unit">Whole Unit</Select.Option>
+              <Select.Option value="house">House</Select.Option> */}
             </Select>
           </Form.Item>
 
@@ -670,6 +677,7 @@ await updatePost({id,formData}).then((res)=>{
               }
             >
               <Select.Option value="sofa">Sofa</Select.Option>
+              <Select.Option value="sofa-bed">Sofa Bed</Select.Option>
               <Select.Option value="single-bed">Single bed</Select.Option>
               <Select.Option value="double-bed">Double bed</Select.Option>
             </Select>
@@ -690,26 +698,25 @@ await updatePost({id,formData}).then((res)=>{
               },
             ]}
             style={{ marginBottom: 0 }}
-            className="lg:col-span-6 col-span-12" 
-            getValueFromEvent={(e) => {
-              const value = e.target.value;
-              return value ? parseInt(value, 10) : '';
-            }}
+            className="lg:col-span-6 col-span-12"
           >
-            <Input
-              placeholder="Enter Bedrooms number" 
-               type="number"
+            <Select
+              placeholder="Enter Bedrooms number"
               style={{
                 width: "100%",
                 height: 48,
                 boxShadow: "none",
                 outline: "none",
-                border: "1px solid #E0E0E0",
                 borderRadius: 24,
                 background: "#FEFEFE",
               }}
-              className=" placeholder:text-[#818181] placeholder:text-[16px] placeholder:font-normal placeholder:leading-6"
-            />
+            >
+              <Select.Option value="1">1</Select.Option>
+              <Select.Option value="2">2</Select.Option>
+              <Select.Option value="3">3</Select.Option>
+              <Select.Option value="4">4</Select.Option>
+              <Select.Option value="5">5</Select.Option>
+            </Select>
           </Form.Item>
 
           {/* bathroom */}
@@ -727,63 +734,25 @@ await updatePost({id,formData}).then((res)=>{
               },
             ]}
             style={{ marginBottom: 0 }}
-            className="lg:col-span-6 col-span-12" 
-            getValueFromEvent={(e) => {
-              const value = e.target.value;
-              return value ? parseInt(value, 10) : '';
-            }}
+            className="lg:col-span-6 col-span-12"
           >
-            <Input
-              placeholder="Enter Bathroom number"  
-               type="number"
+            <Select
+              placeholder="Enter Bathroom number"
               style={{
                 width: "100%",
                 height: 48,
                 boxShadow: "none",
                 outline: "none",
-                border: "1px solid #E0E0E0",
                 borderRadius: 24,
                 background: "#FEFEFE",
               }}
-              className=" placeholder:text-[#818181] placeholder:text-[16px] placeholder:font-normal placeholder:leading-6"
-            />
-          </Form.Item>
-
-          {/* balcony */}
-          <Form.Item
-            name="balcony"
-            label={
-              <p className="font-medium text-[16px] leading-6 text-[#636363]">
-                Balcony
-              </p>
-            }
-            rules={[
-              {
-                required: true,
-                message: "Please Enter Balcony number!",
-              },
-            ]}
-            style={{ marginBottom: 0 }}
-            className="lg:col-span-6 col-span-12" 
-            getValueFromEvent={(e) => {
-              const value = e.target.value;
-              return value ? parseInt(value, 10) : '';
-            }}
-          >
-            <Input
-              placeholder="Enter Balcony number!" 
-               type="number"
-              style={{
-                width: "100%",
-                height: 48,
-                boxShadow: "none",
-                outline: "none",
-                border: "1px solid #E0E0E0",
-                borderRadius: 24,
-                background: "#FEFEFE",
-              }}
-              className=" placeholder:text-[#818181] placeholder:text-[16px] placeholder:font-normal placeholder:leading-6"
-            />
+            >
+              <Select.Option value="1">1</Select.Option>
+              <Select.Option value="2">2</Select.Option>
+              <Select.Option value="3">3</Select.Option>
+              <Select.Option value="4">4</Select.Option>
+              <Select.Option value="5">5</Select.Option>
+            </Select>
           </Form.Item>
 
           {/* Kitchen */}
@@ -801,27 +770,25 @@ await updatePost({id,formData}).then((res)=>{
               },
             ]}
             style={{ marginBottom: 0 }}
-            className="lg:col-span-6 col-span-12" 
-            getValueFromEvent={(e) => {
-              const value = e.target.value;
-              return value ? parseInt(value, 10) : '';
-            }} 
+            className="lg:col-span-6 col-span-12"
           >
-            <Input
-              placeholder="Enter Kitchen number!" 
-               type="number" 
-               
+            <Select
+              placeholder="Enter Kitchen"
               style={{
                 width: "100%",
                 height: 48,
                 boxShadow: "none",
                 outline: "none",
-                border: "1px solid #E0E0E0",
                 borderRadius: 24,
                 background: "#FEFEFE",
               }}
-              className=" placeholder:text-[#818181] placeholder:text-[16px] placeholder:font-normal placeholder:leading-6"
-            />
+            >
+              <Select.Option value="1">1</Select.Option>
+              <Select.Option value="2">2</Select.Option>
+              <Select.Option value="3">3</Select.Option>
+              <Select.Option value="4">4</Select.Option>
+              <Select.Option value="5">5</Select.Option>
+            </Select>
           </Form.Item>
 
           {/* Dining */}
@@ -829,7 +796,7 @@ await updatePost({id,formData}).then((res)=>{
             name="dining"
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
-                Dining
+                Dining Room
               </p>
             }
             rules={[
@@ -839,64 +806,25 @@ await updatePost({id,formData}).then((res)=>{
               },
             ]}
             style={{ marginBottom: 0 }}
-            className="lg:col-span-6 col-span-12" 
-            getValueFromEvent={(e) => {
-              const value = e.target.value;
-              return value ? parseInt(value, 10) : '';
-            }}
+            className="lg:col-span-6 col-span-12"
           >
-            <Input
-              placeholder="Enter Dining " 
-               type="number"
+            <Select
+              placeholder="Enter Dining"
               style={{
                 width: "100%",
                 height: 48,
                 boxShadow: "none",
                 outline: "none",
-                border: "1px solid #E0E0E0",
                 borderRadius: 24,
                 background: "#FEFEFE",
               }}
-              className=" placeholder:text-[#818181] placeholder:text-[16px] placeholder:font-normal placeholder:leading-6"
-            />
-          </Form.Item>
-
-          {/* drawing room */}
-          <Form.Item
-            name="drawing"
-            label={
-              <p className="font-medium text-[16px] leading-6 text-[#636363]">
-                Drawing
-              </p>
-            }
-            rules={[
-              {
-                required: true,
-                message: "Please Enter Drawing",
-              },
-            ]}
-            style={{ marginBottom: 0 }}
-            className="col-span-12" 
-            getValueFromEvent={(e) => {
-              const value = e.target.value;
-              return value ? parseInt(value, 10) : '';
-            }}
-          >
-            <Input
-              placeholder="Enter Drawing" 
-               type="number" 
-             
-              style={{
-                width: "100%",
-                height: 48,
-                boxShadow: "none",
-                outline: "none",
-                border: "1px solid #E0E0E0",
-                borderRadius: 24,
-                background: "#FEFEFE",
-              }}
-              className=" placeholder:text-[#818181] placeholder:text-[16px] placeholder:font-normal placeholder:leading-6"
-            />
+            >
+              <Select.Option value="1">1</Select.Option>
+              <Select.Option value="2">2</Select.Option>
+              <Select.Option value="3">3</Select.Option>
+              <Select.Option value="4">4</Select.Option>
+              <Select.Option value="5">5</Select.Option>
+            </Select>
           </Form.Item>
 
           {/* entry date */}
@@ -968,13 +896,14 @@ await updatePost({id,formData}).then((res)=>{
             className="lg:col-span-6 col-span-12 customSelect"
           >
             <DatePicker 
-            multiple
+
+              multiple
               suffixIcon={
                 <div
                   style={{
                     background: "#E6F2F5",
                     width: 40,
-                   
+                    height: 40,
                     borderRadius: "100%",
                     display: "flex",
                     alignItems: "center",
@@ -984,14 +913,14 @@ await updatePost({id,formData}).then((res)=>{
                   <CalendarDays
                     className="cursor-pointer"
                     color="#00809E"
-                    size={24}
+                    size={20}
                   />
                 </div>
               }
               placeholder="Select Move on Date"
               style={{
+                height: 48,
                 width: "100%",
-               
                 boxShadow: "none",
                 outline: "none",
                 border: "1px solid #E0E0E0",
@@ -1074,9 +1003,9 @@ await updatePost({id,formData}).then((res)=>{
                 </div>
               }
             >
-              <Select.Option value="single">Single</Select.Option>
-              <Select.Option value="couple">Couple</Select.Option>
-              <Select.Option value="family">Family</Select.Option>
+              <Select.Option value="Male">Male</Select.Option>
+              <Select.Option value="Female">Female</Select.Option>
+              <Select.Option value="Others">Others</Select.Option>
             </Select>
           </Form.Item>
 
@@ -1116,6 +1045,7 @@ await updatePost({id,formData}).then((res)=>{
               <Select.Option value="any">All</Select.Option>
               <Select.Option value="student">Student</Select.Option>
               <Select.Option value="professional">Professional</Select.Option>
+              <Select.Option value="professional">Others</Select.Option>
             </Select>
           </Form.Item>
 

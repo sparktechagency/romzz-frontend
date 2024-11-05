@@ -86,7 +86,7 @@ const PropertyCard = ({ property }: { property: TProperty }) => {
         <div className="flex items-center gap-4">
           <Image
             alt="Avatar"
-            src={`${imageUrl}${property?.createdBy?.avatar}`}
+            src={ property?.createdBy?.avatar?.startsWith("https") ? property?.createdBy?.avatar : `${imageUrl}${property?.createdBy?.avatar}`}
             width={30}
             height={30}
             style={{ height:"30px" , width:"30px" , borderRadius: "100%", objectFit: "contain" }}

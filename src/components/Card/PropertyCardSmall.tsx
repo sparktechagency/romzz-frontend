@@ -13,13 +13,16 @@ import {
   removeFromWishlist,
 } from "@/redux/features/web/slices/wishlistSlice";
 import { imageUrl } from "@/redux/api/api";
+
+
 const PropertyCardSmall = ({ property }: { property: TProperty }) => {
   const wishLists = useAppSelector((state) => state?.wishlist?.properties);
   const isInWishlist = wishLists.some(
     (wishlistProperty) => wishlistProperty?._id === property?._id
   ); 
-  console.log(property);
+
   const dispatch = useAppDispatch();
+
   const handleWishList = () => {
     if (isInWishlist) {
       dispatch(removeFromWishlist(property?._id));
@@ -37,6 +40,8 @@ const PropertyCardSmall = ({ property }: { property: TProperty }) => {
       });
     }
   };
+
+
   return (
     <div className="pb-2">
       <div
@@ -88,7 +93,7 @@ const PropertyCardSmall = ({ property }: { property: TProperty }) => {
         <div className="flex items-center lg:gap-4 gap-2">
           <Image
             alt="Logo"
-            src={`${imageUrl}${property?.createdBy?.avatar}`}
+            src={ property?.createdBy?.avatar?.startsWith("https") ? property?.createdBy?.avatar : `${imageUrl}${property?.createdBy?.avatar}`}
             width={30}
             height={30}
             style={{ borderRadius: "100%", objectFit: "contain"  }}

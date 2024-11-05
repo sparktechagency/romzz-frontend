@@ -28,16 +28,16 @@ export const UserProvider = ({children}: {children: ReactNode})=>{
     const socket = useMemo(()=>io(socketUrl ,  { extraHeaders: {
         Authorization: `Bearer ${token}`,
         // 'X-Custom-Header': 'value'
-      }}),[token])  
+      }}),[token]);
 
     useEffect(()=>{
-  const handleConnection =()=>{
-    //console.log("connect with socket server");
-  } 
-  socket.on("connect" , handleConnection)  
-  return(()=>{
-    socket.off("connect" , handleConnection)
-  })
+      const handleConnection =()=>{
+        //console.log("connect with socket server");
+      } 
+      socket.on("connect" , handleConnection)  
+      return(()=>{
+        socket.off("connect" , handleConnection)
+      })
     },[socket]) 
 
     useEffect(()=>{

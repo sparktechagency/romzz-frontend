@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Modal from "./shared/Modal";
-import hostbanner from "@/assets/hostBanner.png";
 import person from "@/assets/person2.png";
 import Image from "next/image";
 import { Rate } from "antd";
@@ -18,19 +17,18 @@ interface IHostProfileProps {
 }
 const HostProfile: React.FC<IHostProfileProps> = ({ id, open, setOpen }) => {
   const { data: hostProfile } = useGetPropertyHostDetailsQuery(id); 
-  const { data: feedbacks } = useGetFeedBackByIdQuery(id); 
-  console.log(hostProfile); 
+  const { data: feedbacks } = useGetFeedBackByIdQuery(id);
 
-  const [openModal, setOpenModal] = useState(false);
+  const [openModal, setOpenModal] = useState<any | null>(null);
 
   const body = (
     <div className="">
       {/* banner image and profile image section */}
       <div className="relative h-[200px]">
-        <Image src={hostProfile?.coverImage ? `${imageUrl}${hostProfile?.coverImage}` : hostbanner} alt="host-profile" fill />
+        <Image src={hostProfile?.coverImage.startsWith("https") ? hostProfile?.coverImage : `${imageUrl}${hostProfile?.coverImage}`} alt="host-profile" fill />
         <div className="absolute left-4 -bottom-12 border-2 p-1 rounded-full border-primary">
           <Image
-            src={`${imageUrl}${hostProfile?.avatar}`}
+            src={ hostProfile?.avatar.startsWith("https") ? hostProfile?.avatar:  `${imageUrl}${hostProfile?.avatar}`}
             alt="host-profile"
             width={120}
             height={120} 
@@ -109,38 +107,39 @@ const HostProfile: React.FC<IHostProfileProps> = ({ id, open, setOpen }) => {
 
         <div className="bg-[#EBEBEB] lg:p-6 p-3 rounded-3xl col-span-6">
           <div className="grid grid-cols-1 gap-4">
-            {[1, 2].map((item, index) => (
+            {feedbacks?.data?.map((item:any, index:number) => (
               <div
                 key={index}
                 className="grid lg:grid-cols-4 grid-cols-1 gap-3 bg-[#F7F7F7] lg:rounded-3xl rounded-xl lg:p-3 p-1 "
               >
                 <div className=" col-span-1">
                   <Image
-                    src={person}
+                    src={item?.userId?.avatar?.startsWith("https") ? item?.userId?.avatar : `${imageUrl}${item?.userId?.avatar}`}
                     alt="host-profile"
                     width={80}
                     height={80}
-                    // style={}
+                    style={{
+                      clipPath: "circle()"
+                    }}
                   />
                 </div>
 
                 <div className=" col-span-3">
                   <div className="w-full flex items-center justify-between ">
                     <Heading
-                      name="Aladin"
+                      name={item?.userId?.fullName}
                       style="font-normal text-[18px]  leading-[20px] text-[#333333]"
                     />
                     <Eye
-                      onClick={() => setOpenModal(true)}
+                      onClick={() => setOpenModal(item)}
                       size={22}
                       color="#767676"
                       className="cursor-pointer "
                     />
                   </div>
-                  <Rate defaultValue={3.5} allowHalf />
+                  <Rate defaultValue={item?.rating} allowHalf />
                   <p className="text-[#767676] text-[15px] leading-5 font-normal">
-                    Literally I didn&apos;t expect but the facilities and the
-                    neighbourhood...
+                  {item?.feedback?.slice(0, 30) + "...."}
                   </p>
                 </div>
               </div>
