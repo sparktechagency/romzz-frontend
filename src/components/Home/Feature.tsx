@@ -1,5 +1,5 @@
 import React from 'react';
-import list from "@/assets/homepage-desktop-bed-hover.webp"
+import list from "@/assets/bed.jpg"
 import host from "@/assets/homepage-desktop-woman.webp"
 import Image from 'next/image';
 import Link from 'next/link';
@@ -15,7 +15,7 @@ const Feature = () => {
                         >
                             <div>
                                 <p className='font-semibold text-[18px]'>
-                                    Create A free <br /> 
+                                    Create a free <br /> 
                                     property listing
                                 </p>
                                 <button className='bg-primary text-white h-10 rounded-md px-3 mt-3'>I need flatmate</button>
@@ -30,7 +30,7 @@ const Feature = () => {
                     >
                         <div>
                             <p className='font-semibold text-[18px]'>
-                                Create A free <br /> 
+                                Create a free <br /> 
                                 seeker listing
                             </p>
                             <button className='bg-primary text-white h-10 rounded-md px-3 mt-3'>I need place</button>
