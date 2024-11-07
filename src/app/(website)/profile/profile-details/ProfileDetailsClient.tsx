@@ -14,8 +14,6 @@ const ProfileDetailsClient = () => {
     const userProgress =  progress?.data?.progress 
     const isSubscribed = data?.data?.isSubscribed
     const isSuccess = data?.data?.hasAccess
-    
-    console.log(data); 
     useEffect(()=>{
         const initialTab = new URLSearchParams(window.location.search).get("tab") || "User Details";
         setTab(initialTab);

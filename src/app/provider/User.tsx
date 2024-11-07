@@ -22,17 +22,19 @@ export const useUser = () => {
 };
 
 export const UserProvider = ({children}: {children: ReactNode})=>{  
-    const token = getFromLocalStorage("romzzToken");
+    const token = localStorage.getItem("romzzToken");
     const {data:profile} = useGetProfileQuery(undefined)
     const [user, setUser] = useState(null);  
+
+    console.log(profile)
+
+    
     const socket = useMemo(()=>io(socketUrl ,  { extraHeaders: {
         Authorization: `Bearer ${token}`,
-        // 'X-Custom-Header': 'value'
       }}),[token]);
 
     useEffect(()=>{
       const handleConnection =()=>{
-        //console.log("connect with socket server");
       } 
       socket.on("connect" , handleConnection)  
       return(()=>{
@@ -42,9 +44,9 @@ export const UserProvider = ({children}: {children: ReactNode})=>{
 
     useEffect(()=>{
         if(profile){
-            setUser(profile)
+            setUser(profile.data)
         }
-    },[profile])
+    },[profile]);
 
     return(
         <UserContext.Provider value={{ user, setUser , socket }}>

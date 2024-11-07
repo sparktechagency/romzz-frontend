@@ -2,11 +2,11 @@
 import Heading from '@/components/shared/Heading';
 import { Button, Checkbox, Form, Input } from 'antd'
 import Link from 'next/link';
-import React from 'react';
+import React, { useContext } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useGetProfileQuery, useLoginMutation } from '@/redux/apiSlices/AuthSlices';
+import { useLoginMutation } from '@/redux/apiSlices/AuthSlices';
 import Swal from 'sweetalert2';
-import { setToLocalStorage } from '@/util/localStorage';
+import { UserContext } from '@/app/provider/User';
 
 const LoginClient = () => {
     const [form] = Form.useForm(); 
@@ -14,7 +14,7 @@ const LoginClient = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     form.setFieldsValue(undefined);
-    const { refetch } = useGetProfileQuery(undefined);
+    const { setUser } = useContext<any>(UserContext);
 
     const handleLoginSuccess = () => {
         const redirectPath = searchParams.get('redirect') || '/';
@@ -32,11 +32,15 @@ const LoginClient = () => {
                         icon: "success",
                         timer: 1500,
                         showConfirmButton: false
-                    }).then(() => {   
-                        setToLocalStorage("romzzToken" , res?.data?.data?.accessToken)
-                        form.resetFields();
-                        refetch();
-                        handleLoginSuccess();
+                    }).then(() => {
+                        if(res?.data?.data?.accessToken){
+                            localStorage.setItem("romzzToken", res?.data?.data?.accessToken)
+                            form.resetFields();
+                            setUser(res?.data.data.existingUser)
+                            handleLoginSuccess();
+                        }   
+                        
+                        
                     });
                 }
             })

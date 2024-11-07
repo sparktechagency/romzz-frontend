@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Logo from "@/assets/Logo.png";
 import Link from "next/link";
 import { AiOutlineUser } from "react-icons/ai";
@@ -9,22 +9,28 @@ import { Bell, Heart, Menu, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Languages from "../Languages";
 import { useAppSelector } from "@/redux/hooks";
-import { useGetNotificationQuery, useUpdateMakeAsSeenMutation } from "@/redux/features/web/api/notification";
+import {
+  useGetNotificationQuery,
+  useUpdateMakeAsSeenMutation,
+} from "@/redux/features/web/api/notification";
 import { useGetProfileQuery } from "@/redux/apiSlices/AuthSlices";
 import { imageUrl } from "@/redux/api/api";
+import { UserContext } from "@/app/provider/User";
 
 const Navbar = () => {
   const wishlist = useAppSelector((state) => state.wishlist.properties);
   const [openDrawer, setOpenDrawer] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);   
-  const [updateMakeAsSeen]= useUpdateMakeAsSeenMutation() 
-  const {data:Notifications , refetch:notificationFetch}= useGetNotificationQuery(undefined) 
-  const {data:userInfo } = useGetProfileQuery(undefined);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [updateMakeAsSeen] = useUpdateMakeAsSeenMutation();
+  const { data: Notifications, refetch: notificationFetch } =
+    useGetNotificationQuery(undefined);
+  const { user: userInfo } = useContext<any>(UserContext);
 
-
-  const pathName = usePathname();  
-  const router = useRouter() 
-  const totalNotification = Notifications?.data?.result?.filter((item:any) => item?.isSeen === false).length  
+  const pathName = usePathname();
+  const router = useRouter();
+  const totalNotification = Notifications?.data?.result?.filter(
+    (item: any) => item?.isSeen === false
+  ).length;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,17 +47,19 @@ const Navbar = () => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []); 
+  }, []);
 
-  const handleUpdateNotification =async()=>{
-  await updateMakeAsSeen(undefined).then((res)=>{//console.log(res) 
-    notificationFetch()
-    router.push("/notification")
-  }) 
-  }  
+  const handleUpdateNotification = async () => {
+    await updateMakeAsSeen(undefined).then((res) => {
+      //console.log(res)
+      notificationFetch();
+      router.push("/notification");
+    });
+  };
 
-  const profileImg = userInfo?.data?.avatar.startsWith("https") ? userInfo?.data?.avatar :`${imageUrl}${userInfo?.data?.avatar}`
-
+  const profileImg = userInfo?.avatar.startsWith("https")
+    ? userInfo?.avatar
+    : `${imageUrl}${userInfo?.avatar}`;
 
   const item = [
     {
@@ -125,49 +133,34 @@ const Navbar = () => {
             </Badge>
           </Link>
 
-          <div onClick={()=>handleUpdateNotification()}>
+          <div onClick={() => handleUpdateNotification()}>
             <Badge count={totalNotification} color="#FF9773">
               <Bell className="cursor-pointer" color="#767676" size={24} />
             </Badge>
-          </div> 
+          </div>
 
-
-          {
-
-              userInfo?.data ?   
-              
-              <Link
-              href="/profile"
-              className=" "
-            > 
-            <div className=" flex items-center gap-1 font-normal  text-[#767676]  text-[16px]">
-            <Image
-  src={profileImg}
-  alt="Profile Image"
-  height={42}
-  width={42}
-  style={{ borderRadius: "100%" }}
- unoptimized 
-/>
-              <p>{userInfo?.data?.fullName}</p>
-            </div>
-            
-            </Link> 
-
-            : 
-
+          {userInfo ? (
+            <Link href="/profile" className=" ">
+              <div className=" flex items-center gap-1 font-normal  text-[#767676]  text-[16px]">
+                <Image
+                  src={profileImg}
+                  alt="Profile Image"
+                  height={42}
+                  width={42}
+                  style={{ borderRadius: "100%" }}
+                  unoptimized
+                />
+                <p>{userInfo?.fullName}</p>
+              </div>
+            </Link>
+          ) : (
             <Link
-            href={"/login"}
-            className="font-normal w-[120px] h-12 rounded-[24px] bg-primary text-[#F3F3F3] hidden  lg:flex items-center justify-center gap-2 text-[16px] leading-6"
-          >
-            <AiOutlineUser size={20} color="#F3F3F3" /> Sign In
-          </Link> 
-
-          }
-
-      
-
-       
+              href={"/login"}
+              className="font-normal w-[120px] h-12 rounded-[24px] bg-primary text-[#F3F3F3] hidden  lg:flex items-center justify-center gap-2 text-[16px] leading-6"
+            >
+              <AiOutlineUser size={20} color="#F3F3F3" /> Sign In
+            </Link>
+          )}
         </div>
 
         <div className="block lg:hidden">
@@ -226,41 +219,33 @@ const Navbar = () => {
             </Badge>
           </Link>
 
-         
-          <div  onClick={()=>handleUpdateNotification()} >
-          <Badge count={totalNotification} color="#FF9773">
-              <Bell color="#767676" size={24}    />
+          <div onClick={() => handleUpdateNotification()}>
+            <Badge count={totalNotification} color="#FF9773">
+              <Bell color="#767676" size={24} />
             </Badge>
           </div>
-           
-          {
 
-userInfo?.data ?   
-
-<Link
-href="/profile"
-className=" "
-> 
-<div className=" flex items-center gap-1 font-normal  text-[#767676]  text-[16px]">
-<Image src={profileImg} alt="asd" height={42} width={42} style={{ borderRadius:"100%"}}  /> 
-<p>{userInfo?.data?.fullName}</p>
-</div>
-
-</Link> 
-
-: 
-
-<Link
-href={"/login"}
-className="font-normal w-[120px] h-12 rounded-[24px] bg-primary text-[#F3F3F3] flex items-center justify-center gap-2 text-[16px] leading-6"
->
-<AiOutlineUser size={20} color="#F3F3F3" /> Sign In
-</Link>
-
-} 
-
-
-    
+          {userInfo ? (
+            <Link href="/profile" className=" ">
+              <div className=" flex items-center gap-1 font-normal  text-[#767676]  text-[16px]">
+                <Image
+                  src={profileImg}
+                  alt="asd"
+                  height={42}
+                  width={42}
+                  style={{ borderRadius: "100%" }}
+                />
+                <p>{userInfo?.fullName}</p>
+              </div>
+            </Link>
+          ) : (
+            <Link
+              href={"/login"}
+              className="font-normal w-[120px] h-12 rounded-[24px] bg-primary text-[#F3F3F3] flex items-center justify-center gap-2 text-[16px] leading-6"
+            >
+              <AiOutlineUser size={20} color="#F3F3F3" /> Sign In
+            </Link>
+          )}
         </div>
       </Drawer>
     </div>
