@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useLoginMutation } from '@/redux/apiSlices/AuthSlices';
 import Swal from 'sweetalert2';
 import { UserContext } from '@/app/provider/User';
+import { MdKeyboardBackspace } from "react-icons/md";
 
 const LoginClient = () => {
     const [form] = Form.useForm(); 
@@ -56,6 +57,7 @@ const LoginClient = () => {
 
     return (
         <div>
+            <MdKeyboardBackspace className='cursor-pointer' color='#5C5C5C' size={24} onClick={()=>router.push("/")} />
             <Heading name='Log in to your account' style='font-semibold text-[24px] leading-[32px] text-[#333333] text-center mb-6' />
             <p className='font-normal text-[14px] leading-[14px] text-[#5C5C5C] text-center mb-6' >Please enter your email and password to continue</p>
 

@@ -1,6 +1,10 @@
 "use client";
 import { imageUrl } from "@/redux/api/api";
-import { useCreateBookingPostMutation, useGetFacilitiesQuery, useUpdatePostMutation } from "@/redux/apiSlices/ClientProfileSlices";
+import {
+  useCreateBookingPostMutation,
+  useGetFacilitiesQuery,
+  useUpdatePostMutation,
+} from "@/redux/apiSlices/ClientProfileSlices";
 
 import {
   Button,
@@ -13,11 +17,7 @@ import {
   Upload,
 } from "antd";
 import dayjs from "dayjs";
-import {
-  CalendarDays,
-  ChevronDown,
-  DollarSign,
-} from "lucide-react";
+import { CalendarDays, ChevronDown, DollarSign } from "lucide-react";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { FaMapLocationDot } from "react-icons/fa6";
@@ -25,170 +25,180 @@ import Swal from "sweetalert2";
 
 interface IRentPostProps {
   open: boolean;
-  setOpen: (open: boolean) => void; 
-  rentData:any; 
-  updateInfo:any ;
-  refetchAllPost:any
+  setOpen: (open: boolean) => void;
+  rentData: any;
+  updateInfo: any;
+  refetchAllPost: any;
 }
 
-const RentPost: React.FC<IRentPostProps> = ({ setOpen  , rentData , updateInfo, refetchAllPost}) => {   
-
-  const {data:facilities , refetch}= useGetFacilitiesQuery(undefined) 
-  const [createBookingPost] = useCreateBookingPostMutation() 
-  const [updatePost] = useUpdatePostMutation()
+const RentPost: React.FC<IRentPostProps> = ({
+  setOpen,
+  rentData,
+  updateInfo,
+  refetchAllPost,
+}) => {
+  const { data: facilities, refetch } = useGetFacilitiesQuery(undefined);
+  const [createBookingPost] = useCreateBookingPostMutation();
+  const [updatePost] = useUpdatePostMutation();
   const [videoFile, setVideoFile] = useState<any[]>([]);
   const [fileList, setFileList] = useState([]);
   const [form] = Form.useForm();
 
-useEffect(() => {
-  if (updateInfo) {
-    form.setFieldsValue({
-      title: updateInfo?.title, 
-      address: updateInfo?.address, 
-      category: updateInfo?.category, 
-      price: updateInfo?.price, 
-      priceType: updateInfo?.priceType, 
-      description: updateInfo?.description,  
-      size: updateInfo?.size,  
-      decorationType: updateInfo?.decorationType,  
-      flore: updateInfo?.flore,  
-      propertyType: updateInfo?.propertyType, 
-      bedType: updateInfo?.bedType, 
-      bedrooms: updateInfo?.bedrooms, 
-      bathrooms: updateInfo?.bathrooms,
-      kitchen: updateInfo?.kitchen, 
-      dining: updateInfo?.dining,
-      moveOn: updateInfo?.moveOn ? moment(updateInfo.moveOn) : null,
-      unavailableDay: updateInfo?.unavailableDay?.map((day: string) => { 
+  useEffect(() => {
+    if (updateInfo) {
+      form.setFieldsValue({
+        title: updateInfo?.title,
+        address: updateInfo?.address,
+        category: updateInfo?.category,
+        price: updateInfo?.price,
+        priceType: updateInfo?.priceType,
+        description: updateInfo?.description,
+        size: updateInfo?.size,
+        decorationType: updateInfo?.decorationType,
+        flore: updateInfo?.flore,
+        propertyType: updateInfo?.propertyType,
+        bedType: updateInfo?.bedType,
+        bedrooms: updateInfo?.bedrooms,
+        bathrooms: updateInfo?.bathrooms,
+        kitchen: updateInfo?.kitchen,
+        dining: updateInfo?.dining,
+        moveOn: updateInfo?.moveOn ? moment(updateInfo.moveOn) : null,
+        unavailableDay: updateInfo?.unavailableDay?.map((day: string) => {
+          return moment(day, "YYYY-MM-DD") || [];
+        }),
+        allowedGender: updateInfo?.allowedGender,
+        guestType: updateInfo?.guestType,
+        occupation: updateInfo?.occupation,
+        facilities: updateInfo?.facilities || [],
+        propertyVideo: updateInfo?.propertyVideo
+          ? [
+              {
+                uid: "-1",
+                name: "property-video.mp4",
+                status: "done",
+                url: `${imageUrl}${updateInfo.propertyVideo}`,
+              },
+            ]
+          : [],
+      });
 
-        return(
-
-        moment(day, 'YYYY-MM-DD')
-      ) || []
-    }) ,
-      allowedGender: updateInfo?.allowedGender, 
-      guestType: updateInfo?.guestType,  
-      occupation: updateInfo?.occupation,  
-      facilities: updateInfo?.facilities || [],  
-      propertyVideo: updateInfo?.propertyVideo
-        ? [{
-            uid: '-1',
-            name: 'property-video.mp4',
-            status: 'done',
+      if (updateInfo?.propertyVideo) {
+        setVideoFile([
+          {
+            uid: "-1",
+            name: "property-video.mp4",
+            status: "done",
             url: `${imageUrl}${updateInfo.propertyVideo}`,
-          }]
-        : [],
+          },
+        ]);
+      } else {
+        setVideoFile([]);
+      }
 
-    });  
-
-    if (updateInfo?.propertyVideo) {
-      setVideoFile([{
-        uid: '-1',
-        name: 'property-video.mp4',
-        status: 'done',
-        url: `${imageUrl}${updateInfo.propertyVideo}`,
-      }]);
-    }else{
-      setVideoFile([])
+      if (updateInfo?.propertyImages) {
+        const imageFiles = updateInfo?.propertyImages?.map(
+          (image: string, index: number) => ({
+            uid: index,
+            name: `image-${index + 1}.jpg`,
+            status: "done",
+            url: `${imageUrl}${image}`,
+          })
+        );
+        setFileList(imageFiles);
+      }
     }
+  }, [updateInfo, form]);
 
-    if (updateInfo?.propertyImages) {
-      const imageFiles = updateInfo?.propertyImages?.map((image: string, index: number) => ({
-        uid: index, 
-        name: `image-${index + 1}.jpg`,
-        status: 'done',
-        url: `${imageUrl}${image}`, 
-      }));
-      setFileList(imageFiles); 
-    }
-
-  }
-}, [updateInfo, form]); 
-
-
-
-  const handleSwitch = async(values: any) => {   
-    const formData = new FormData()
-    const { propertyImages ,unavailableDay ,moveOn ,propertyVideo , ...otherValues}= values     
+  const handleSwitch = async (values: any) => {
+    const formData = new FormData();
+    const {
+      propertyImages,
+      unavailableDay,
+      moveOn,
+      propertyVideo,
+      ...otherValues
+    } = values;
 
     //console.log(propertyVideo);
 
-    const propertyImagesFiles = fileList?.map((file: any) => file?.originFileObj)  
-    if(propertyImagesFiles){
-      for(const image of propertyImagesFiles){
-        formData.append("propertyImages" ,image )
-      }
-    } 
-
-    const ownerShipImageList = rentData?.ownershipImages?.map((file: any) => file?.originFileObj)   
-    //console.log(ownerShipImageList); 
-
-    if(ownerShipImageList){
-      for(const image of ownerShipImageList){       
-        formData.append("ownershipImages", image)
+    const propertyImagesFiles = fileList?.map(
+      (file: any) => file?.originFileObj
+    );
+    if (propertyImagesFiles) {
+      for (const image of propertyImagesFiles) {
+        formData.append("propertyImages", image);
       }
     }
- 
+
+    const ownerShipImageList = rentData?.ownershipImages?.map(
+      (file: any) => file?.originFileObj
+    );
+    //console.log(ownerShipImageList);
+
+    if (ownerShipImageList) {
+      for (const image of ownerShipImageList) {
+        formData.append("ownershipImages", image);
+      }
+    }
+
     if (videoFile && videoFile[0]?.originFileObj) {
       formData.append("propertyVideo", videoFile[0].originFileObj);
-    } 
-
-    const formattedUnavailableDays = unavailableDay.map((day: any) =>
-      dayjs(day.$d).format('MM/DD/YYYY')
-    );
-    
-
-    const formatMoveOn = dayjs(moveOn.$d).format('MM/DD/YYYY')
-
-    const datas = {
-      unavailableDay:formattedUnavailableDays ,
-      moveOn:formatMoveOn ,
-      ownerType:rentData?.ownerType ,
-      ownerNumber:rentData?.ownerNumber ,
-      ...otherValues
     }
 
-  formData.append("data" , JSON.stringify(datas))     
+    const formattedUnavailableDays = unavailableDay.map((day: any) =>
+      dayjs(day.$d).format("MM/DD/YYYY")
+    );
 
-  const id = updateInfo?._id
+    const formatMoveOn = dayjs(moveOn.$d).format("MM/DD/YYYY");
 
-    if(id){
-      await updatePost({id,formData}).then((res)=>{
-        handleResponse(res)
-      })
-    }else{ 
-      await createBookingPost(formData).then(res => {
-        handleResponse(res)
-      }) 
-    } 
-  }; 
+    const datas = {
+      unavailableDay: formattedUnavailableDays,
+      moveOn: formatMoveOn,
+      ownerType: rentData?.ownerType,
+      ownerNumber: rentData?.ownerNumber,
+      ...otherValues,
+    };
 
-  const handleResponse = (res:any)=>{
-    if(res?.data?.success){
+    formData.append("data", JSON.stringify(datas));
+
+    const id = updateInfo?._id;
+
+    if (id) {
+      await updatePost({ id, formData }).then((res) => {
+        handleResponse(res);
+      });
+    } else {
+      await createBookingPost(formData).then((res) => {
+        handleResponse(res);
+      });
+    }
+  };
+
+  const handleResponse = (res: any) => {
+    if (res?.data?.success) {
       Swal.fire({
-          text: res?.data?.message,
-          icon: "success",
-          timer: 1500,
-          showConfirmButton: false
-        }).then(() => {   
-          setOpen(false)
-          setVideoFile([])
-          setFileList([]) 
-          refetchAllPost()
-          refetch()
-          form.resetFields()  
-        });
-  }
-  else{
+        text: res?.data?.message,
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      }).then(() => {
+        setOpen(false);
+        setVideoFile([]);
+        setFileList([]);
+        refetchAllPost();
+        refetch();
+        form.resetFields();
+      });
+    } else {
       Swal.fire({
-      //@ts-ignore
-          text: res?.error?.data?.message,  
-          icon: "error",
-        });
-  }  
-  }
+        //@ts-ignore
+        text: res?.error?.data?.message,
+        icon: "error",
+      });
+    }
+  };
 
-  const facilitiesOptions = facilities?.data
+  const facilitiesOptions = facilities?.data;
 
   return (
     <Form
@@ -197,55 +207,51 @@ useEffect(() => {
       layout="vertical"
       className="h-[650px] flex flex-col "
     >
-      <div className="flex-1 overflow-y-auto custom-scrollbar-container pr-3"> 
+      <div className="flex-1 overflow-y-auto custom-scrollbar-container pr-3">
         <div className=" grid overflow-y-auto grid-cols-12 gap-6">
-  
- {/* property video   */} 
- <Form.Item
-  name="propertyVideo"
-  rules={[
-    {
-      required: true,
-      validator: () => {
-        if (videoFile?.length === 0) {
-          return Promise.reject("Please Upload Property Video");
-        }
-        return Promise.resolve();
-      },
-    },
-  ]}
-  getValueFromEvent={(e) =>{e && setVideoFile(e.fileList)} }
-  label={<p className="font-medium text-[16px] leading-6 text-[#636363]">Property Video</p>}
-  style={{ marginBottom: 0 }}
-  className="col-span-4"
->
-  <Upload
-    accept="video/*"
-    maxCount={1}
-    listType="picture-card"
-   
-    beforeUpload={(file) => {
-      const isVideo = file?.type?.startsWith("video/");
-      if (!isVideo) {
-        message.error(`${file.name} is not a video file`);
-      }
-      return isVideo;
-    }}
-    onChange={({ fileList }) =>{setVideoFile(fileList)}}  
-    fileList={videoFile}
-  >
-    {videoFile.length < 1 && "+ Upload"}
-  </Upload>
-</Form.Item>
+          {/* property video   */}
+          <Form.Item
+            name="propertyVideo"
+            
+            getValueFromEvent={(e) => {
+              e && setVideoFile(e.fileList);
+            }}
+            label={
+              <p className="font-medium text-[16px] leading-6 text-[#636363]">
+                Property Video
+              </p>
+            }
+            style={{ marginBottom: 0 }}
+            className="col-span-4"
+          >
+            <Upload
+              accept="video/*"
+              maxCount={1}
+              listType="picture-card"
+              beforeUpload={(file) => {
+                const isVideo = file?.type?.startsWith("video/");
+                if (!isVideo) {
+                  message.error(`${file.name} is not a video file`);
+                }
+                return isVideo;
+              }}
+              onChange={({ fileList }) => {
+                setVideoFile(fileList);
+              }}
+              fileList={videoFile}
+            >
+              {videoFile.length < 1 && "+ Upload"}
+            </Upload>
+          </Form.Item>
 
-      {/* property image  */}
+          {/* property image  */}
           <Form.Item
             name="propertyImages"
             valuePropName="propertyImages"
             getValueFromEvent={(e) => e && setFileList(e.fileList)}
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
-                Property Image{" "}
+                Property Images (At least 4)
               </p>
             }
             rules={[
@@ -271,7 +277,6 @@ useEffect(() => {
               {fileList.length < 12 && "+ Upload"}
             </Upload>
           </Form.Item>
-        
 
           {/* property name */}
           <Form.Item
@@ -398,16 +403,15 @@ useEffect(() => {
               },
             ]}
             style={{ marginBottom: 0 }}
-            className="lg:col-span-6 col-span-12"  
+            className="lg:col-span-6 col-span-12"
             // getValueFromEvent={(e) => {
             //   const value = e.target.value;
             //   return value ? parseInt(value, 10) : '';
-            // }} 
-
+            // }}
           >
             <Input
-              placeholder="Enter Property Price!" 
-              // type="number" 
+              placeholder="Enter Property Price!"
+              // type="number"
               prefix={<DollarSign size={24} color="#A1A1A1" />}
               style={{
                 width: "100%",
@@ -512,19 +516,25 @@ useEffect(() => {
             style={{ marginBottom: 0 }}
             className="lg:col-span-6 col-span-12"
           >
-            <Input
-              placeholder="Enter Property Size"
+            <Select
+              placeholder={
+                <p className="text-[#818181] text-[16px] font-normal leading-6">
+                  Property Size
+                </p>
+              }
               style={{
-                width: "100%",
                 height: 48,
-                boxShadow: "none",
-                outline: "none",
-                border: "1px solid #E0E0E0",
                 borderRadius: 24,
-                background: "#FEFEFE",
               }}
-              className=" placeholder:text-[#818181] placeholder:text-[16px] placeholder:font-normal placeholder:leading-6"
-            />
+              suffixIcon={
+                <div className="w-10 h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center">
+                  <ChevronDown size={24} color="#00809E" />
+                </div>
+              }
+            >
+              <Select.Option value="room_size">Room Size</Select.Option>
+              <Select.Option value="bed_size">Bed Size</Select.Option>
+            </Select>
           </Form.Item>
 
           {/* property decorated */}
@@ -580,15 +590,15 @@ useEffect(() => {
               },
             ]}
             style={{ marginBottom: 0 }}
-            className="lg:col-span-6 col-span-12" 
+            className="lg:col-span-6 col-span-12"
             getValueFromEvent={(e) => {
               const value = e.target.value;
-              return value ? parseInt(value, 10) : '';
+              return value ? parseInt(value, 10) : "";
             }}
           >
             <Input
-              placeholder="Enter Floor number!" 
-               type="number" 
+              placeholder="Enter Floor number!"
+              type="number"
               style={{
                 width: "100%",
                 height: 48,
@@ -607,7 +617,7 @@ useEffect(() => {
             name="propertyType"
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
-                property_type
+                Property Type
               </p>
             }
             rules={[
@@ -635,11 +645,10 @@ useEffect(() => {
                 </div>
               }
             >
-              <Select.Option value="family-house">Family House</Select.Option>
-              <Select.Option value="apartment">Apartment</Select.Option>
-              <Select.Option value="lodge">Lodge</Select.Option>
-              <Select.Option value="villa">Vila</Select.Option>
-              <Select.Option value="cottage">Cottage</Select.Option>
+              <Select.Option value="flat">Flat</Select.Option>
+              <Select.Option value="house">House</Select.Option>
+              <Select.Option value="villa">Villa</Select.Option>
+              <Select.Option value="house">House</Select.Option>
             </Select>
           </Form.Item>
 
@@ -663,7 +672,7 @@ useEffect(() => {
             <Select
               placeholder={
                 <p className="text-[#818181] text-[16px] font-normal leading-6">
-                 Bed Type
+                  Bed Type
                 </p>
               }
               style={{
@@ -796,20 +805,20 @@ useEffect(() => {
             name="dining"
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
-                Dining Room
+                Living Room
               </p>
             }
             rules={[
               {
                 required: true,
-                message: "Please Enter Dining!",
+                message: "Please Enter Living!",
               },
             ]}
             style={{ marginBottom: 0 }}
             className="lg:col-span-6 col-span-12"
           >
             <Select
-              placeholder="Enter Dining"
+              placeholder="Enter Living"
               style={{
                 width: "100%",
                 height: 48,
@@ -895,8 +904,7 @@ useEffect(() => {
             style={{ marginBottom: 0 }}
             className="lg:col-span-6 col-span-12 customSelect"
           >
-            <DatePicker 
-
+            <DatePicker
               multiple
               suffixIcon={
                 <div
@@ -1005,7 +1013,7 @@ useEffect(() => {
             >
               <Select.Option value="Male">Male</Select.Option>
               <Select.Option value="Female">Female</Select.Option>
-              <Select.Option value="Others">Others</Select.Option>
+              <Select.Option value="Others">All</Select.Option>
             </Select>
           </Form.Item>
 
@@ -1066,7 +1074,7 @@ useEffect(() => {
             className="col-span-12"
           >
             <Checkbox.Group className="style-checkbox flex items-center flex-wrap">
-              {facilitiesOptions?.map((option:any) => (
+              {facilitiesOptions?.map((option: any) => (
                 <Checkbox
                   key={option?._id}
                   value={option?._id}
@@ -1082,7 +1090,7 @@ useEffect(() => {
                     color: "red",
                   }}
                   className="flex text-primary items-center justify-center rounded-xl"
-                > 
+                >
                   <p className="text-[#333333] font-medium text-[14px] leading-6">
                     {option.name}
                   </p>

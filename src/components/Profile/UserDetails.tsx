@@ -68,7 +68,7 @@ const UserDetails = () => {
           name="fullName"
           label={
             <p className="font-medium text-[16px] leading-6 text-[#636363]">
-              User Name
+              Full Name
             </p>
           }
           style={{ marginBottom: 0 }}
@@ -119,7 +119,7 @@ const UserDetails = () => {
           name="phoneNumber"
           label={
             <p className="font-medium text-[16px] leading-6 text-[#636363]">
-              Contact No
+              Phone
             </p>
           }
           style={{ marginBottom: 0 }}
@@ -144,7 +144,7 @@ const UserDetails = () => {
           name="nidNumber"
           label={
             <p className="font-medium text-[16px] leading-6 text-[#636363]">
-              NID No
+              ID No
             </p>
           }
           style={{ marginBottom: 0 }}
@@ -197,42 +197,17 @@ const UserDetails = () => {
         </Form.Item>
 
         <Form.Item
-          name="ineNumber"
-          label={
-            <p className="font-medium text-[16px] leading-6 text-[#636363]">
-              INE No.
-            </p>
-          }
-          style={{ marginBottom: 0 }}
-          className="lg:col-span-6 col-span-12"
-        >
-          <Input
-            placeholder="Enter Your INE Number"
-            style={{
-              width: "100%",
-              height: 48,
-              boxShadow: "none",
-              outline: "none",
-              border: "1px solid #E0E0E0",
-              borderRadius: 24,
-              background: "#FEFEFE",
-            }}
-            className=" placeholder:text-[#818181] placeholder:text-[14px] placeholder:font-normal placeholder:leading-6"
-          />
-        </Form.Item>
-
-        <Form.Item
           name="permanentLocation"
           label={
             <p className="font-medium text-[16px] leading-6 text-[#636363]">
-              Permanent Address
+              ID Address
             </p>
           }
           style={{ marginBottom: 0 }}
           className="lg:col-span-6 col-span-12"
         >
           <Input
-            placeholder="Enter Permanent Address"
+            placeholder="Enter ID Address"
             className="placeholder:text-[#818181] placeholder:text-[16px] placeholder:font-normal placeholder:leading-6"
             style={{
               width: "100%",
@@ -250,7 +225,7 @@ const UserDetails = () => {
           name="presentLocation"
           label={
             <p className="font-medium text-[16px] leading-6 text-[#636363]">
-              Present Address
+              Current Address
             </p>
           }
           style={{ marginBottom: 0 }}
