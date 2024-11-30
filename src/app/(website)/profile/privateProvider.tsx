@@ -12,7 +12,6 @@ const PrivateProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (isError || !profile?.data) {
-    // Redirect to login with the current path as a redirect parameter
     router.push(`/login?redirect=${pathname}`);
     return null;
   }

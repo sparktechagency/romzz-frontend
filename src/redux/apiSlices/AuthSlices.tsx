@@ -37,6 +37,7 @@ const authSlice = romzzApi.injectEndpoints({
           body: value,
         };
       },
+      invalidatesTags: ["user"]
     }),
 
     forgetPass: builder.mutation({
@@ -68,31 +69,41 @@ const authSlice = romzzApi.injectEndpoints({
       }),
     }),
 
-    getProfile:builder.query({
-      query:()=>"/users/profile"
-    }) , 
-   
-    updateProfile:builder.mutation({
-      query:(value)=>{ 
-         //console.log(value);
-         return{
-      url:"/users/update-profile" ,
-      method:"PATCH" ,
-      body:value
-         }
-      }
-    }) ,
-   
-    changePass:builder.mutation({
-      query:(value)=>{
-         return{
-            url:"/auth/change-password" ,
-            method:"POST" ,
-            body: value
-         }
-      }
-    }) , 
+    getProfile: builder.query({
+      query: () => "/users/profile",
+      providesTags: ["user"]
+    }),
 
+    updateProfile: builder.mutation({
+      query: (value) => {
+        //console.log(value);
+        return {
+          url: "/users/update-profile",
+          method: "PATCH",
+          body: value,
+        };
+      },
+    }),
+
+    changePass: builder.mutation({
+      query: (value) => {
+        return {
+          url: "/auth/change-password",
+          method: "POST",
+          body: value,
+        };
+      },
+    }),
   }),
 });
-export const {useSignUpMutation , useVerifyOtpMutation ,useLoginMutation , useForgetPassMutation , useResendEmailMutation , useResetPassMutation ,useGetProfileQuery ,useChangePassMutation ,useUpdateProfileMutation} = authSlice
+export const {
+  useSignUpMutation,
+  useVerifyOtpMutation,
+  useLoginMutation,
+  useForgetPassMutation,
+  useResendEmailMutation,
+  useResetPassMutation,
+  useGetProfileQuery,
+  useChangePassMutation,
+  useUpdateProfileMutation,
+} = authSlice;

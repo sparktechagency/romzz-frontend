@@ -8,14 +8,16 @@ import { FaMapLocationDot } from "react-icons/fa6";
 import Link from "next/link";
 import { useGetHighlightsPropertiesQuery } from "@/redux/features/web/api/propertyApi";
 import PropertyCardSmall from "../Card/PropertyCardSmall";
+import Filter from "../Filter";
 
 const Banner = () => {
   const { data } = useGetHighlightsPropertiesQuery({});
-
+  const [open, setOpen] = useState(false);
+  const [filter, setFilter] = useState();
   return (
     <div
       style={{
-        width: "100%", 
+        width: "100%",
         backgroundImage: `url('/header.png')`,
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -30,7 +32,7 @@ const Banner = () => {
         <div className="lg:w-[320px] w-full">
           <Input
             suffix={
-              <Link href="/search-filter">
+              <Link href={"search-filter"}>
                 <div className="w-10 cursor-pointer lg:h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center">
                   <FaMapLocationDot className="text-xl" color="#00809E" />
                 </div>
@@ -79,17 +81,21 @@ const Banner = () => {
         </div>  */}
 
         <div className="flex items-center justify-between gap-6 w-full lg:w-[200px] lg:px-0 px-3 ">
-          <Link href={"/filter?search="}
-           
+          <div
+            onClick={() => setOpen(true)}
             className="flex items-center gap-3 cursor-pointer"
           >
             <p className="">
-              <SlidersHorizontal size={18} color="#5C5C5C" className="text-lg" />{" "}
+              <SlidersHorizontal
+                size={18}
+                color="#5C5C5C"
+                className="text-lg"
+              />
             </p>
             <p className="text-base text-[16px] font-normal leading-6">
               Filter
             </p>
-          </Link>
+          </div>
 
           <Link href={"/filter?search="}>
             <div className="lg:w-[62px] cursor-pointer w-[45px] h-[45px] lg:h-[62px] rounded-full bg-primary flex items-center justify-center">
@@ -109,7 +115,7 @@ const Banner = () => {
         </div>
       </div> */}
 
-      {/* <Filter open={open} setOpen={setOpen} />  */}
+      <Filter open={open} setOpen={setOpen} setFilter={setFilter} />
     </div>
   );
 };

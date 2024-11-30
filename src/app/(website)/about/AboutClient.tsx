@@ -2,7 +2,6 @@
 import Heading from "@/components/shared/Heading";
 import Image from "next/image";
 import React from "react";
-import banner from "@/assets/about.png";
 import Amenities from "@/components/Amenities";
 import { useGetOurStoryQuery } from "@/redux/features/web/api/ourStoryApi";
 import { imageUrl } from "@/redux/api/api";
@@ -31,15 +30,17 @@ const AboutClient = () => {
             </div>
 
             <div className=" lg:h-[455px] h-full w-full lg:w-[607px] ">
-              <Image
-                alt="Catering"
-                width={500}
-                height={500}
-                src={`${imageUrl}${data?.image ? data.image : banner}`}
-                className="h-full w-full"
-                //   fill
-                style={{ objectFit: "cover" }}
-              />
+              {data?.image && (
+                <Image
+                  alt="Catering"
+                  width={500}
+                  height={500}
+                  src={`${imageUrl}${data?.image}`}
+                  className="h-full w-full"
+                  //   fill
+                  style={{ objectFit: "cover" }}
+                />
+              )}
             </div>
           </div>
         ) : (

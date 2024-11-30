@@ -7,7 +7,8 @@ import Modal from "@/components/shared/Modal";
 import { useGetProfileQuery } from "@/redux/apiSlices/AuthSlices";
 import { useGetAllPostQuery } from "@/redux/apiSlices/ClientProfileSlices";
 import { Pagination } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSearchParams } from 'next/navigation';
 
 const RentalDetailsClient = () => {
   const [open, setOpen] = useState(false);
@@ -20,6 +21,17 @@ const RentalDetailsClient = () => {
   const  {data:allPost , refetch}= useGetAllPostQuery({id:profileId , type:type , page:page})  
   const AllPostData = allPost?.data?.data
   const [openRentModal, setOpenRentModal] = useState(false); 
+  const searchParams = useSearchParams();
+  const params = searchParams.get('status'); 
+
+  useEffect(()=>{
+    if(params === "true"){
+      setOpen(true);
+    }
+  }, [params])
+
+
+
   return (
     <div>
       {/* heading */}

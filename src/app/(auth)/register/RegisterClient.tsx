@@ -67,18 +67,18 @@ const RegisterClient = () => {
             >
                 <Form.Item
                     name="fullName"
-                    label={<p className='font-medium text-[16px] leading-6 text-[#636363]'>User Name</p>}
+                    label={<p className='font-medium text-[16px] leading-6 text-[#636363]'>Full Name</p>}
                     rules={[
                         {
                             required: true,
-                            message: "Please Enter Your Name!"
+                            message: "Please Enter Full Name Name!"
                         }
                     ]}
                     style={{marginBottom: 0}}
                     className='col-span-6'
                 >
                     <Input
-                        placeholder='Enter Your Name'
+                        placeholder='Enter Full Name Name'
                         style={{
                             width: "100%",
                             height: 48,
@@ -121,18 +121,18 @@ const RegisterClient = () => {
 
                 <Form.Item
                     name="phoneNumber"
-                    label={<p className='font-medium text-[16px] leading-6 text-[#636363]'>Contact No</p>}
+                    label={<p className='font-medium text-[16px] leading-6 text-[#636363]'>Phone </p>}
                     rules={[
                         {
                             required: true,
-                            message: "Please Enter Contact No!"
+                            message: "Please Enter Phone Number"
                         }
                     ]}
                     style={{marginBottom: 0}}
                     className='col-span-6'
                 >
                     <Input
-                        placeholder='Enter Contact No'
+                        placeholder='Enter Phone Number'
                         style={{
                             width: "100%",
                             height: 48,
@@ -148,18 +148,18 @@ const RegisterClient = () => {
 
                 <Form.Item
                     name="permanentLocation"
-                    label={<p className='font-medium text-[16px] leading-6 text-[#636363]'>Permanent Address</p>}
+                    label={<p className='font-medium text-[16px] leading-6 text-[#636363]'>ID Address</p>}
                     rules={[
                         {
                             required: true,
-                            message: "Please Enter location!"
+                            message: "Please Enter ID Address"
                         }
                     ]}
                     style={{marginBottom: 0}}
                     className='col-span-6'
                 >
                     <Input
-                        placeholder='Enter Your Location'
+                        placeholder='Enter Your ID Address'
                         style={{
                             width: "100%",
                             height: 48,
@@ -175,11 +175,11 @@ const RegisterClient = () => {
 
                 <Form.Item
                     name="nidNumber"
-                    label={<p className='font-medium text-[16px] leading-6 text-[#636363]'>NID No</p>}
+                    label={<p className='font-medium text-[16px] leading-6 text-[#636363]'>ID No</p>}
                     rules={[
                         {
                             required: true,
-                            message: "Please Enter NID Number!"
+                            message: "Please Enter ID Number!"
                         }
                     ]}
                     style={{marginBottom: 0}}
@@ -187,7 +187,7 @@ const RegisterClient = () => {
                 >
                     <Input  
                     type='number'
-                        placeholder='Enter Your NID Number'
+                        placeholder='Enter Your ID Number'
                         style={{
                             width: "100%",
                             height: 48,
@@ -203,18 +203,18 @@ const RegisterClient = () => {
 
                 <Form.Item
                     name="gender"
-                    label={<p className='font-medium text-[16px] leading-6 text-[#636363]'>Gender</p>}
+                    label={<p className='font-medium text-[16px] leading-6 text-[#636363]'>ID Gender</p>}
                     rules={[
                         {
                             required: true,
-                            message: "Please Select Your Gender"
+                            message: "Please Select Your ID Gender"
                         }
                     ]}
                     style={{marginBottom: 0}}
                     className='col-span-6 customSelect'
                 >
                     <Select
-                        placeholder='Select Your Gender'
+                        placeholder='Select Your ID Gender'
                         style={{
                             height: 48,
                             borderRadius: 24

@@ -169,7 +169,7 @@ const UserDetails = () => {
           name="gender"
           label={
             <p className="font-medium text-[16px] leading-6 text-[#636363]">
-              Gender
+              ID Gender
             </p>
           }
           style={{ marginBottom: 0 }}
@@ -178,7 +178,7 @@ const UserDetails = () => {
           <Select
             placeholder={
               <p className="text-[#818181] text-[14px] font-normal leading-6">
-                Select Your Gender
+                Select Your ID Gender
               </p>
             }
             style={{

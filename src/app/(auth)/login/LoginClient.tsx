@@ -3,8 +3,8 @@ import Heading from '@/components/shared/Heading';
 import { Button, Checkbox, Form, Input } from 'antd'
 import Link from 'next/link';
 import React, { useContext } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useLoginMutation } from '@/redux/apiSlices/AuthSlices';
+import { useRouter } from 'next/navigation';
+import { useGetProfileQuery, useLoginMutation } from '@/redux/apiSlices/AuthSlices';
 import Swal from 'sweetalert2';
 import { UserContext } from '@/app/provider/User';
 import { MdKeyboardBackspace } from "react-icons/md";
@@ -13,14 +13,9 @@ const LoginClient = () => {
     const [form] = Form.useForm(); 
     const [login] = useLoginMutation() 
     const router = useRouter();
-    const searchParams = useSearchParams();
     form.setFieldsValue(undefined);
     const { setUser } = useContext<any>(UserContext);
-
-    const handleLoginSuccess = () => {
-        const redirectPath = searchParams.get('redirect') || '/';
-        router.push(redirectPath);
-    };
+    const {refetch} = useGetProfileQuery(undefined)
 
 
     const handleSubmit = async(values: any) => {
@@ -35,10 +30,14 @@ const LoginClient = () => {
                         showConfirmButton: false
                     }).then(() => {
                         if(res?.data?.data?.accessToken){
-                            localStorage.setItem("romzzToken", res?.data?.data?.accessToken)
+                            localStorage.setItem("romzzToken", res?.data?.data?.accessToken);
+                            refetch();
                             form.resetFields();
-                            setUser(res?.data.data.existingUser)
-                            handleLoginSuccess();
+                            setUser(res?.data.data.existingUser);
+                            router.push("/");
+                            setTimeout(()=>{
+                                window.location.reload();
+                            }, 1000)
                         }   
                         
                         

@@ -62,7 +62,6 @@ const RentPost: React.FC<IRentPostProps> = ({
         bathrooms: updateInfo?.bathrooms,
         kitchen: updateInfo?.kitchen,
         dining: updateInfo?.dining,
-        moveOn: updateInfo?.moveOn ? moment(updateInfo.moveOn) : null,
         unavailableDay: updateInfo?.unavailableDay?.map((day: string) => {
           return moment(day, "YYYY-MM-DD") || [];
         }),
@@ -114,7 +113,6 @@ const RentPost: React.FC<IRentPostProps> = ({
     const {
       propertyImages,
       unavailableDay,
-      moveOn,
       propertyVideo,
       ...otherValues
     } = values;
@@ -149,11 +147,8 @@ const RentPost: React.FC<IRentPostProps> = ({
       dayjs(day.$d).format("MM/DD/YYYY")
     );
 
-    const formatMoveOn = dayjs(moveOn.$d).format("MM/DD/YYYY");
-
     const datas = {
       unavailableDay: formattedUnavailableDays,
-      moveOn: formatMoveOn,
       ownerType: rentData?.ownerType,
       ownerNumber: rentData?.ownerNumber,
       ...otherValues,
@@ -598,7 +593,6 @@ const RentPost: React.FC<IRentPostProps> = ({
           >
             <Input
               placeholder="Enter Floor number!"
-              type="number"
               style={{
                 width: "100%",
                 height: 48,
@@ -724,7 +718,7 @@ const RentPost: React.FC<IRentPostProps> = ({
               <Select.Option value="2">2</Select.Option>
               <Select.Option value="3">3</Select.Option>
               <Select.Option value="4">4</Select.Option>
-              <Select.Option value="5">5</Select.Option>
+              <Select.Option value="5">5+</Select.Option>
             </Select>
           </Form.Item>
 
@@ -836,57 +830,6 @@ const RentPost: React.FC<IRentPostProps> = ({
             </Select>
           </Form.Item>
 
-          {/* entry date */}
-          <Form.Item
-            name="moveOn"
-            label={
-              <p className="font-medium text-[16px] leading-6 text-[#636363]">
-                Move on
-              </p>
-            }
-            rules={[
-              {
-                required: true,
-                message: "Please Select Move on Date",
-              },
-            ]}
-            style={{ marginBottom: 0 }}
-            className="lg:col-span-6 col-span-12 customSelect"
-          >
-            <DatePicker
-              suffixIcon={
-                <div
-                  style={{
-                    background: "#E6F2F5",
-                    width: 40,
-                    height: 40,
-                    borderRadius: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <CalendarDays
-                    className="cursor-pointer"
-                    color="#00809E"
-                    size={24}
-                  />
-                </div>
-              }
-              placeholder="Select Move on Date"
-              style={{
-                width: "100%",
-                height: 48,
-                boxShadow: "none",
-                outline: "none",
-                border: "1px solid #E0E0E0",
-                borderRadius: 24,
-                background: "#FEFEFE",
-                padding: "4px 4px 4px 11px",
-              }}
-            />
-          </Form.Item>
-
           {/* leave date */}
           <Form.Item
             name="unavailableDay"
@@ -925,7 +868,7 @@ const RentPost: React.FC<IRentPostProps> = ({
                   />
                 </div>
               }
-              placeholder="Select Move on Date"
+              placeholder="Select unAvailable on Date"
               style={{
                 height: 48,
                 width: "100%",
