@@ -96,7 +96,6 @@ const RentalDetailsClient = () => {
         title="Property New Post"
         open={openRentModal}
         setOpen={setOpenRentModal} 
-      
         body={<RentPost open={openRentModal} setOpen={setOpenRentModal} rentData={rentData} updateInfo={updateInfo}  refetchAllPost={refetch} />}
         width={852}
       />

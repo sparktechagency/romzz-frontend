@@ -13,6 +13,7 @@ import {
   Form,
   Input,
   message,
+  Radio,
   Select,
   Upload,
 } from "antd";
@@ -110,12 +111,8 @@ const RentPost: React.FC<IRentPostProps> = ({
 
   const handleSwitch = async (values: any) => {
     const formData = new FormData();
-    const {
-      propertyImages,
-      unavailableDay,
-      propertyVideo,
-      ...otherValues
-    } = values;
+    const { propertyImages, unavailableDay, propertyVideo, ...otherValues } =
+      values;
 
     //console.log(propertyVideo);
 
@@ -207,7 +204,6 @@ const RentPost: React.FC<IRentPostProps> = ({
           {/* property video   */}
           <Form.Item
             name="propertyVideo"
-            
             getValueFromEvent={(e) => {
               e && setVideoFile(e.fileList);
             }}
@@ -479,7 +475,7 @@ const RentPost: React.FC<IRentPostProps> = ({
             className="col-span-12"
           >
             <Input.TextArea
-              placeholder="Enter Property Details!"
+              placeholder="Enter Property Details"
               style={{
                 width: "100%",
                 height: 150,
@@ -498,38 +494,52 @@ const RentPost: React.FC<IRentPostProps> = ({
           <Form.Item
             name="size"
             label={
-              <p className="font-medium text-[16px] leading-6 text-[#636363]">
-                Size
+              <p className="font-medium mb-2 text-[16px] leading-6 text-[#636363]">
+                Room Size
               </p>
             }
-            rules={[
-              {
-                required: true,
-                message: "Please Enter Property Size!",
-              },
-            ]}
             style={{ marginBottom: 0 }}
             className="lg:col-span-6 col-span-12"
           >
-            <Select
-              placeholder={
-                <p className="text-[#818181] text-[16px] font-normal leading-6">
-                  Property Size
-                </p>
-              }
+            <Input
+              placeholder="Enter Room number"
               style={{
+                width: "100%",
                 height: 48,
+                boxShadow: "none",
+                outline: "none",
+                border: "1px solid #E0E0E0",
                 borderRadius: 24,
+                background: "#FEFEFE",
               }}
-              suffixIcon={
-                <div className="w-10 h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center">
-                  <ChevronDown size={24} color="#00809E" />
-                </div>
-              }
-            >
-              <Select.Option value="room_size">Room Size</Select.Option>
-              <Select.Option value="bed_size">Bed Size</Select.Option>
-            </Select>
+              className=" placeholder:text-[#818181] placeholder:text-[16px] placeholder:font-normal placeholder:leading-6"
+            />
+          </Form.Item>
+
+          {/* size */}
+          <Form.Item
+            name="bed_size"
+            label={
+              <p className="font-medium mb-2 text-[16px] leading-6 text-[#636363]">
+                Bed Size
+              </p>
+            }
+            style={{ marginBottom: 0 }}
+            className="lg:col-span-6 col-span-12"
+          >
+            <Input
+              placeholder="Enter Bed Size"
+              style={{
+                width: "100%",
+                height: 48,
+                boxShadow: "none",
+                outline: "none",
+                border: "1px solid #E0E0E0",
+                borderRadius: 24,
+                background: "#FEFEFE",
+              }}
+              className=" placeholder:text-[#818181] placeholder:text-[16px] placeholder:font-normal placeholder:leading-6"
+            />
           </Form.Item>
 
           {/* property decorated */}
@@ -581,7 +591,7 @@ const RentPost: React.FC<IRentPostProps> = ({
             rules={[
               {
                 required: true,
-                message: "Please Enter Floor number!",
+                message: "Please Enter Floor number",
               },
             ]}
             style={{ marginBottom: 0 }}
@@ -592,7 +602,7 @@ const RentPost: React.FC<IRentPostProps> = ({
             }}
           >
             <Input
-              placeholder="Enter Floor number!"
+              placeholder="Enter Floor number"
               style={{
                 width: "100%",
                 height: 48,
@@ -642,7 +652,7 @@ const RentPost: React.FC<IRentPostProps> = ({
               <Select.Option value="flat">Flat</Select.Option>
               <Select.Option value="house">House</Select.Option>
               <Select.Option value="villa">Villa</Select.Option>
-              <Select.Option value="house">House</Select.Option>
+              <Select.Option value="hostel">Hostel</Select.Option>
             </Select>
           </Form.Item>
 

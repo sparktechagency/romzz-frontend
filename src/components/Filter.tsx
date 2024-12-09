@@ -422,7 +422,7 @@ const Filter: React.FC<IFilterProps> = ({ open, setOpen, setFilter }) => {
               <Select.Option value="flat">Flat</Select.Option>
               <Select.Option value="house">House</Select.Option>
               <Select.Option value="villa">Villa</Select.Option>
-              <Select.Option value="house">House</Select.Option>
+              <Select.Option value="house">Hostel</Select.Option>
             </Select>
           </Form.Item>
 
