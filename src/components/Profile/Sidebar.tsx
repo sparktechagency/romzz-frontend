@@ -11,7 +11,7 @@ const Sidebar = () => {
     const {data:userData, refetch} = useGetProfileQuery(undefined)  
     const isSubscribe = userData?.data?.isSubscribed 
     const isAccess = userData?.data?.hasAccess
-    //console.log(pathName); 
+    console.log(pathName);  
 
     const handleLogout =()=>{
         localStorage.removeItem("romzzToken") 

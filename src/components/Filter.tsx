@@ -9,8 +9,8 @@ import {
   Input,
   Radio,
   Select,
+  Tooltip,
 } from "antd";
-import { FaMapLocationDot } from "react-icons/fa6";
 import { IoLocationOutline } from "react-icons/io5";
 import { TiArrowSortedDown } from "react-icons/ti";
 import Slider from "rc-slider";
@@ -22,6 +22,7 @@ import bad from "@/assets/bad.png";
 import good from "@/assets/good.png";
 import okay from "@/assets/okay.png";
 import amazing from "@/assets/amazing.png";
+import { LuBadgeInfo } from "react-icons/lu";
 
 interface IFilterProps {
   open: boolean;
@@ -69,9 +70,9 @@ const Filter: React.FC<IFilterProps> = ({ open, setOpen, setFilter }) => {
 
   console.log(filterData)
 
-  useEffect(()=>{
-    if(filterData){
-        form.setFieldsValue(filterData)
+  useEffect(() => {
+    if (filterData) {
+      form.setFieldsValue(filterData)
     }
   }, [filterData, form])
 
@@ -96,24 +97,33 @@ const Filter: React.FC<IFilterProps> = ({ open, setOpen, setFilter }) => {
         <ul className="flex flex-wrap items-center gap-6">
           {category.map((item, index) => {
             return (
-              <li
-                key={index}
-                className={`
+              <div key={index} className="relative">
+
+                <li
+                  className={`
                                         font-normal w-fit  h-10 text-center 
                                         px-5
                                         flex items-center justify-center 
                                         text-[16px] leading-6
-                                        ${
-                                          item?.value === tab
-                                            ? "bg-white text-[#00809E] border border-primary transition-all duration-200"
-                                            : "bg-[#F3F3F3] text-[#767676] border border-transparent"
-                                        }
+                                        ${item?.value === tab
+                      ? "bg-white text-[#00809E] border border-primary transition-all duration-200"
+                      : "bg-[#F3F3F3] text-[#767676] border border-transparent"
+                    }
                                         rounded-3xl cursor-pointer
                                     `}
-                onClick={() => setTab(item?.value)}
-              >
-                {item?.name}
-              </li>
+                  onClick={() => setTab(item?.value)}
+                >
+                  {item?.name}
+                </li> 
+
+                <Tooltip title={item?.value === "flat-mate" ? "Flat Mate blah blah blah" : "Room Mate blah blah blah"}>
+              <LuBadgeInfo color={item?.value === tab
+                      ? " #00809E"
+                      : " #767676"
+                    } size={18} className={`cursor-pointer text-gray-500  absolute -top-2 -right-4 `}/>
+            </Tooltip> 
+
+              </div>
             );
           })}
         </ul>
@@ -137,11 +147,7 @@ const Filter: React.FC<IFilterProps> = ({ open, setOpen, setFilter }) => {
             className="col-span-12"
           >
             <Input
-              suffix={
-                <div className="w-10 cursor-pointer h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center">
-                  <FaMapLocationDot size={24} color="#00809E" />
-                </div>
-              }
+            
               prefix={<IoLocationOutline size={24} color="#5C5C5C" />}
               style={{
                 width: "100%",
@@ -150,7 +156,8 @@ const Filter: React.FC<IFilterProps> = ({ open, setOpen, setFilter }) => {
                 borderRadius: 24,
                 outline: "none",
                 boxShadow: "none",
-                padding: "4px 4px 4px 11px",
+                padding: "4px 4px 4px 11px", 
+                height:"48px"
               }}
               placeholder="Search your destination"
               className="flex-1 placeholder:text-[#767676] placeholder:text-[16px] placeholder:font-semibold placeholder:leading-[14px]"
@@ -386,7 +393,7 @@ const Filter: React.FC<IFilterProps> = ({ open, setOpen, setFilter }) => {
               }
             >
               <Select.Option value="furnished">Furnished</Select.Option>
-              <Select.Option value="unfurnished">UnFurnished</Select.Option>
+              <Select.Option value="unfurnished">Unfurnished</Select.Option>
             </Select>
           </Form.Item>
 
@@ -492,7 +499,8 @@ const Filter: React.FC<IFilterProps> = ({ open, setOpen, setFilter }) => {
               }
             >
               <Select.Option value="male">Male</Select.Option>
-              <Select.Option value="female">Female</Select.Option>
+              <Select.Option value="female">Female</Select.Option> 
+                <Select.Option value="LGBTQIA+">LGBTQIA+</Select.Option>
               <Select.Option value="others">Others</Select.Option>
             </Select>
           </Form.Item>
@@ -526,9 +534,10 @@ const Filter: React.FC<IFilterProps> = ({ open, setOpen, setFilter }) => {
                 </div>
               }
             >
-              <Select.Option value="any">Any</Select.Option>
+             
               <Select.Option value="student">Student</Select.Option>
-              <Select.Option value="professional">Professional</Select.Option>
+              <Select.Option value="professional">Professional</Select.Option> 
+              <Select.Option value="others">Others</Select.Option>
             </Select>
           </Form.Item>
 

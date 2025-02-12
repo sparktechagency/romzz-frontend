@@ -1,5 +1,6 @@
 "use client";
 import { imageUrl } from "@/redux/api/api";
+import { useGetProfileQuery } from "@/redux/apiSlices/AuthSlices";
 import {
   useCreateBookingPostMutation,
   useGetFacilitiesQuery,
@@ -15,13 +16,15 @@ import {
   message,
   Radio,
   Select,
+  Tooltip,
   Upload,
 } from "antd";
 import dayjs from "dayjs";
-import { CalendarDays, ChevronDown, DollarSign } from "lucide-react";
+import { CalendarDays, ChevronDown, DollarSign, Home, User } from "lucide-react";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { FaMapLocationDot } from "react-icons/fa6";
+import { LuBadgeInfo } from "react-icons/lu";
 import Swal from "sweetalert2";
 
 interface IRentPostProps {
@@ -43,7 +46,9 @@ const RentPost: React.FC<IRentPostProps> = ({
   const [updatePost] = useUpdatePostMutation();
   const [videoFile, setVideoFile] = useState<any[]>([]);
   const [fileList, setFileList] = useState([]);
-  const [form] = Form.useForm();
+  const [form] = Form.useForm(); 
+  const {data:profile} = useGetProfileQuery(undefined) 
+  console.log(profile);
 
   useEffect(() => {
     if (updateInfo) {
@@ -190,7 +195,37 @@ const RentPost: React.FC<IRentPostProps> = ({
     }
   };
 
-  const facilitiesOptions = facilities?.data;
+  const facilitiesOptions = facilities?.data; 
+
+  const handleCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+
+          try {
+            const response = await fetch(
+              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
+            );
+            const data = await response.json();
+
+            if (data.results.length > 0) {
+              const address = data.results[0].formatted_address; 
+              console.log(address);
+              form.setFieldsValue({ address:address });
+            }
+          } catch (error) {
+            console.error("Error fetching address:", error);
+          }
+        },
+        (error) => {
+          console.error("Geolocation error:", error);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  }; 
 
   return (
     <Form
@@ -242,7 +277,7 @@ const RentPost: React.FC<IRentPostProps> = ({
             getValueFromEvent={(e) => e && setFileList(e.fileList)}
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
-                Property Images (At least 4)
+                Property Images 
               </p>
             }
             rules={[
@@ -320,7 +355,7 @@ const RentPost: React.FC<IRentPostProps> = ({
           >
             <Input
               suffix={
-                <div className="w-10 h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center cursor-pointer" onClick={() => handleCurrentLocation()}>
                   <FaMapLocationDot size={24} color="#00809E" />
                 </div>
               }
@@ -341,43 +376,71 @@ const RentPost: React.FC<IRentPostProps> = ({
 
           {/* category */}
           <Form.Item
-            name="category"
-            label={
-              <p className="font-medium text-[16px] leading-6 text-[#636363]">
-                Category
-              </p>
-            }
-            rules={[
-              {
-                required: true,
-                message: "Please Select Property Category",
-              },
-            ]}
-            style={{ marginBottom: 0 }}
-            className="lg:col-span-6 col-span-12 customSelect"
-          >
-            <Select
-              placeholder={
-                <p className="text-[#818181] text-[16px] font-normal leading-6">
-                  Property Category
-                </p>
-              }
-              style={{
-                height: 48,
-                borderRadius: 24,
-              }}
-              suffixIcon={
-                <div className="w-10 h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center">
-                  <ChevronDown size={24} color="#00809E" />
-                </div>
-              }
-            >
-              <Select.Option value="room-mate">Room Mate</Select.Option>
-              <Select.Option value="flat-mate">Flate Mate</Select.Option>
-              {/* <Select.Option value="whole-unit">Whole Unit</Select.Option>
-              <Select.Option value="house">House</Select.Option> */}
-            </Select>
-          </Form.Item>
+      name="category"
+      label={
+        <p className="font-medium text-[16px] leading-6 text-[#636363]">
+          Category
+        </p>
+      }
+      rules={[
+        {
+          required: true,
+          message: "Please Select Property Category",
+        },
+      ]}
+      style={{ marginBottom: 0 }}
+      className="lg:col-span-6 col-span-12 customSelect"
+    >
+      <Select
+        placeholder={
+          <p className="text-[#818181] text-[16px] font-normal leading-6">
+            Property Category
+          </p>
+        }
+        style={{
+          height: 48,
+          borderRadius: 24,
+        }}
+        suffixIcon={
+          <div className="w-10 h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center">
+            <ChevronDown size={24} color="#00809E" />
+          </div>
+        }
+      >
+        <Select.Option value="room-mate">
+          <div className="flex items-center gap-2 text-[16px] relative">
+            Room Mate
+            <Tooltip title="Shared living space">
+              <LuBadgeInfo color="#00809E" size={18} className="cursor-pointer text-gray-500 " />
+            </Tooltip>
+          </div>
+        </Select.Option>
+        <Select.Option value="flat-mate">
+          <div className="flex items-center gap-2 text-[16px]">
+            Flat Mate
+            <Tooltip title="Sharing a flat">
+            <LuBadgeInfo color="#00809E" size={18} className="cursor-pointer text-gray-500 " />
+            </Tooltip>
+          </div>
+        </Select.Option>
+        {/* <Select.Option value="whole-unit">
+          <div className="flex items-center gap-2">
+            Whole Unit
+            <Tooltip title="Renting an entire unit">
+              <Home size={16} className="cursor-pointer text-gray-500" />
+            </Tooltip>
+          </div>
+        </Select.Option>
+        <Select.Option value="house">
+          <div className="flex items-center gap-2">
+            House
+            <Tooltip title="Renting a house">
+              <Home size={16} className="cursor-pointer text-gray-500" />
+            </Tooltip>
+          </div>
+        </Select.Option> */}
+      </Select>
+    </Form.Item>
 
           {/* property price */}
           <Form.Item
@@ -897,6 +960,46 @@ const RentPost: React.FC<IRentPostProps> = ({
             name="allowedGender"
             label={
               <p className="font-medium text-[16px] leading-6 text-[#636363]">
+                Host Gender
+              </p>
+            }
+            rules={[
+              {
+                required: true,
+                message: "Please Select Allowed Gender",
+              },
+            ]}
+            style={{ marginBottom: 0 }}
+            className="lg:col-span-6 col-span-12 customSelect"
+          >
+            <Select
+              placeholder={
+                <p className="text-[#818181] text-[16px] font-normal leading-6">
+                  Host Gender
+                </p>
+              }
+              style={{
+                height: 48,
+                borderRadius: 24,
+              }}
+              suffixIcon={
+                <div className="w-10 h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center">
+                  <ChevronDown size={24} color="#00809E" />
+                </div>
+              }
+            >
+              <Select.Option value="male">Male</Select.Option>
+              <Select.Option value="female">Female</Select.Option>
+              <Select.Option value="LGBTQIA+">LGBTQIA+</Select.Option>
+              <Select.Option value="others">Others</Select.Option>
+            </Select>
+          </Form.Item> 
+
+          {/* allowed gender */}
+          <Form.Item
+            name="allowedGender"
+            label={
+              <p className="font-medium text-[16px] leading-6 text-[#636363]">
                 Allowed Gender
               </p>
             }
@@ -927,46 +1030,8 @@ const RentPost: React.FC<IRentPostProps> = ({
             >
               <Select.Option value="male">Male</Select.Option>
               <Select.Option value="female">Female</Select.Option>
+              <Select.Option value="LGBTQIA+">LGBTQIA+</Select.Option>
               <Select.Option value="others">Others</Select.Option>
-            </Select>
-          </Form.Item>
-
-          {/* guest type */}
-          <Form.Item
-            name="guestType"
-            label={
-              <p className="font-medium text-[16px] leading-6 text-[#636363]">
-                Guest Type
-              </p>
-            }
-            rules={[
-              {
-                required: true,
-                message: "Please Select Guest Type",
-              },
-            ]}
-            style={{ marginBottom: 0 }}
-            className="lg:col-span-6 col-span-12 customSelect"
-          >
-            <Select
-              placeholder={
-                <p className="text-[#818181] text-[16px] font-normal leading-6">
-                  Guest Type
-                </p>
-              }
-              style={{
-                height: 48,
-                borderRadius: 24,
-              }}
-              suffixIcon={
-                <div className="w-10 h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center">
-                  <ChevronDown size={24} color="#00809E" />
-                </div>
-              }
-            >
-              <Select.Option value="Male">Male</Select.Option>
-              <Select.Option value="Female">Female</Select.Option>
-              <Select.Option value="Others">All</Select.Option>
             </Select>
           </Form.Item>
 
@@ -985,7 +1050,7 @@ const RentPost: React.FC<IRentPostProps> = ({
               },
             ]}
             style={{ marginBottom: 0 }}
-            className="col-span-12 customSelect"
+            className="col-span-12 lg:col-span-6 customSelect"
           >
             <Select
               placeholder={
@@ -1002,11 +1067,10 @@ const RentPost: React.FC<IRentPostProps> = ({
                   <ChevronDown size={24} color="#00809E" />
                 </div>
               }
-            >
-              <Select.Option value="any">All</Select.Option>
+            >           
               <Select.Option value="student">Student</Select.Option>
-              <Select.Option value="professional">Professional</Select.Option>
-              <Select.Option value="professional">Others</Select.Option>
+              <Select.Option value="professional">Professional </Select.Option>
+              <Select.Option value="others">Others</Select.Option>
             </Select>
           </Form.Item>
 
