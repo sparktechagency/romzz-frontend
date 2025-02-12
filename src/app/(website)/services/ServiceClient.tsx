@@ -1,6 +1,6 @@
 "use client";
 import Heading from "@/components/shared/Heading";
-import { Input, Pagination, Select } from "antd";
+import { Input, Pagination, Select, Tooltip } from "antd";
 import { Heart, Search, SlidersHorizontal } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,6 +11,7 @@ import { TiArrowSortedDown } from "react-icons/ti";
 import Filter from "@/components/Filter";
 import { useGetApprovePropertiesQuery } from "@/redux/features/web/api/propertyApi";
 import PropertyCard from "@/components/Card/PropertyCard";
+import { LuBadgeInfo } from "react-icons/lu";
 
 const ServiceClient = () => {
   const [page, setPage] = useState<number>(1); 
@@ -82,14 +83,14 @@ const ServiceClient = () => {
       >
         <div
           data-aos="fade-up"
-          className="lg:w-[574px] bg-white lg:h-[78px] py-2 lg:rounded-[59px] rounded-[20px] flex lg:flex-row  flex-col items-center justify-between  pr-3"
+          className="lg:w-[600px] bg-white lg:h-[78px] py-2 lg:rounded-[59px] rounded-[20px] flex lg:flex-row  flex-col items-center justify-between  pr-3"
         >
-          <div className="lg:w-[320px] w-full">
+          <div className="lg:w-[350px] w-full">
             <Input
               suffix={
                 <Link href={"/search-filter"}>
-                  <div className="w-10 cursor-pointer h-10 rounded-full bg-[#E6F2F5] flex items-center justify-center">
-                    <FaMapLocationDot size={24} color="#00809E" />
+                  <div className="w-14 cursor-pointer h-14 rounded-full bg-[#E6F2F5] flex items-center justify-center">
+                    <FaMapLocationDot size={30} color="#00809E" />
                   </div>
                 </Link>
               }
@@ -127,11 +128,13 @@ const ServiceClient = () => {
           <ul className="flex lg:flex-row flex-wrap items-center justify-center gap-6">
             {categories.map(
               (item, index) => {
-                return (
+                return ( 
+                  <div  key={index}  className="relative"> 
+
                   <li
-                    key={index}
+                   
                     className={`
-                                            font-normal w-fit  h-12 text-center 
+                                            font-normal   h-12 w-[130px] text-center 
                                             ${index === 0 ? "px-10" : "px-5"}
                                             flex items-center justify-center 
                                             text-[16px] leading-5 text-base
@@ -145,7 +148,19 @@ const ServiceClient = () => {
                     onClick={() => handleTabChange(item?.value)}
                   >
                     {item?.name}
-                  </li>
+                  </li>  
+                  {
+                    item?.name !== "All" &&      <Tooltip title={item?.value === "flat-mate" ? "Flat Mate blah blah blah" : "Room Mate blah blah blah"}>
+                    <LuBadgeInfo color={item?.value === tab
+                            ? " #ff9773"
+                            : " #767676"
+                          } size={24} className={`cursor-pointer text-gray-500  absolute -top-4 -right-5 `}/>
+                  </Tooltip> 
+
+                  }
+
+              
+                  </div>
                 );
               }
             )}

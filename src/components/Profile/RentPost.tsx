@@ -1031,7 +1031,7 @@ const RentPost: React.FC<IRentPostProps> = ({
               <Select.Option value="male">Male</Select.Option>
               <Select.Option value="female">Female</Select.Option>
               <Select.Option value="LGBTQIA+">LGBTQIA+</Select.Option>
-              <Select.Option value="others">Others</Select.Option>
+              <Select.Option value="all">All</Select.Option>
             </Select>
           </Form.Item>
 
