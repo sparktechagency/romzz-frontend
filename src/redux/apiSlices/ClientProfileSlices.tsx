@@ -1,86 +1,96 @@
 import { romzzApi } from "../api/api";
 
 const ClientProfileSlices = romzzApi.injectEndpoints({
-    endpoints:(builder)=>({   
+  endpoints: (builder) => ({
+    //  Booking History
+    getBookingHistory: builder.query({
+      query: (page) => {
+        const params = new URLSearchParams();
+        if (page) params.append("page", page);
+        return {
+          url: `/users/booked-properties?${params.toString()}`,
+        };
+      },
+    }),
 
-//  Booking History  
- getBookingHistory:builder.query({   
-   query:(page)=>{  
-      const params = new  URLSearchParams() 
-      if(page)params.append("page",page)
-   return{
-      url:`/users/booked-properties?${params.toString()}`
-   }}
+    createBookingPost: builder.mutation({
+      query: (value) => {
+        return {
+          url: "/properties",
+          method: "POST",
+          body: value,
+        };
+      },
+    }),
 
- }) ,  
+    updatePost: builder.mutation({
+      query: ({ id, formData }) => {
+        return {
+          url: `/properties/${id}`,
+          method: "PATCH",
+          body: formData,
+        };
+      },
+    }),
 
- createBookingPost:builder.mutation({
-    query:(value)=>{
- return{
-    url:"/properties" ,
-    method:"POST" ,
-    body:value
- }
-    }
- }) ,  
- 
- updatePost:builder.mutation({
-   query:({id,formData})=>{
-      return{
-         url:`/properties/${id}`,
-         method:"PATCH" ,
-         body:formData
-      }
-   }
- }) ,
-  
- getAllPost:builder.query({
-   query:({id , page , type})=> {   
-      const params = new URLSearchParams() 
-      if(page)params.append("page",page) 
-         if(type)params.append("type",type)
-      return{ 
-         url:`/properties/user-properties/${id}?${params.toString()}`
-       } 
-   }
- }) ,
+    getAllPost: builder.query({
+      query: ({ id, page, type }) => {
+        const params = new URLSearchParams();
+        if (page) params.append("page", page);
+        if (type) params.append("type", type);
+        return {
+          url: `/properties/user-properties/${id}?${params.toString()}`,
+        };
+      },
+    }),
 
- getFacilities:builder.query({
-   query:()=>{
-      return{
-         url:"/facilities"
-      }
-   }
- }) , 
+    getFacilities: builder.query({
+      query: () => {
+        return {
+          url: "/facilities",
+        };
+      },
+    }),
 
-//  Subscription  
-  getSubscription:builder.query({
-   query:()=>({
-      url:"/pricing-plans"
-   })
-  }) , 
+    //  Subscription
+    getSubscription: builder.query({
+      query: () => ({
+        url: "/pricing-plans",
+      }),
+    }),
 
-  getAllSubscription:builder.query({
-   query:()=>"/users/subscriptions"
-  }) , 
+    getAllSubscription: builder.query({
+      query: () => "/subscriptions/details",
+    }),
+    retrievedSubscription: builder.query({
+      query: () => `/subscriptions/retrieve`,
+    }),
 
-  createFeedback: builder.mutation({
-   query:(value)=>{ 
-      return{
-         url:"/feedbacks" ,
-         method:"POST" ,
-         body:value
-      }
+    createFeedback: builder.mutation({
+      query: (value) => {
+        return {
+          url: "/feedbacks",
+          method: "POST",
+          body: value,
+        };
+      },
+    }),
 
-   }
-  }) , 
-
-//   profile progress  
-getProgress:builder.query({
-   query:()=>"/users/profile-progress"
-})
-  
-
-      })
-     })  
-     export const {useGetBookingHistoryQuery , useCreateBookingPostMutation , useGetAllPostQuery , useUpdatePostMutation , useGetFacilitiesQuery  , useGetSubscriptionQuery , useGetAllSubscriptionQuery , useCreateFeedbackMutation , useGetProgressQuery} = ClientProfileSlices
+    //   profile progress
+    getProgress: builder.query({
+      query: () => "/users/profile-progress",
+    }),
+  }),
+});
+export const {
+  useGetBookingHistoryQuery,
+  useCreateBookingPostMutation,
+  useGetAllPostQuery,
+  useUpdatePostMutation,
+  useGetFacilitiesQuery,
+  useGetSubscriptionQuery,
+  useGetAllSubscriptionQuery,
+  useCreateFeedbackMutation,
+  useGetProgressQuery,
+  useRetrievedSubscriptionQuery
+} = ClientProfileSlices;

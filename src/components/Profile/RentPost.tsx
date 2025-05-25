@@ -14,13 +14,12 @@ import {
   Form,
   Input,
   message,
-  Radio,
   Select,
   Tooltip,
   Upload,
 } from "antd";
 import dayjs from "dayjs";
-import { CalendarDays, ChevronDown, DollarSign, Home, User } from "lucide-react";
+import { CalendarDays, ChevronDown, DollarSign } from "lucide-react";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { FaMapLocationDot } from "react-icons/fa6";
@@ -48,7 +47,6 @@ const RentPost: React.FC<IRentPostProps> = ({
   const [fileList, setFileList] = useState([]);
   const [form] = Form.useForm(); 
   const {data:profile} = useGetProfileQuery(undefined) 
-  console.log(profile);
 
   useEffect(() => {
     if (updateInfo) {
@@ -166,6 +164,7 @@ const RentPost: React.FC<IRentPostProps> = ({
       });
     } else {
       await createBookingPost(formData).then((res) => {
+        console.log(res)
         handleResponse(res);
       });
     }
