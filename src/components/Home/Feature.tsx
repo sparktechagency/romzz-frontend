@@ -22,7 +22,7 @@ const Feature = () => {
             <div className='flex items-center justify-center gap-10'>
                     <div 
                         onClick={()=>handleClick("create")}
-                        className='rounded-lg flex justify-between items-center p-3 w-[450px]'
+                        className='rounded-lg flex justify-between items-center p-3 w-[450px] lg:w-auto gap-3'
                         style={{boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px"}}
                     >
                         <div>
@@ -36,7 +36,7 @@ const Feature = () => {
                     </div>
                 <Link href={"/services"}>
                     <div 
-                        className='rounded-lg flex justify-between items-center p-3 w-[450px]'
+                        className='rounded-lg flex justify-between items-center p-3 w-[450px] lg:w-auto gap-3'
                         style={{boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px"}}
                     >
                         <div>

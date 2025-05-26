@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import dynamic from "next/dynamic";
+import Script from "next/script";
 
 
 export const metadata: Metadata = {
@@ -16,7 +17,38 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en"> 
+          <head>
+        {/* Google Translate Meta */}
+        <meta
+          name="google-translate-customization"
+          content="9f841e7780177523-3214ceb76f765f38-gc38c6fe6f9d06436-c"
+        />
+
+        {/* Google Translate Script */}
+        <Script
+          strategy="afterInteractive"
+          src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+        />
+        <Script
+          id="google-translate-init"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              function googleTranslateElementInit() {
+                new google.translate.TranslateElement(
+                  {
+                    pageLanguage: 'en',
+                    includedLanguages: 'en,es,fr,zh-CN',
+                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+                  },
+                  'google_translate_element'
+                );
+              }
+            `,
+          }}
+        />
+      </head>
       <body>
         <ClientProvider> 
           {children}

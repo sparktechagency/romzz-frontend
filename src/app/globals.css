@@ -1,11 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 *{
-    font-family: "DM Sans", sans-serif;
+    font-family: "DM Sans", sans-serif; 
+
+} 
+
+body{
+    top: 0 !important;
+    left: 0 !important;
+
 }
 
 .ant-select-selector{
@@ -178,4 +184,51 @@ height: 20px !important;
     top: 0px;
     right: 0px;
     border-radius: 50%;
-  } 
+  }  
+
+
+  /* for Google Translate   */   
+
+/* Hide the Google Translate banner */
+
+.antialiased{
+    position: inherit ! important;
+}
+
+/* Hide the Google Translate toolbar */
+.goog-te-gadget {
+  display: none !important;
+} 
+/* Hide the Google Translate banner */
+.goog-te-banner-frame {
+  display: none !important;
+}
+/* Remove pop-up preview */
+.goog-te-balloon-frame {
+  display: none !important;
+}
+ 
+/* Hide the floating dropdown */
+.goog-te-menu-frame {
+  display: none !important;
+}
+ 
+/* Hide Google Translate Top Bar */
+.skiptranslate {
+  display: none !important;
+}
+ 
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf.VIpgJd-ZVi9od-aZ2wEe-wOHMyf-ti6hGc {
+  display: none !important;
+}
+ 
+.VIpgJd-ZVi9od-aZ2wEe {
+  display: none !important;
+} 
+
+/* ::selection {
+  background: #286a25 !important;
+  color: white !important;
+} */
+
+/* finish there  */

@@ -12,8 +12,8 @@ import { useAppSelector } from "@/redux/hooks";
 import {
   useGetNotificationQuery,
   useUpdateMakeAsSeenMutation,
-} from "@/redux/features/web/api/notification";
-import { useGetProfileQuery } from "@/redux/apiSlices/AuthSlices";
+} from "@/redux/features/web/api/notification"; 
+
 import { imageUrl } from "@/redux/api/api";
 import { UserContext } from "@/app/provider/User";
 
@@ -156,7 +156,7 @@ const Navbar = () => {
           ) : (
             <Link
               href={"/login"}
-              className="font-normal w-[120px] h-12 rounded-[24px] bg-primary text-[#F3F3F3] hidden  lg:flex items-center justify-center gap-2 text-[16px] leading-6"
+              className="font-normal w-[120px] lg:w-auto px-4 h-12 rounded-[24px] bg-primary text-[#F3F3F3] hidden  lg:flex items-center justify-center gap-2 text-[16px] leading-6"
             >
               <AiOutlineUser size={20} color="#F3F3F3" /> Sign In
             </Link>
@@ -241,7 +241,7 @@ const Navbar = () => {
           ) : (
             <Link
               href={"/login"}
-              className="font-normal w-[120px] h-12 rounded-[24px] bg-primary text-[#F3F3F3] flex items-center justify-center gap-2 text-[16px] leading-6"
+              className="font-normal w-[120px] lg:w-auto  h-12 rounded-[24px] bg-primary text-[#F3F3F3] flex items-center justify-center gap-2 text-[14px] leading-6"
             >
               <AiOutlineUser size={20} color="#F3F3F3" /> Sign In
             </Link>
