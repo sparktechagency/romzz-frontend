@@ -500,7 +500,6 @@ const Filter: React.FC<IFilterProps> = ({ open, setOpen, setFilter }) => {
             >
               <Select.Option value="male">Male</Select.Option>
               <Select.Option value="female">Female</Select.Option> 
-                <Select.Option value="LGBTQIA+">LGBTQIA+</Select.Option>
               <Select.Option value="all">All</Select.Option>
             </Select>
           </Form.Item>

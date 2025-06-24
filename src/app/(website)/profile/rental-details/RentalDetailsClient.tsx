@@ -54,7 +54,11 @@ const RentalDetailsClient = () => {
             allPost?.data?.data?.length > 0) ||
           subscription?.data?.packageId?.limitation && Number(subscription?.data?.packageId?.limitation) ===  allPost?.data?.data?.length
           ? 
-          null 
+          <button
+              className="bg-primary rounded-3xl w-fit px-5 h-10 text-[14px] leading-6 font-bold text-[#FAFAFA]"
+            >
+            Upgrade Plan
+            </button> 
           : (
             <button
               onClick={() => setOpen(true)}
